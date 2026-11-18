@@ -44,7 +44,7 @@ async function main() {
       },
     ];
     for (const s of samples) {
-      const exists = await prisma.productVariant.findUnique({ where: { sku: s.sku } });
+      const exists = await prisma.productVariant.findUnique({ where: { sku: `TEST-${s.sku}` } });
       if (exists) continue;
       await createTestSku(prisma, s);
     }

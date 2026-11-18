@@ -969,6 +969,23 @@
         "tags": [
           "Admin Commerce"
         ]
+      },
+      "get": {
+        "operationId": "AdminCommerceController_listWarehouses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Commerce"
+        ]
       }
     },
     "/v1/admin/inventory": {

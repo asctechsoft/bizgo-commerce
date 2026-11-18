@@ -19,7 +19,9 @@
     "db:generate": "pnpm --filter @bizgo/db generate",
     "db:migrate:deploy": "pnpm --filter @bizgo/db migrate:deploy",
     "db:seed": "pnpm --filter @bizgo/db seed",
-    "owner:bootstrap": "pnpm --filter @bizgo/api owner:bootstrap"
+    "owner:bootstrap": "pnpm --filter @bizgo/api owner:bootstrap",
+    "stack:build": "node scripts/dev-stack.mjs build",
+    "stack:start": "node scripts/dev-stack.mjs start"
   },
   "devDependencies": {
     "@eslint/js": "9.39.1",

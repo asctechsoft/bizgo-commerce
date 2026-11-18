@@ -8,6 +8,8 @@ import { Header } from '@/components/Header';
 import { MobileBar } from '@/components/MobileBar';
 import './globals.css';
 
+export const dynamic = 'force-dynamic';
+
 const font = Be_Vietnam_Pro({
   subsets: ['vietnamese', 'latin'],
   weight: ['400', '500', '600', '700', '800'],

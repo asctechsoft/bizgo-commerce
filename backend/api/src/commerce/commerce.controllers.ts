@@ -246,6 +246,12 @@ export class AdminCommerceController {
     return this.variants.createWarehouse(a.userId, dto, m.requestId);
   }
 
+  @Get('warehouses')
+  @RequirePermissions('inventory:read')
+  listWarehouses() {
+    return this.variants.listWarehouses();
+  }
+
   @Get('inventory')
   @RequirePermissions('inventory:read')
   listInventory(@Query() q: InventoryQueryDto) {

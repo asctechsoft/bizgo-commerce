@@ -6,6 +6,14 @@
 - Code đã push lên GitHub nhánh `main` (commit mới nhất: "feat(phase2): commerce core backend…"). Không có việc dở chưa commit.
 - Repo GitHub đã đổi địa chỉ: `https://github.com/asctechsoft/bizgo-commerce.git` (địa chỉ cũ vẫn push được nhờ chuyển hướng).
 
+## Chạy cả hệ thống bằng 1 lệnh (khuyên dùng)
+```bash
+node scripts/dev-stack.mjs build   # build API + 2 web (lần đầu hoặc sau khi sửa code)
+node scripts/dev-stack.mjs start   # DB nhúng + fixtures TEST + OWNER dev + API + web (Ctrl+C để dừng)
+```
+Sau đó: web khách http://localhost:3000, quản trị http://localhost:3001/admin/login, API http://localhost:4000 (mã OTP in ở log `[api]`).
+OWNER dev: `owner@bizgo.local` / `Bz-Dev-Only-Pass-98765` (chỉ dùng máy dev; lần đăng nhập đầu phải đăng ký TOTP). Địa chỉ giao thử: tỉnh `Hà Nội` hoặc `Hồ Chí Minh`.
+
 ## Chạy lại trên máy (không cần Docker)
 ```bash
 corepack pnpm install
@@ -33,7 +41,7 @@ Tạo OWNER đầu tiên: `corepack pnpm owner:bootstrap` (nhập email + mật 
 
 ## Việc tiếp theo (theo thứ tự)
 1. Playwright E2E (đăng nhập → đặt hàng → admin xác nhận), responsive 320–1920, axe.
-2. Admin: danh sách kho (hiện phải nhập UUID), sửa/lọc nâng cao; bấm thử các màn admin với tài khoản OWNER + MFA.
+2. Admin: sửa/lọc nâng cao; chọn biến thể theo SKU ở form điều chỉnh tồn (hiện nhập UUID biến thể). Đã bấm thử: đăng nhập OWNER + MFA, danh sách/xác nhận đơn, kho.
 3. Giỏ khách vãng lai + tra cứu đơn có xác minh (cần chủ sở hữu trả lời **D15, D16**); worker hết hạn giữ tồn (cần **D06**).
 4. Sau đó Phase 3 (xưởng: nhận phiếu, soạn, đóng gói, bàn giao) — xem `docs/phase0/04_REFINED_TASKS.md`.
 

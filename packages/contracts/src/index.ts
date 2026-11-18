@@ -540,6 +540,13 @@ export function createApiClient(opts: ClientOptions) {
         list: async (variantId?: string) =>
           (await request<InventoryRow[]>('GET', `/v1/admin/inventory${buildQuery({ variantId })}`))
             .data,
+        warehouses: async () =>
+          (
+            await request<{ id: string; code: string; name: string }[]>(
+              'GET',
+              '/v1/admin/warehouses',
+            )
+          ).data,
         createWarehouse: async (b: { code: string; name: string }) =>
           (
             await request<{ id: string; code: string; name: string }>(

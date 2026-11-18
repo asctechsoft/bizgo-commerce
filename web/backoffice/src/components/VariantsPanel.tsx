@@ -75,6 +75,7 @@ function VariantRow({ v, reload }: { v: AdminVariant; reload: () => void }) {
         <strong className="text-[14px]">{v.sku}</strong>
         <span>{v.packLabel}</span>
         <Badge tone={v.status === 'ACTIVE' ? 'green' : 'neutral'}>{v.status}</Badge>
+        <code className="text-[11px] text-muted">{v.id}</code>
         {v.isTest ? <Badge tone="orange">{t('test')}</Badge> : null}
       </div>
       <div className="mt-3 flex flex-wrap gap-2">

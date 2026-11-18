@@ -314,6 +314,11 @@ export class VariantsAdminService {
     return { id: w.id, code: w.code, name: w.name };
   }
 
+  async listWarehouses() {
+    const rows = await this.prisma.warehouse.findMany({ orderBy: { code: 'asc' } });
+    return rows.map((w) => ({ id: w.id, code: w.code, name: w.name }));
+  }
+
   async inventory(q: { variantId?: string | undefined }) {
     const rows = await this.prisma.inventoryBalance.findMany({
       where: q.variantId ? { variantId: q.variantId } : {},

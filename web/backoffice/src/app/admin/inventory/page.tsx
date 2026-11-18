@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import type { InventoryRow } from '@bizgo/contracts';
-import { Button, EmptyState, Field, Skeleton, TextInput } from '@bizgo/ui-web';
+import { Button, EmptyState, Field, SelectInput, Skeleton, TextInput } from '@bizgo/ui-web';
 import { ActionError } from '@/components/ActionError';
 import { AdminShell } from '@/components/AdminShell';
 import { AuthGate, useBackoffice } from '@/components/AuthGate';
@@ -13,6 +13,7 @@ function Inventory() {
   const t = useTranslations('inventory');
   const { api } = useBackoffice();
   const [rows, setRows] = useState<InventoryRow[] | null>(null);
+  const [warehouses, setWarehouses] = useState<{ id: string; code: string; name: string }[]>([]);
   const [error, setError] = useState<unknown>(null);
   const [formError, setFormError] = useState<unknown>(null);
   const [whError, setWhError] = useState<unknown>(null);
@@ -29,7 +30,14 @@ function Inventory() {
       })
       .catch(setError);
   }, [api]);
+  const loadWarehouses = useCallback(() => {
+    api.admin.inventory
+      .warehouses()
+      .then(setWarehouses)
+      .catch(() => undefined);
+  }, [api]);
   useEffect(load, [load]);
+  useEffect(loadWarehouses, [loadWarehouses]);
 
   async function adjust(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -77,6 +85,7 @@ function Inventory() {
       });
       form.reset();
       setDone(true);
+      loadWarehouses();
     } catch (e2) {
       setWhError(e2);
     }
@@ -141,8 +150,19 @@ function Inventory() {
         <form onSubmit={adjust} noValidate className="rounded-card border border-line bg-white p-4">
           <h2 className="mt-0 text-[15px] font-bold">{t('adjust')}</h2>
           {formError ? <ActionError error={formError} /> : null}
-          <Field id="a-wh" label={t('warehouse') + ' (UUID)'}>
-            {(a) => <TextInput {...a} name="warehouseId" required />}
+          <Field id="a-wh" label={t('warehouse')}>
+            {(a) => (
+              <SelectInput {...a} name="warehouseId" required defaultValue="">
+                <option value="" disabled>
+                  —
+                </option>
+                {warehouses.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.code} — {w.name}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
           </Field>
           <Field id="a-var" label={t('variantId')}>
             {(a) => <TextInput {...a} name="variantId" required />}
