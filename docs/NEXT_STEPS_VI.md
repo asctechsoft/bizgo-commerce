@@ -20,6 +20,10 @@ Chạy cả hệ thống để xem bằng mắt (3 cửa sổ terminal):
 3. Web: `corepack pnpm --filter @bizgo/storefront-web dev` (cổng 3000) và `corepack pnpm --filter @bizgo/backoffice-web dev` (cổng 3001).
 Tạo OWNER đầu tiên: `corepack pnpm owner:bootstrap` (nhập email + mật khẩu lúc chạy; đăng nhập `/admin/login` rồi đăng ký TOTP).
 
+## Mới thêm (chưa dùng ở web)
+- `packages/contracts` đã có sẵn client cho giỏ hàng, báo giá, đặt hàng (`placeOrder` nhận `Idempotency-Key`), đơn của tôi, địa chỉ.
+- `corepack pnpm --filter @bizgo/db dev:fixtures` nạp 3 SKU **TEST** (giá/tồn tùy ý) và mở checkout cho Hà Nội/Hồ Chí Minh (COD, phí ship báo sau) để bấm thử shop. Chạy sau `dev:db`. Bị từ chối khi `APP_ENV=production`.
+
 ## Việc tiếp theo (theo thứ tự)
 1. **Web khách (Phase 2)**: chọn quy cách ở `/san-pham/[slug]` + thêm vào giỏ → `/gio-hang` → `/thanh-toan` (chọn địa chỉ, gọi `checkout/quote`, gửi `POST /orders` kèm `Idempotency-Key` tạo 1 lần/lần thử, xử lý `PRICE_CHANGED`, chỉ báo thành công khi API trả 201) → `/dat-hang-thanh-cong` → `/tai-khoan/don-hang` (+ chi tiết, hủy) và `/tai-khoan/dia-chi`. Cần mở rộng `packages/contracts` (cart, quote, orders, addresses) và thêm text vào `messages/vi.json`.
 2. **Admin (Phase 2)**: màn hình đơn hàng (danh sách, chi tiết, xác nhận/giữ/hủy), biến thể SKU + kiểm tra điều kiện mở bán, giá/giá vốn, kho + điều chỉnh tồn. API đã có sẵn (`/v1/admin/...`, xem `docs/api/openapi.json`).

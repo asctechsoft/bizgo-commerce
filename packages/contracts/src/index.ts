@@ -136,6 +136,114 @@ export interface Page<T> {
   total: number;
 }
 
+export interface Address {
+  id: string;
+  receiverName: string;
+  phone: string;
+  province: string;
+  district: string;
+  ward: string;
+  detail: string;
+  isDefault: boolean;
+}
+
+export type AddressInput = Omit<Address, 'id' | 'isDefault'> & { isDefault?: boolean };
+
+export interface CartItem {
+  id: string;
+  variantId: string;
+  sku: string;
+  name: string;
+  packLabel: string;
+  quantity: number;
+  unitPriceVnd: number | null;
+  available: boolean;
+}
+
+export interface Cart {
+  items: CartItem[];
+  note: 'ESTIMATE_ONLY';
+}
+
+export interface QuoteBlocker {
+  code: ErrorCode;
+  variantId?: string;
+  message: string;
+}
+
+export interface CheckoutQuote {
+  quoteId: string;
+  version: number;
+  expiresAt: string;
+  currency: 'VND';
+  lines: {
+    variantId: string;
+    sku: string;
+    name: string;
+    packLabel: string;
+    quantity: number;
+    unitPriceVnd: number | null;
+    lineTotalVnd: number | null;
+  }[];
+  subtotalVnd: number | null;
+  shippingFeeVnd: number | null;
+  shippingNote: 'MANUAL_QUOTE' | null;
+  totalVnd: number | null;
+  canPlaceOrder: boolean;
+  blockers: QuoteBlocker[];
+}
+
+export type OrderStatus =
+  | 'PENDING_CONFIRMATION'
+  | 'CONFIRMED'
+  | 'PACKING'
+  | 'READY_TO_SHIP'
+  | 'PARTIALLY_SHIPPED'
+  | 'SHIPPED'
+  | 'DELIVERED'
+  | 'COMPLETED'
+  | 'ON_HOLD'
+  | 'CANCEL_REQUESTED'
+  | 'CANCELLED'
+  | 'RETURN_REQUESTED'
+  | 'RETURNED'
+  | 'FAILED'
+  | 'DRAFT';
+
+export interface OrderSummary {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  paymentStatus: string;
+  paymentMethod: 'COD' | 'BANK_TRANSFER';
+  totalVnd: number;
+  shippingFeeVnd: number | null;
+  shippingNote: 'MANUAL_QUOTE' | null;
+  isTest: boolean;
+  createdAt: string;
+}
+
+export interface OrderDetail extends OrderSummary {
+  shipAddress: {
+    receiverName?: string;
+    phone?: string;
+    province?: string;
+    district?: string;
+    ward?: string;
+    detail?: string;
+  };
+  items: {
+    id: string;
+    sku: string;
+    name: string;
+    packLabel: string;
+    quantity: number;
+    unitPriceVnd: number;
+    lineTotalVnd: number;
+  }[];
+  timeline: { from: OrderStatus | null; to: OrderStatus; at: string }[];
+}
+
 export interface ClientOptions {
   baseUrl: string;
   fetchImpl?: typeof fetch;
@@ -163,9 +271,15 @@ export function buildQuery(params: Record<string, string | number | undefined | 
 export function createApiClient(opts: ClientOptions) {
   const f = opts.fetchImpl ?? fetch;
 
-  async function request<T>(method: string, path: string, body?: unknown): Promise<Envelope<T>> {
+  async function request<T>(
+    method: string,
+    path: string,
+    body?: unknown,
+    extraHeaders?: Record<string, string>,
+  ): Promise<Envelope<T>> {
     const headers: Record<string, string> = { Accept: 'application/json', ...opts.headers };
     if (opts.realm) headers['X-Realm'] = opts.realm;
+    if (extraHeaders) Object.assign(headers, extraHeaders);
     if (body !== undefined) headers['Content-Type'] = 'application/json';
     if (method !== 'GET') {
       const csrf = opts.getCsrfToken?.();
@@ -266,6 +380,56 @@ export function createApiClient(opts: ClientOptions) {
             'POST',
             '/v1/auth/mfa/verify',
             { code },
+          )
+        ).data,
+    },
+    addresses: {
+      list: async () => (await request<Address[]>('GET', '/v1/me/addresses')).data,
+      create: async (b: AddressInput) =>
+        (await request<Address>('POST', '/v1/me/addresses', b)).data,
+      remove: async (id: string) =>
+        (await request<{ deleted: true }>('DELETE', `/v1/me/addresses/${id}`)).data,
+    },
+    cart: {
+      get: async () => (await request<Cart>('GET', '/v1/cart')).data,
+      add: async (variantId: string, quantity: number) =>
+        (await request<Cart>('POST', '/v1/cart/items', { variantId, quantity })).data,
+      setQuantity: async (itemId: string, quantity: number) =>
+        (await request<Cart>('PATCH', `/v1/cart/items/${itemId}`, { quantity })).data,
+      remove: async (itemId: string) =>
+        (await request<Cart>('DELETE', `/v1/cart/items/${itemId}`)).data,
+    },
+    checkout: {
+      quote: async (b: { addressId?: string; items?: { variantId: string; quantity: number }[] }) =>
+        (await request<CheckoutQuote>('POST', '/v1/checkout/quote', b)).data,
+      /** `idempotencyKey` must be generated ONCE per user attempt and reused on retries. */
+      placeOrder: async (
+        b: {
+          checkoutQuoteId: string;
+          acceptedQuoteVersion: number;
+          paymentMethod: 'COD' | 'BANK_TRANSFER';
+        },
+        idempotencyKey: string,
+      ) =>
+        (
+          await request<OrderSummary>('POST', '/v1/orders', b, {
+            'Idempotency-Key': idempotencyKey,
+          })
+        ).data,
+    },
+    orders: {
+      list: async (q: { status?: string; page?: number; limit?: number } = {}) =>
+        page(await request<OrderSummary[]>('GET', `/v1/me/orders${buildQuery(q)}`)),
+      get: async (id: string) => (await request<OrderDetail>('GET', `/v1/me/orders/${id}`)).data,
+      cancel: async (id: string, idempotencyKey: string) =>
+        (
+          await request<{ id: string; status: OrderStatus }>(
+            'POST',
+            `/v1/me/orders/${id}/cancel`,
+            undefined,
+            {
+              'Idempotency-Key': idempotencyKey,
+            },
           )
         ).data,
     },
