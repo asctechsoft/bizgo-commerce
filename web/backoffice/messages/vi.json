@@ -45,7 +45,8 @@
     "categories": "Nhóm hàng",
     "comingSoon": "Sắp có",
     "orders": "Đơn hàng",
-    "inventory": "Kho"
+    "inventory": "Kho",
+    "support": "Hỗ trợ"
   },
   "dashboard": {
     "title": "Tổng quan",
@@ -173,7 +174,35 @@
       "RETURNED": "Đã trả hàng",
       "FAILED": "Thất bại",
       "DRAFT": "Nháp"
-    }
+    },
+    "pack": "Bắt đầu soạn hàng",
+    "ready": "Sẵn sàng bàn giao",
+    "ship": "Bàn giao vận chuyển",
+    "deliver": "Xác nhận đã giao",
+    "complete": "Hoàn tất đơn",
+    "reject-cancel": "Từ chối yêu cầu hủy",
+    "cancelRequestedNote": "Khách đã yêu cầu hủy đơn. Hãy duyệt (Hủy đơn) hoặc từ chối.",
+    "collectCod": "Ghi nhận đã thu COD",
+    "codPaid": "COD đã thu",
+    "carrier": "Đơn vị vận chuyển",
+    "trackingCode": "Mã vận đơn",
+    "shipNote": "Bàn giao sẽ trừ tồn kho thực tế (không hoàn tác).",
+    "shippingFeeTitle": "Phí giao hàng",
+    "shippingFeeLabel": "Phí giao hàng (VND)",
+    "shippingFeeSave": "Cập nhật phí",
+    "shipment": "Vận chuyển",
+    "cancelReasonLabel": "Lý do hủy (khách sẽ thấy)",
+    "cancelReasons": {
+      "OUT_OF_STOCK": "Hết hàng",
+      "CUSTOMER_UNREACHABLE": "Không liên lạc được với khách",
+      "DELIVERY_UNSUPPORTED": "Chưa hỗ trợ giao tới khu vực này",
+      "OTHER": "Lý do khác"
+    },
+    "live": "Cập nhật trực tiếp",
+    "liveOff": "Tự làm mới định kỳ",
+    "updated": "Đơn vừa được cập nhật.",
+    "group": "Nhóm",
+    "paymentMethodLabel": "Thanh toán"
   },
   "variants": {
     "title": "Quy cách (SKU)",
@@ -219,5 +248,36 @@
     "whName": "Tên kho",
     "create": "Tạo",
     "done": "Đã lưu."
+  },
+  "support": {
+    "title": "Hộp thư hỗ trợ",
+    "empty": "Chưa có yêu cầu hỗ trợ.",
+    "colOrder": "Đơn",
+    "colCustomer": "Khách",
+    "colType": "Vấn đề",
+    "colStatus": "Trạng thái",
+    "colUpdated": "Cập nhật",
+    "back": "← Danh sách",
+    "openOrder": "Mở đơn hàng",
+    "types": {
+      "WRONG_ITEM": "Sai sản phẩm",
+      "MISSING_ITEM": "Thiếu hàng",
+      "DAMAGED": "Hàng lỗi / hư hỏng",
+      "RETURN_EXCHANGE": "Muốn đổi trả",
+      "OTHER": "Vấn đề khác"
+    },
+    "statuses": {
+      "OPEN": "Mới",
+      "IN_PROGRESS": "Đang xử lý",
+      "RESOLVED": "Đã giải quyết",
+      "CLOSED": "Đã đóng"
+    },
+    "items": "Sản phẩm liên quan",
+    "reply": "Trả lời khách",
+    "send": "Gửi",
+    "setStatus": "Đổi trạng thái",
+    "staff": "BizGo",
+    "customer": "Khách",
+    "filterAll": "Tất cả"
   }
 }

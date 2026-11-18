@@ -213,6 +213,15 @@ export type OrderStatus =
   | 'FAILED'
   | 'DRAFT';
 
+export type OrderGroup =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'shipping'
+  | 'delivered'
+  | 'cancelled'
+  | 'other';
+
 export interface OrderSummary {
   id: string;
   orderNumber: string;
@@ -226,7 +235,27 @@ export interface OrderSummary {
   createdAt: string;
 }
 
+export interface OrderListItem extends OrderSummary {
+  group: OrderGroup;
+  itemCount: number;
+  preview: { name: string; packLabel: string; quantity: number; imageUrl: string | null }[];
+  moreItems: number;
+}
+
+export type OrderSummaryCounts = Record<OrderGroup | 'all', number>;
+
+export interface OrderTimelineEvent {
+  from: OrderStatus | null;
+  to: OrderStatus;
+  at: string;
+  by: 'CUSTOMER' | 'STAFF' | 'SYSTEM';
+  reasonCode: string | null;
+}
+
 export interface OrderDetail extends OrderSummary {
+  group: OrderGroup;
+  subtotalVnd: number;
+  discountVnd: number;
   shipAddress: {
     receiverName?: string;
     phone?: string;
@@ -243,9 +272,46 @@ export interface OrderDetail extends OrderSummary {
     quantity: number;
     unitPriceVnd: number;
     lineTotalVnd: number;
+    imageUrl: string | null;
   }[];
-  timeline: { from: OrderStatus | null; to: OrderStatus; at: string }[];
+  payment: { method: string; status: string; updatedAt: string };
+  shipment: {
+    carrier: string;
+    trackingCode: string;
+    shippedAt: string;
+    deliveredAt: string | null;
+  } | null;
+  cancel: {
+    status: 'CANCELLED' | 'CANCEL_REQUESTED';
+    by: 'CUSTOMER' | 'STAFF' | 'SYSTEM';
+    reasonCode: string | null;
+    at: string;
+  } | null;
+  timeline: OrderTimelineEvent[];
+  actions: { cancel: 'CANCEL' | 'REQUEST_CANCEL' | null; reorder: boolean; support: boolean };
 }
+
+export type SupportType = 'WRONG_ITEM' | 'MISSING_ITEM' | 'DAMAGED' | 'RETURN_EXCHANGE' | 'OTHER';
+export type SupportStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+
+export interface SupportRequest {
+  id: string;
+  orderId: string;
+  orderNumber: string;
+  type: SupportType;
+  status: SupportStatus;
+  description: string;
+  orderItems: { id: string; name: string; packLabel: string; quantity: number }[];
+  createdAt: string;
+  updatedAt: string;
+  messages: { id: string; from: 'CUSTOMER' | 'STAFF'; body: string; at: string }[];
+  customerName?: string;
+}
+
+export type LiveEvent = {
+  type: 'order' | 'support' | 'ping';
+  data: { orderId?: string; status?: OrderStatus; supportId?: string; at: string };
+};
 
 export interface AdminVariant {
   id: string;
@@ -308,7 +374,17 @@ export interface AdminOrderDetail extends OrderDetail {
   };
 }
 
-export type AdminOrderAction = 'confirm' | 'hold' | 'resume' | 'cancel';
+export type AdminOrderAction =
+  | 'confirm'
+  | 'hold'
+  | 'resume'
+  | 'cancel'
+  | 'reject-cancel'
+  | 'pack'
+  | 'ready'
+  | 'ship'
+  | 'deliver'
+  | 'complete';
 
 export interface ClientOptions {
   baseUrl: string;
@@ -484,20 +560,46 @@ export function createApiClient(opts: ClientOptions) {
         ).data,
     },
     orders: {
-      list: async (q: { status?: string; page?: number; limit?: number } = {}) =>
-        page(await request<OrderSummary[]>('GET', `/v1/me/orders${buildQuery(q)}`)),
+      list: async (
+        q: {
+          status?: string;
+          group?: string;
+          sort?: 'newest' | 'oldest';
+          page?: number;
+          limit?: number;
+        } = {},
+      ) => page(await request<OrderListItem[]>('GET', `/v1/me/orders${buildQuery(q)}`)),
+      summary: async () => (await request<OrderSummaryCounts>('GET', '/v1/me/orders/summary')).data,
       get: async (id: string) => (await request<OrderDetail>('GET', `/v1/me/orders/${id}`)).data,
-      cancel: async (id: string, idempotencyKey: string) =>
+      cancel: async (id: string, idempotencyKey: string, reason?: string) =>
         (
           await request<{ id: string; status: OrderStatus }>(
             'POST',
             `/v1/me/orders/${id}/cancel`,
-            undefined,
-            {
-              'Idempotency-Key': idempotencyKey,
-            },
+            reason ? { reason } : {},
+            { 'Idempotency-Key': idempotencyKey },
           )
         ).data,
+      reorder: async (id: string, idempotencyKey: string) =>
+        (
+          await request<{ added: number; skipped: { name: string; message: string }[] }>(
+            'POST',
+            `/v1/me/orders/${id}/reorder`,
+            {},
+            { 'Idempotency-Key': idempotencyKey },
+          )
+        ).data,
+      support: {
+        list: async (id: string) =>
+          (await request<SupportRequest[]>('GET', `/v1/me/orders/${id}/support`)).data,
+        create: async (
+          id: string,
+          b: { type: SupportType; orderItemIds?: string[]; description: string },
+        ) => (await request<SupportRequest>('POST', `/v1/me/orders/${id}/support`, b)).data,
+        reply: async (supportId: string, body: string) =>
+          (await request<SupportRequest>('POST', `/v1/me/support/${supportId}/messages`, { body }))
+            .data,
+      },
     },
     admin: {
       orders: {
@@ -509,16 +611,43 @@ export function createApiClient(opts: ClientOptions) {
           id: string,
           action: AdminOrderAction,
           idempotencyKey: string,
-          reason?: string,
+          opts: { reason?: string; carrier?: string; trackingCode?: string } = {},
         ) =>
           (
             await request<{ id: string; status: OrderStatus }>(
               'POST',
               `/v1/admin/orders/${id}/${action}`,
-              reason ? { reason } : {},
+              opts,
               { 'Idempotency-Key': idempotencyKey },
             )
           ).data,
+        setShippingFee: async (id: string, feeVnd: number) =>
+          (
+            await request<{ id: string; shippingFeeVnd: number; totalVnd: number }>(
+              'POST',
+              `/v1/admin/orders/${id}/shipping-fee`,
+              { feeVnd },
+            )
+          ).data,
+        collectCod: async (id: string) =>
+          (
+            await request<{ id: string; paymentStatus: 'PAID' }>(
+              'POST',
+              `/v1/admin/orders/${id}/collect-cod`,
+            )
+          ).data,
+      },
+      support: {
+        list: async (q: { status?: string; page?: number; limit?: number } = {}) =>
+          page(await request<SupportRequest[]>('GET', `/v1/admin/support${buildQuery(q)}`)),
+        get: async (id: string) =>
+          (await request<SupportRequest>('GET', `/v1/admin/support/${id}`)).data,
+        reply: async (id: string, body: string) =>
+          (await request<SupportRequest>('POST', `/v1/admin/support/${id}/messages`, { body }))
+            .data,
+        setStatus: async (id: string, status: SupportStatus) =>
+          (await request<SupportRequest>('POST', `/v1/admin/support/${id}/status`, { status }))
+            .data,
       },
       variants: {
         list: async (productId: string) =>
@@ -587,3 +716,9 @@ export function createApiClient(opts: ClientOptions) {
 }
 
 export type ApiClient = ReturnType<typeof createApiClient>;
+
+/** Live-update stream URLs (SSE, cookie session; open with EventSource({ withCredentials: true })). */
+export const liveStreamPath = {
+  customer: '/v1/me/orders/stream',
+  admin: '/v1/admin/stream',
+} as const;

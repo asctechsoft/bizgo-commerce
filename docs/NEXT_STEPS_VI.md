@@ -6,6 +6,11 @@
 - Code đã push lên GitHub nhánh `main` (commit mới nhất: "feat(phase2): commerce core backend…"). Không có việc dở chưa commit.
 - Repo GitHub đã đổi địa chỉ: `https://github.com/asctechsoft/bizgo-commerce.git` (địa chỉ cũ vẫn push được nhờ chuyển hướng).
 
+## Luồng đơn hàng đầy đủ + realtime (19/11/2026)
+- Admin: xác nhận → soạn → sẵn sàng → bàn giao (nhập đơn vị VC + mã vận đơn) → đã giao → hoàn tất; ghi nhận thu COD riêng; đặt phí ship; duyệt/từ chối yêu cầu hủy; hộp thư hỗ trợ `/admin/support`.
+- Khách: danh sách đơn có tab/đếm/sắp xếp/mua lại, chi tiết theo trạng thái (stepper, vận chuyển, hủy có lý do), trang hỗ trợ `/tai-khoan/don-hang/[id]/ho-tro`. Trạng thái đổi **realtime** (SSE, ADR-0015).
+- Chưa có: đánh giá, hóa đơn, mã giảm giá, yêu thích, upload ảnh minh chứng, bản đồ/shipper, hoàn tiền online.
+
 ## Chạy cả hệ thống bằng 1 lệnh (khuyên dùng)
 ```bash
 node scripts/dev-stack.mjs build   # build API + 2 web (lần đầu hoặc sau khi sửa code)

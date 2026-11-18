@@ -29,3 +29,11 @@
 - Decision: the public catalogue API lists ACTIVE **and** DRAFT products (PAUSED/ARCHIVED stay hidden). Each item carries `sellable` (= ACTIVE). DRAFT items show "Chưa mở bán", expose no variants/prices, and cannot enter a cart (unchanged server gate: SKU readiness + ACTIVE variant).
 - Why: the owner wants the storefront to look like the prototype with all 82 source items and their illustrative images. No SKU, price, stock or legal status is invented.
 - Reverting: filter `BROWSABLE` to `['ACTIVE']` in `catalog.service.ts`.
+
+## ADR-0015 — Order fulfilment, support threads and realtime (2026-11-19)
+- Staff drive the order through confirm → pack → ready → ship (carrier + tracking required) → deliver → complete via explicit actions (transition table is the only authority). SHIP consumes stock reservations and decrements on-hand exactly once (DISPATCH ledger entry).
+- COD: delivery does NOT mean paid. Staff record "COD collected" separately (only after delivery, exactly once, audited). Real COD reconciliation with the courier remains a later phase.
+- Customers may cancel immediately only while PENDING_CONFIRMATION/ON_HOLD; after CONFIRMED it is a *request* staff approve/reject; later they must open a support request. Cancel reasons are a fixed whitelist; non-whitelisted staff reasons are never shown to customers.
+- Support requests (customer ↔ staff thread, no refund automation, **no evidence upload yet** — needs object storage ADR).
+- Realtime: Server-Sent Events carrying only "something changed" (no order data); browsers refetch authoritative state; polling fallback every 15s. The fan-out is in-process: valid for ONE API instance. Multi-instance needs Redis pub/sub (Redis unavailable in this environment).
+- Not built (no backend/data): reviews/ratings, invoices, wishlist, vouchers, carrier tracking map/shipper phone, factory-side progress, online refund.

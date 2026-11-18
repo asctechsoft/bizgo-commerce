@@ -8,6 +8,7 @@ import { Badge, Button, EmptyState, Skeleton } from '@bizgo/ui-web';
 import { ActionError } from '@/components/ActionError';
 import { AdminShell } from '@/components/AdminShell';
 import { AuthGate, useBackoffice } from '@/components/AuthGate';
+import { useLive } from '@/lib/use-live';
 
 const LIMIT = 20;
 const STATUSES = [
@@ -37,6 +38,7 @@ function List() {
   const [data, setData] = useState<Page<AdminOrderSummary> | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [n, setN] = useState(0);
+  useLive(() => setN((x) => x + 1));
 
   useEffect(() => {
     let alive = true;

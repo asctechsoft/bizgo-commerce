@@ -79,7 +79,7 @@ describe('admin commerce client', () => {
       json(200, { data: { id: 'o1', status: 'CONFIRMED' }, meta: { requestId: 'r' } }),
     ) as unknown as typeof fetch;
     const api = createApiClient({ baseUrl: 'http://api', fetchImpl, realm: 'ADMIN' });
-    await api.admin.orders.act('o1', 'confirm', 'key-1', 'OK');
+    await api.admin.orders.act('o1', 'confirm', 'key-1', { reason: 'OK' });
     expect(fetchImpl).toHaveBeenCalledWith(
       'http://api/v1/admin/orders/o1/confirm',
       expect.objectContaining({
