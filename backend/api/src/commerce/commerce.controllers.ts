@@ -11,10 +11,14 @@ import {
   Post,
   Query,
   Res,
+  Sse,
+  type MessageEvent,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
+import { map, type Observable } from 'rxjs';
 import { AppError } from '@bizgo/shared';
+import { RawResponse } from '../common/http';
 import type { AuthContext } from '../auth/auth.types';
 import {
   CurrentAuth,
@@ -26,6 +30,7 @@ import {
 import { CartService } from './cart.service';
 import {
   AdjustmentDto,
+  CancelOrderDto,
   CartAddDto,
   CartPatchDto,
   CostCreateDto,
@@ -35,12 +40,20 @@ import {
   OrdersQueryDto,
   PriceCreateDto,
   QuoteRequestDto,
+  ShipOrderDto,
+  ShippingFeeDto,
+  SupportCreateDto,
+  SupportMessageDto,
+  SupportQueryDto,
+  SupportStatusDto,
   VariantCreateDto,
   WarehouseCreateDto,
 } from './commerce.dto';
 import { InventoryService } from './inventory.service';
 import { IdempotencyService } from '../infra/idempotency.service';
-import { OrdersService } from './orders.service';
+import { OrderEventsService } from './order-events.service';
+import { OrdersService, type AdminOrderAction } from './orders.service';
+import { SupportService } from './support.service';
 import { QuoteService } from './quote.service';
 import { VariantsAdminService } from './variants-admin.service';
 import { canonicalHash } from '../common/crypto';
@@ -136,7 +149,11 @@ export class CheckoutController {
 @Realm('CUSTOMER')
 @Controller('v1/me/orders')
 export class MeOrdersController {
-  constructor(private readonly orders: OrdersService) {}
+  constructor(
+    private readonly orders: OrdersService,
+    private readonly support: SupportService,
+    private readonly live: OrderEventsService,
+  ) {}
 
   @Get()
   @RequirePermissions('order:read:own')
@@ -145,7 +162,23 @@ export class MeOrdersController {
       page: q.page ?? 1,
       limit: q.limit ?? 20,
       ...(q.status ? { status: q.status } : {}),
+      ...(q.group ? { group: q.group } : {}),
+      ...(q.sort ? { sort: q.sort } : {}),
     });
+  }
+
+  @Get('summary')
+  @RequirePermissions('order:read:own')
+  summary(@CurrentAuth() a: AuthContext) {
+    return this.orders.summaryOwn(a.userId);
+  }
+
+  /** Server-Sent Events: "an order of yours changed" (browser refetches; no order data on the wire). */
+  @Sse('stream')
+  @RawResponse()
+  @RequirePermissions('order:read:own')
+  stream(@CurrentAuth() a: AuthContext): Observable<MessageEvent> {
+    return this.live.stream(a.userId).pipe(map((m) => ({ type: m.type, data: m.data as object })));
   }
 
   @Get(':id')
@@ -161,6 +194,7 @@ export class MeOrdersController {
   async cancel(
     @CurrentAuth() a: AuthContext,
     @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: CancelOrderDto,
     @Headers('idempotency-key') key: string | undefined,
     @RequestMeta() meta: Meta,
   ) {
@@ -169,8 +203,57 @@ export class MeOrdersController {
       id,
       requireKey(key),
       meta.requestId,
+      dto.reason,
     );
     return r.body;
+  }
+
+  @Post(':id/reorder')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('cart:own')
+  async reorder(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Headers('idempotency-key') key: string | undefined,
+  ) {
+    const r = await this.orders.reorder({ userId: a.userId }, id, requireKey(key));
+    return r.body;
+  }
+
+  @Get(':id/support')
+  @RequirePermissions('order:read:own')
+  listSupport(@CurrentAuth() a: AuthContext, @Param('id', new ParseUUIDPipe()) id: string) {
+    return this.support.listForOrder(a.userId, id);
+  }
+
+  @Post(':id/support')
+  @RequirePermissions('order:read:own')
+  createSupport(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: SupportCreateDto,
+    @RequestMeta() meta: Meta,
+  ) {
+    return this.support.create(a.userId, id, dto, meta.requestId);
+  }
+}
+
+@ApiTags('Support')
+@ApiBearerAuth()
+@Realm('CUSTOMER')
+@Controller('v1/me/support')
+export class MeSupportController {
+  constructor(private readonly support: SupportService) {}
+
+  @Post(':id/messages')
+  @RequirePermissions('order:read:own')
+  reply(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: SupportMessageDto,
+  ) {
+    return this.support.customerReply(a.userId, id, dto.body);
   }
 }
 
@@ -186,6 +269,8 @@ export class AdminCommerceController {
     private readonly inventory: InventoryService,
     private readonly orders: OrdersService,
     private readonly idempotency: IdempotencyService,
+    private readonly support: SupportService,
+    private readonly live: OrderEventsService,
   ) {}
 
   @Post('variants')
@@ -311,10 +396,11 @@ export class AdminCommerceController {
   private act(
     a: AuthContext,
     id: string,
-    action: 'CONFIRM' | 'HOLD' | 'RESUME' | 'CANCEL',
+    action: AdminOrderAction,
     dto: OrderActionDto,
     key: string | undefined,
     m: Meta,
+    shipment?: { carrier: string; trackingCode: string },
   ) {
     return this.orders
       .adminAction(
@@ -324,6 +410,7 @@ export class AdminCommerceController {
         dto.reason,
         requireKey(key),
         m.requestId,
+        shipment,
       )
       .then((r) => r.body);
   }
@@ -382,5 +469,182 @@ export class AdminCommerceController {
     @RequestMeta() m: Meta,
   ) {
     return this.act(a, id, 'CANCEL', dto, k, m);
+  }
+
+  private flow(
+    a: AuthContext,
+    id: string,
+    action: AdminOrderAction,
+    dto: OrderActionDto,
+    k: string | undefined,
+    m: Meta,
+  ) {
+    return this.act(a, id, action, dto, k, m);
+  }
+
+  @Post('orders/:id/reject-cancel')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('order:manage')
+  rejectCancel(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: OrderActionDto,
+    @Headers('idempotency-key') k: string | undefined,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.flow(a, id, 'REJECT_CANCEL', dto, k, m);
+  }
+
+  @Post('orders/:id/pack')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('order:manage')
+  pack(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: OrderActionDto,
+    @Headers('idempotency-key') k: string | undefined,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.flow(a, id, 'START_PACKING', dto, k, m);
+  }
+
+  @Post('orders/:id/ready')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('order:manage')
+  ready(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: OrderActionDto,
+    @Headers('idempotency-key') k: string | undefined,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.flow(a, id, 'MARK_READY', dto, k, m);
+  }
+
+  @Post('orders/:id/ship')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('order:manage')
+  ship(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: ShipOrderDto,
+    @Headers('idempotency-key') k: string | undefined,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.act(a, id, 'SHIP', dto, k, m, {
+      carrier: dto.carrier,
+      trackingCode: dto.trackingCode,
+    });
+  }
+
+  @Post('orders/:id/deliver')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('order:manage')
+  deliver(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: OrderActionDto,
+    @Headers('idempotency-key') k: string | undefined,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.flow(a, id, 'DELIVER', dto, k, m);
+  }
+
+  @Post('orders/:id/complete')
+  @HttpCode(200)
+  @ApiHeader(IDEM)
+  @RequirePermissions('order:manage')
+  complete(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: OrderActionDto,
+    @Headers('idempotency-key') k: string | undefined,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.flow(a, id, 'COMPLETE', dto, k, m);
+  }
+
+  @Post('orders/:id/shipping-fee')
+  @HttpCode(200)
+  @RequirePermissions('order:manage')
+  shippingFee(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: ShippingFeeDto,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.orders.setShippingFee(
+      { userId: a.userId, role: a.roles.join(','), ipHash: a.ipHash },
+      id,
+      dto.feeVnd,
+      m.requestId,
+    );
+  }
+
+  @Post('orders/:id/collect-cod')
+  @HttpCode(200)
+  @RequirePermissions('order:manage')
+  collectCod(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.orders.collectCod(
+      { userId: a.userId, role: a.roles.join(','), ipHash: a.ipHash },
+      id,
+      m.requestId,
+    );
+  }
+
+  /** Staff live stream (all orders + support activity). Browser refetches on each event. */
+  @Sse('stream')
+  @RawResponse()
+  @RequirePermissions('order:read:all')
+  stream(): Observable<MessageEvent> {
+    return this.live.stream(undefined).pipe(map((m) => ({ type: m.type, data: m.data as object })));
+  }
+
+  @Get('support')
+  @RequirePermissions('support:handle')
+  listSupport(@Query() q: SupportQueryDto) {
+    return this.support.adminList({
+      page: q.page ?? 1,
+      limit: q.limit ?? 20,
+      status: q.status,
+    });
+  }
+
+  @Get('support/:id')
+  @RequirePermissions('support:handle')
+  getSupport(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.support.adminGet(id);
+  }
+
+  @Post('support/:id/messages')
+  @RequirePermissions('support:handle')
+  replySupport(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: SupportMessageDto,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.support.staffReply(a.userId, id, dto.body, m.requestId);
+  }
+
+  @Post('support/:id/status')
+  @HttpCode(200)
+  @RequirePermissions('support:handle')
+  setSupportStatus(
+    @CurrentAuth() a: AuthContext,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: SupportStatusDto,
+    @RequestMeta() m: Meta,
+  ) {
+    return this.support.setStatus(a.userId, id, dto.status, m.requestId);
   }
 }

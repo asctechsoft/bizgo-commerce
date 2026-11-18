@@ -131,6 +131,47 @@ export class InventoryService {
     return released;
   }
 
+  /**
+   * Goods leave the warehouse: every HELD reservation becomes CONSUMED exactly once and stock physically
+   * decreases (on_hand and reserved both drop; DISPATCH ledger entry). Nothing HELD left => no-op.
+   */
+  async consumeOrder(
+    tx: Prisma.TransactionClient,
+    orderId: string,
+    actorId: string | null,
+  ): Promise<number> {
+    const held = await tx.inventoryReservation.findMany({ where: { orderId, status: 'HELD' } });
+    let consumed = 0;
+    for (const r of held) {
+      const claimed = await tx.inventoryReservation.updateMany({
+        where: { id: r.id, status: 'HELD' },
+        data: { status: 'CONSUMED' },
+      });
+      if (claimed.count !== 1) continue;
+      const n = await tx.$executeRaw`
+        UPDATE "inventory_balances"
+           SET "on_hand" = "on_hand" - ${r.qty}, "reserved" = "reserved" - ${r.qty},
+               "version" = "version" + 1, "updated_at" = now()
+         WHERE "warehouse_id" = ${r.warehouseId}::uuid AND "variant_id" = ${r.variantId}::uuid
+           AND "reserved" >= ${r.qty} AND "on_hand" >= ${r.qty}`;
+      if (n !== 1) throw new AppError('INSUFFICIENT_STOCK', 'Sổ tồn kho không khớp khi xuất hàng.');
+      await tx.stockMovement.create({
+        data: {
+          warehouseId: r.warehouseId,
+          variantId: r.variantId,
+          type: 'DISPATCH',
+          qty: r.qty,
+          reasonCode: 'ORDER_SHIPPED',
+          actorId,
+          refType: 'order',
+          refId: orderId,
+        },
+      });
+      consumed++;
+    }
+    return consumed;
+  }
+
   /** Manual stock adjustment (ledger entry + balance change in one transaction). */
   async adjust(p: {
     warehouseId: string;

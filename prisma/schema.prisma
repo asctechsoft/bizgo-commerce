@@ -82,6 +82,7 @@ model User {
   otpChallenges      OtpChallenge[]
   cart               Cart?
   orders             Order[]
+  supportRequests    SupportRequest[]
 
   @@map("users")
 }
@@ -669,12 +670,14 @@ model Order {
   createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt           DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  user         User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
-  items        OrderItem[]
-  events       OrderStatusEvent[]
-  payments     Payment[]
-  reservations InventoryReservation[]
-  financial    OrderFinancial?
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items           OrderItem[]
+  events          OrderStatusEvent[]
+  payments        Payment[]
+  reservations    InventoryReservation[]
+  financial       OrderFinancial?
+  shipment        Shipment?
+  supportRequests SupportRequest[]
 
   @@index([userId, createdAt(sort: Desc)])
   @@index([status, createdAt])
@@ -770,4 +773,73 @@ model InventoryReservation {
   @@index([orderId])
   @@index([status, expiresAt])
   @@map("inventory_reservations")
+}
+
+// ───────────────────────────── Fulfilment & support (M003) ─────────────────────────────
+
+enum SupportType {
+  WRONG_ITEM
+  MISSING_ITEM
+  DAMAGED
+  RETURN_EXCHANGE
+  OTHER
+}
+
+enum SupportStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+/// One shipment per order for now (partial shipments are a later phase). Filled by staff when handing over.
+model Shipment {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId      String    @unique @map("order_id") @db.Uuid
+  carrier      String
+  trackingCode String    @map("tracking_code")
+  shippedAt    DateTime  @map("shipped_at") @db.Timestamptz(6)
+  deliveredAt  DateTime? @map("delivered_at") @db.Timestamptz(6)
+  createdBy    String?   @map("created_by") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@map("shipments")
+}
+
+model SupportRequest {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId      String        @map("order_id") @db.Uuid
+  userId       String        @map("user_id") @db.Uuid
+  type         SupportType
+  status       SupportStatus @default(OPEN)
+  orderItemIds Json          @default("[]") @map("order_item_ids")
+  description  String
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  order    Order            @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  messages SupportMessage[]
+
+  @@index([orderId, createdAt])
+  @@index([userId, createdAt])
+  @@index([status, updatedAt])
+  @@map("support_requests")
+}
+
+model SupportMessage {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  requestId  String   @map("request_id") @db.Uuid
+  /// CUSTOMER | STAFF
+  authorType String   @map("author_type")
+  authorId   String?  @map("author_id") @db.Uuid
+  body       String
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  request SupportRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+
+  @@index([requestId, createdAt])
+  @@map("support_messages")
 }

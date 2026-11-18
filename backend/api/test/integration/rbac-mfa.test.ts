@@ -256,6 +256,7 @@ describe('generated permission matrix', () => {
         if (typeof handler !== 'function' || name === 'constructor') continue;
         const method = Reflect.getMetadata('method', handler) as number | undefined;
         if (method === undefined) continue;
+        if (Reflect.getMetadata('__sse__', handler)) continue; // streams never end; covered by realtime.test.ts
         const sub = (Reflect.getMetadata('path', handler) as string) ?? '';
         const perms =
           reflector.getAllAndOverride<Permission[]>(PERMISSIONS_REQUIRED, [

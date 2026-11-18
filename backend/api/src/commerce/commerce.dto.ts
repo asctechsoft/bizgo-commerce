@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
+  CUSTOMER_CANCEL_REASONS,
+  ORDER_GROUPS,
+  SUPPORT_STATUSES,
+  SUPPORT_TYPES,
+} from '@bizgo/shared';
+import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
@@ -86,6 +92,14 @@ export class OrdersQueryDto {
     'COMPLETED',
   ])
   status?: string;
+  @ApiPropertyOptional({ enum: ORDER_GROUPS })
+  @IsOptional()
+  @IsIn(ORDER_GROUPS as unknown as string[])
+  group?: string;
+  @ApiPropertyOptional({ enum: ['newest', 'oldest'] })
+  @IsOptional()
+  @IsIn(['newest', 'oldest'])
+  sort?: string;
 }
 
 export class OrderActionDto {
@@ -157,4 +171,65 @@ export class AdjustmentDto {
 
 export class InventoryQueryDto {
   @ApiPropertyOptional() @IsOptional() @IsUUID() variantId?: string;
+}
+
+export class CancelOrderDto {
+  @ApiPropertyOptional({ enum: CUSTOMER_CANCEL_REASONS })
+  @IsOptional()
+  @IsIn(CUSTOMER_CANCEL_REASONS as unknown as string[])
+  reason?: string;
+}
+
+export class ShipOrderDto extends OrderActionDto {
+  @ApiProperty() @IsString() @Length(2, 80) carrier!: string;
+  @ApiProperty() @IsString() @Length(3, 80) @Matches(/^[A-Za-z0-9._-]+$/) trackingCode!: string;
+}
+
+export class ShippingFeeDto {
+  @ApiProperty({ description: 'Integer VND (đồng)' })
+  @IsInt()
+  @Min(0)
+  @Max(100_000_000)
+  feeVnd!: number;
+}
+
+export class SupportCreateDto {
+  @ApiProperty({ enum: SUPPORT_TYPES }) @IsIn(SUPPORT_TYPES as unknown as string[]) type!: string;
+  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(50)
+  @IsUUID(undefined, { each: true })
+  orderItemIds?: string[];
+  @ApiProperty() @IsString() @Length(5, 500) description!: string;
+}
+
+export class SupportMessageDto {
+  @ApiProperty() @IsString() @Length(1, 1000) body!: string;
+}
+
+export class SupportStatusDto {
+  @ApiProperty({ enum: SUPPORT_STATUSES })
+  @IsIn(SUPPORT_STATUSES as unknown as string[])
+  status!: string;
+}
+
+export class SupportQueryDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsIn(SUPPORT_STATUSES as unknown as string[])
+  status?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Transform(({ value }) => int(value))
+  @IsInt()
+  @Min(1)
+  page?: number;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Transform(({ value }) => int(value))
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit?: number;
 }

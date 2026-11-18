@@ -15,9 +15,12 @@ import {
   CartController,
   CheckoutController,
   MeOrdersController,
+  MeSupportController,
 } from './commerce/commerce.controllers';
 import { InventoryService } from './commerce/inventory.service';
+import { OrderEventsService } from './commerce/order-events.service';
 import { OrdersService } from './commerce/orders.service';
+import { SupportService } from './commerce/support.service';
 import { QuoteService } from './commerce/quote.service';
 import { SettingsService } from './commerce/settings.service';
 import { VariantsAdminService } from './commerce/variants-admin.service';
@@ -45,6 +48,7 @@ export class AppModule implements NestModule {
         CartController,
         CheckoutController,
         MeOrdersController,
+        MeSupportController,
         AdminCommerceController,
       ],
       providers: [
@@ -57,6 +61,8 @@ export class AppModule implements NestModule {
         QuoteService,
         CartService,
         OrdersService,
+        OrderEventsService,
+        SupportService,
         VariantsAdminService,
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
         { provide: APP_INTERCEPTOR, useClass: EnvelopeInterceptor },

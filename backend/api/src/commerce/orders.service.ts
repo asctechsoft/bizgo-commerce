@@ -4,6 +4,11 @@ import type { Prisma } from '@bizgo/db';
 import {
   AppError,
   CANCELLABLE_BEFORE_DISPATCH,
+  ORDER_GROUPS,
+  ORDER_GROUP_STATUSES,
+  PUBLIC_CANCEL_REASONS,
+  orderGroupOf,
+  type OrderGroup,
   nextOrderStatus,
   vndToJson,
   type ErrorCode,
@@ -18,7 +23,9 @@ import { AuditService } from '../infra/audit.service';
 import { IdempotencyService } from '../infra/idempotency.service';
 import { OutboxService } from '../infra/outbox.service';
 import { PrismaService } from '../infra/prisma.service';
+import { CartService } from './cart.service';
 import { InventoryService } from './inventory.service';
+import { OrderEventsService } from './order-events.service';
 import { QuoteService } from './quote.service';
 import { SettingsService } from './settings.service';
 
@@ -58,8 +65,30 @@ export interface OrderSummaryDto {
   createdAt: Date;
 }
 
+export interface OrderListItemDto extends OrderSummaryDto {
+  group: OrderGroup;
+  itemCount: number;
+  preview: { name: string; packLabel: string; quantity: number; imageUrl: string | null }[];
+  moreItems: number;
+}
+
+export type AdminOrderAction =
+  | 'CONFIRM'
+  | 'HOLD'
+  | 'RESUME'
+  | 'CANCEL'
+  | 'REJECT_CANCEL'
+  | 'START_PACKING'
+  | 'MARK_READY'
+  | 'SHIP'
+  | 'DELIVER'
+  | 'COMPLETE';
+
 export interface OrderDetailDto extends OrderSummaryDto {
+  group: OrderGroup;
   shipAddress: unknown;
+  subtotalVnd: number;
+  discountVnd: number;
   items: {
     id: string;
     sku: string;
@@ -68,8 +97,29 @@ export interface OrderDetailDto extends OrderSummaryDto {
     quantity: number;
     unitPriceVnd: number;
     lineTotalVnd: number;
+    imageUrl: string | null;
   }[];
-  timeline: { from: OrderStatus | null; to: OrderStatus; at: Date }[];
+  payment: { method: string; status: string; updatedAt: Date };
+  shipment: {
+    carrier: string;
+    trackingCode: string;
+    shippedAt: Date;
+    deliveredAt: Date | null;
+  } | null;
+  cancel: {
+    status: 'CANCELLED' | 'CANCEL_REQUESTED';
+    by: 'CUSTOMER' | 'STAFF' | 'SYSTEM';
+    reasonCode: string | null;
+    at: Date;
+  } | null;
+  timeline: {
+    from: OrderStatus | null;
+    to: OrderStatus;
+    at: Date;
+    by: 'CUSTOMER' | 'STAFF' | 'SYSTEM';
+    reasonCode: string | null;
+  }[];
+  actions: { cancel: 'CANCEL' | 'REQUEST_CANCEL' | null; reorder: boolean; support: boolean };
   contact?: unknown;
   financial?: {
     revenueNetVnd: number;
@@ -78,9 +128,7 @@ export interface OrderDetailDto extends OrderSummaryDto {
   };
 }
 
-type OrderWithRelations = Prisma.OrderGetPayload<{
-  include: { items: true; payments: true; events: true };
-}>;
+type OrderWithRelations = Prisma.OrderGetPayload<{ include: { payments: true } }>;
 
 @Injectable()
 export class OrdersService {
@@ -93,6 +141,8 @@ export class OrdersService {
     private readonly audit: AuditService,
     private readonly outbox: OutboxService,
     private readonly clock: Clock,
+    private readonly live: OrderEventsService,
+    private readonly cart: CartService,
   ) {}
 
   // ───────────────────────────── create ─────────────────────────────
@@ -112,6 +162,13 @@ export class OrdersService {
       },
       async (tx) => ({ status: 201, body: await this.createInTx(tx, actor, input, requestId) }),
     );
+    if (!res.replayed)
+      this.live.emit({
+        kind: 'order',
+        orderId: res.body.id,
+        userId: actor.userId,
+        status: res.body.status,
+      });
     return { status: res.status, body: res.body, replayed: res.replayed };
   }
 
@@ -348,6 +405,7 @@ export class OrdersService {
       reasonCode?: string;
       requestId: string;
       userScope?: string;
+      shipment?: { carrier: string; trackingCode: string };
     },
   ): Promise<{ from: OrderStatus; to: OrderStatus }> {
     const order = await tx.order.findFirst({
@@ -382,6 +440,27 @@ export class OrdersService {
         requestId: p.requestId,
       },
     });
+    if (p.action === 'SHIP') {
+      const sh = p.shipment;
+      if (!sh || !sh.carrier.trim() || !sh.trackingCode.trim())
+        throw new AppError('VALIDATION_ERROR', 'Cần nhập đơn vị vận chuyển và mã vận đơn.');
+      await tx.shipment.create({
+        data: {
+          orderId: order.id,
+          carrier: sh.carrier.trim(),
+          trackingCode: sh.trackingCode.trim(),
+          shippedAt: this.clock.now(),
+          createdBy: p.actor.userId,
+        },
+      });
+      await this.inventory.consumeOrder(tx, order.id, p.actor.userId);
+    }
+    if (p.action === 'DELIVER') {
+      await tx.shipment.updateMany({
+        where: { orderId: order.id, deliveredAt: null },
+        data: { deliveredAt: this.clock.now() },
+      });
+    }
     if (to === 'CANCELLED') {
       if (!CANCELLABLE_BEFORE_DISPATCH.includes(order.status)) {
         throw new AppError(
@@ -423,46 +502,72 @@ export class OrdersService {
     return { from: order.status, to };
   }
 
-  /** Customer cancellation: immediate before confirmation, a request after confirmation. */
-  async cancelOwn(actor: Actor, orderId: string, idempotencyKey: string, requestId: string) {
-    return this.idempotency.execute(
+  // ───────────────────────────── customer cancellation ─────────────────────────────
+
+  /**
+   * Customer cancellation: immediate while PENDING_CONFIRMATION / ON_HOLD, a *request* once CONFIRMED.
+   * After that (packing, shipped…) the customer cannot cancel; they open a support request instead.
+   */
+  async cancelOwn(
+    actor: Actor,
+    orderId: string,
+    idempotencyKey: string,
+    requestId: string,
+    reason?: string,
+  ) {
+    const reasonCode = reason ?? 'CUSTOMER_REQUEST';
+    const res = await this.idempotency.execute(
       {
         actorScope: actor.userId,
         scope: 'orders.cancel',
         key: idempotencyKey,
-        requestHash: canonicalHash({ orderId }),
+        requestHash: canonicalHash({ orderId, reasonCode }),
       },
       async (tx) => {
         const o = await tx.order.findFirst({ where: { id: orderId, userId: actor.userId } });
         if (!o) throw new AppError('NOT_FOUND', 'Không tìm thấy đơn hàng.');
-        const action: OrderAction = o.status === 'CONFIRMED' ? 'REQUEST_CANCEL' : 'CANCEL';
+        let action: OrderAction;
+        if (o.status === 'CONFIRMED') action = 'REQUEST_CANCEL';
+        else if (o.status === 'PENDING_CONFIRMATION' || o.status === 'ON_HOLD') action = 'CANCEL';
+        else
+          throw new AppError(
+            'INVALID_STATE_TRANSITION',
+            'Đơn hàng đã được xử lý nên không thể tự hủy. Vui lòng liên hệ hỗ trợ.',
+            [{ from: o.status }],
+          );
         const t = await this.transition(tx, {
           orderId,
           action,
           actor,
-          reasonCode: 'CUSTOMER_REQUEST',
+          reasonCode,
           requestId,
           userScope: actor.userId,
         });
         return { status: 200, body: { id: orderId, status: t.to } };
       },
     );
+    if (!res.replayed)
+      this.live.emit({ kind: 'order', orderId, userId: actor.userId, status: res.body.status });
+    return res;
   }
+
+  // ───────────────────────────── staff actions ─────────────────────────────
 
   async adminAction(
     actor: Actor,
     orderId: string,
-    action: 'CONFIRM' | 'HOLD' | 'RESUME' | 'CANCEL',
+    action: AdminOrderAction,
     reason: string | undefined,
     idempotencyKey: string,
     requestId: string,
+    shipment?: { carrier: string; trackingCode: string },
   ) {
-    return this.idempotency.execute(
+    const res = await this.idempotency.execute(
       {
         actorScope: actor.userId,
         scope: `admin.orders.${action.toLowerCase()}`,
         key: idempotencyKey,
-        requestHash: canonicalHash({ orderId, reason: reason ?? null }),
+        requestHash: canonicalHash({ orderId, reason: reason ?? null, shipment: shipment ?? null }),
       },
       async (tx) => {
         const o = await tx.order.findUnique({ where: { id: orderId } });
@@ -475,10 +580,104 @@ export class OrdersService {
           actor,
           requestId,
           ...(reason ? { reasonCode: reason } : {}),
+          ...(shipment ? { shipment } : {}),
         });
         return { status: 200, body: { id: orderId, status: t.to } };
       },
     );
+    if (!res.replayed) {
+      const owner = await this.prisma.order.findUnique({
+        where: { id: orderId },
+        select: { userId: true },
+      });
+      if (owner)
+        this.live.emit({ kind: 'order', orderId, userId: owner.userId, status: res.body.status });
+    }
+    return res;
+  }
+
+  /** Staff sets the shipping fee (manual-quote policy) while the order is not yet being packed. */
+  async setShippingFee(actor: Actor, orderId: string, feeVnd: number, requestId: string) {
+    const out = await this.prisma.$transaction(async (tx) => {
+      const o = await tx.order.findUnique({ where: { id: orderId } });
+      if (!o) throw new AppError('NOT_FOUND', 'Không tìm thấy đơn hàng.');
+      if (!['PENDING_CONFIRMATION', 'CONFIRMED', 'ON_HOLD'].includes(o.status)) {
+        throw new AppError(
+          'INVALID_STATE_TRANSITION',
+          'Chỉ đặt được phí giao hàng trước khi đơn vào khâu đóng gói.',
+        );
+      }
+      const fee = BigInt(feeVnd);
+      const total = o.subtotalVnd - o.discountVnd + fee;
+      await tx.order.update({
+        where: { id: o.id },
+        data: { shippingFeeVnd: fee, totalVnd: total },
+      });
+      await tx.payment.updateMany({
+        where: { orderId: o.id, status: 'PENDING' },
+        data: { amountVnd: total },
+      });
+      await this.audit.record(
+        {
+          actorId: actor.userId,
+          actorRole: actor.role ?? null,
+          action: 'order.shipping_fee_set',
+          entityType: 'order',
+          entityId: o.id,
+          before: { shippingFeeVnd: o.shippingFeeVnd, totalVnd: o.totalVnd },
+          after: { shippingFeeVnd: fee, totalVnd: total },
+          requestId,
+          ipHash: actor.ipHash ?? null,
+        },
+        tx,
+      );
+      return { userId: o.userId, status: o.status, totalVnd: vndToJson(total) };
+    });
+    this.live.emit({ kind: 'order', orderId, userId: out.userId, status: out.status });
+    return { id: orderId, shippingFeeVnd: feeVnd, totalVnd: out.totalVnd };
+  }
+
+  /** Staff records that the courier handed over the COD cash. Only after delivery, exactly once. */
+  async collectCod(actor: Actor, orderId: string, requestId: string) {
+    const out = await this.prisma.$transaction(async (tx) => {
+      const o = await tx.order.findUnique({ where: { id: orderId } });
+      if (!o) throw new AppError('NOT_FOUND', 'Không tìm thấy đơn hàng.');
+      if (o.paymentMethod !== 'COD' || !['DELIVERED', 'COMPLETED'].includes(o.status)) {
+        throw new AppError('INVALID_STATE_TRANSITION', 'Chỉ ghi nhận thu COD cho đơn COD đã giao.');
+      }
+      const moved = await tx.payment.updateMany({
+        where: { orderId: o.id, status: 'PENDING' },
+        data: { status: 'PAID' },
+      });
+      if (moved.count < 1)
+        throw new AppError('INVALID_STATE_TRANSITION', 'Khoản COD đã được ghi nhận trước đó.');
+      await this.audit.record(
+        {
+          actorId: actor.userId,
+          actorRole: actor.role ?? null,
+          action: 'order.cod_collected',
+          entityType: 'order',
+          entityId: o.id,
+          after: { paymentStatus: 'PAID', amountVnd: o.totalVnd },
+          requestId,
+          ipHash: actor.ipHash ?? null,
+        },
+        tx,
+      );
+      await this.outbox.enqueue(
+        {
+          aggregateType: 'order',
+          aggregateId: o.id,
+          type: 'order.cod_collected',
+          payload: { orderId: o.id },
+          dedupeKey: `order.cod_collected:${o.id}`,
+        },
+        tx,
+      );
+      return { userId: o.userId, status: o.status };
+    });
+    this.live.emit({ kind: 'order', orderId, userId: out.userId, status: out.status });
+    return { id: orderId, paymentStatus: 'PAID' as const };
   }
 
   // ───────────────────────────── reads (explicit DTOs, no cost/margin) ─────────────────────────────
@@ -500,46 +699,150 @@ export class OrdersService {
     };
   }
 
+  private static readonly LIST_INCLUDE = {
+    payments: true,
+    items: {
+      orderBy: { createdAt: 'asc' as const },
+      include: {
+        variant: {
+          include: {
+            product: { include: { media: { orderBy: { sortOrder: 'asc' as const }, take: 1 } } },
+          },
+        },
+      },
+    },
+  };
+
+  private listItem(
+    o: Prisma.OrderGetPayload<{ include: typeof OrdersService.LIST_INCLUDE }>,
+  ): OrderListItemDto {
+    const preview = o.items.slice(0, 3).map((i) => ({
+      name: i.nameSnap,
+      packLabel: i.packLabelSnap,
+      quantity: i.qty,
+      imageUrl: i.variant.product.media[0]?.storageKey ?? null,
+    }));
+    return {
+      ...this.summary(o),
+      group: orderGroupOf(o.status),
+      itemCount: o.items.length,
+      preview,
+      moreItems: Math.max(0, o.items.length - preview.length),
+    };
+  }
+
+  private listWhere(
+    userId: string,
+    q: { status?: string; group?: string },
+  ): Prisma.OrderWhereInput {
+    const statuses = q.group
+      ? [...ORDER_GROUP_STATUSES[q.group as OrderGroup]]
+      : q.status
+        ? [q.status as OrderStatus]
+        : null;
+    return {
+      userId,
+      status: statuses ? { in: statuses } : { not: 'DRAFT' },
+    };
+  }
+
   async listOwn(
     userId: string,
-    q: { status?: string; page: number; limit: number },
-  ): Promise<Paginated<OrderSummaryDto>> {
-    const where: Prisma.OrderWhereInput = {
-      userId,
-      ...(q.status ? { status: q.status as OrderStatus } : {}),
-    };
+    q: { status?: string; group?: string; sort?: string; page: number; limit: number },
+  ): Promise<Paginated<OrderListItemDto>> {
+    const where = this.listWhere(userId, q);
     const [rows, total] = await this.prisma.$transaction([
       this.prisma.order.findMany({
         where,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: q.sort === 'oldest' ? 'asc' : 'desc' },
         skip: (q.page - 1) * q.limit,
         take: q.limit,
-        include: { payments: true },
+        include: OrdersService.LIST_INCLUDE,
       }),
       this.prisma.order.count({ where }),
     ]);
     return new Paginated(
-      rows.map((o) => this.summary(o)),
+      rows.map((o) => this.listItem(o)),
       q.page,
       q.limit,
       total,
     );
   }
 
+  /** Counters for the "Tổng quan đơn hàng" strip and the tabs. */
+  async summaryOwn(userId: string): Promise<Record<OrderGroup | 'all', number>> {
+    const rows = await this.prisma.order.groupBy({
+      by: ['status'],
+      where: { userId, status: { not: 'DRAFT' } },
+      _count: { _all: true },
+    });
+    const out = Object.fromEntries(ORDER_GROUPS.map((g) => [g, 0])) as Record<OrderGroup, number>;
+    let all = 0;
+    for (const r of rows) {
+      out[orderGroupOf(r.status)] += r._count._all;
+      all += r._count._all;
+    }
+    return { all, ...out };
+  }
+
+  private static readonly DETAIL_INCLUDE = {
+    payments: true,
+    events: { orderBy: { occurredAt: 'asc' as const } },
+    shipment: true,
+    items: {
+      orderBy: { createdAt: 'asc' as const },
+      include: {
+        variant: {
+          include: {
+            product: { include: { media: { orderBy: { sortOrder: 'asc' as const }, take: 1 } } },
+          },
+        },
+      },
+    },
+  };
+
   async getOwn(userId: string, id: string): Promise<OrderDetailDto> {
     const o = await this.prisma.order.findFirst({
       where: { id, userId },
-      include: { items: true, payments: true, events: { orderBy: { occurredAt: 'asc' } } },
+      include: OrdersService.DETAIL_INCLUDE,
     });
     if (!o) throw new AppError('NOT_FOUND', 'Không tìm thấy đơn hàng.'); // out-of-scope ids look identical to missing ones
     return this.detail(o, false);
   }
 
-  /** `internal` adds buyer contact (PII-gated by the caller) — never costs or margins. */
-  detail(o: OrderWithRelations, internal: boolean): OrderDetailDto {
+  /** What the customer may do right now — computed on the server, the UI just renders it. */
+  private customerActions(status: OrderStatus): OrderDetailDto['actions'] {
+    return {
+      cancel:
+        status === 'PENDING_CONFIRMATION' || status === 'ON_HOLD'
+          ? 'CANCEL'
+          : status === 'CONFIRMED'
+            ? 'REQUEST_CANCEL'
+            : null,
+      reorder: status !== 'DRAFT',
+      support: status !== 'DRAFT',
+    };
+  }
+
+  /** `internal` adds buyer contact and raw staff reasons (PII-gated by the caller) — never costs or margins. */
+  detail(
+    o: Prisma.OrderGetPayload<{ include: typeof OrdersService.DETAIL_INCLUDE }>,
+    internal: boolean,
+  ): OrderDetailDto {
+    const actorOf = (id: string | null): 'CUSTOMER' | 'STAFF' | 'SYSTEM' =>
+      id === null ? 'SYSTEM' : id === o.userId ? 'CUSTOMER' : 'STAFF';
+    const safeReason = (code: string | null): string | null =>
+      code !== null && (internal || PUBLIC_CANCEL_REASONS.includes(code)) ? code : null;
+    const cancelEvent = [...o.events]
+      .reverse()
+      .find((e) => e.toStatus === 'CANCELLED' || e.toStatus === 'CANCEL_REQUESTED');
+    const payment = o.payments[0];
     return {
       ...this.summary(o),
+      group: orderGroupOf(o.status),
       shipAddress: o.shipAddressSnapshot,
+      subtotalVnd: vndToJson(o.subtotalVnd),
+      discountVnd: vndToJson(o.discountVnd),
       items: o.items.map((i) => ({
         id: i.id,
         sku: i.skuSnap,
@@ -548,10 +851,73 @@ export class OrdersService {
         quantity: i.qty,
         unitPriceVnd: vndToJson(i.unitPriceVnd),
         lineTotalVnd: vndToJson(i.lineTotalVnd),
+        imageUrl: i.variant.product.media[0]?.storageKey ?? null,
       })),
-      timeline: o.events.map((e) => ({ from: e.fromStatus, to: e.toStatus, at: e.occurredAt })),
+      payment: {
+        method: o.paymentMethod,
+        status: payment?.status ?? 'PENDING',
+        updatedAt: payment?.updatedAt ?? o.createdAt,
+      },
+      shipment: o.shipment
+        ? {
+            carrier: o.shipment.carrier,
+            trackingCode: o.shipment.trackingCode,
+            shippedAt: o.shipment.shippedAt,
+            deliveredAt: o.shipment.deliveredAt,
+          }
+        : null,
+      cancel: cancelEvent
+        ? {
+            status: cancelEvent.toStatus as 'CANCELLED' | 'CANCEL_REQUESTED',
+            by: actorOf(cancelEvent.actorId),
+            reasonCode: safeReason(cancelEvent.reasonCode),
+            at: cancelEvent.occurredAt,
+          }
+        : null,
+      timeline: o.events.map((e) => ({
+        from: e.fromStatus,
+        to: e.toStatus,
+        at: e.occurredAt,
+        by: actorOf(e.actorId),
+        reasonCode:
+          e.toStatus === 'CANCELLED' || e.toStatus === 'CANCEL_REQUESTED'
+            ? safeReason(e.reasonCode)
+            : null,
+      })),
+      actions: this.customerActions(o.status),
       ...(internal ? { contact: o.contactSnapshot } : {}),
     };
+  }
+
+  /** "Mua lại": put the order lines back into the cart (current price/stock rules apply). Idempotent per key. */
+  async reorder(actor: Actor, orderId: string, idempotencyKey: string) {
+    return this.idempotency.execute(
+      {
+        actorScope: actor.userId,
+        scope: 'orders.reorder',
+        key: idempotencyKey,
+        requestHash: canonicalHash({ orderId }),
+      },
+      async () => {
+        const o = await this.prisma.order.findFirst({
+          where: { id: orderId, userId: actor.userId },
+          include: { items: true },
+        });
+        if (!o) throw new AppError('NOT_FOUND', 'Không tìm thấy đơn hàng.');
+        let added = 0;
+        const skipped: { name: string; message: string }[] = [];
+        for (const i of o.items) {
+          try {
+            await this.cart.add(actor.userId, i.variantId, i.qty);
+            added++;
+          } catch (e) {
+            if (e instanceof AppError) skipped.push({ name: i.nameSnap, message: e.message });
+            else throw e;
+          }
+        }
+        return { status: 200, body: { added, skipped } };
+      },
+    );
   }
 
   async adminList(q: {
@@ -581,12 +947,7 @@ export class OrdersService {
   async adminGet(id: string, opts: { pii: boolean; margin: boolean }): Promise<OrderDetailDto> {
     const o = await this.prisma.order.findUnique({
       where: { id },
-      include: {
-        items: true,
-        payments: true,
-        events: { orderBy: { occurredAt: 'asc' } },
-        financial: true,
-      },
+      include: { ...OrdersService.DETAIL_INCLUDE, financial: true },
     });
     if (!o) throw new AppError('NOT_FOUND', 'Không tìm thấy đơn hàng.');
     const base = this.detail(o, true);
