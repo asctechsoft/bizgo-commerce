@@ -8,6 +8,7 @@ const ITEMS = [
   { href: '/', key: 'home', icon: '🏠' },
   { href: '/danh-muc', key: 'catalog', icon: '🗂️' },
   { href: '/danh-muc#tim-kiem', key: 'search', icon: '🔍' },
+  { href: '/gio-hang', key: 'cart', icon: '🛒' },
   { href: '/dang-nhap', key: 'account', icon: '👤' },
 ] as const;
 

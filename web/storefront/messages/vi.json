@@ -3,7 +3,10 @@
     "title": "BizGo • Nguyên liệu nấu chè & đồ ăn vặt",
     "description": "BizGo — nguyên liệu nấu chè và đồ ăn vặt, nguồn hàng từ xưởng. Sản phẩm chỉ được mở bán sau khi xác minh quy cách và giá."
   },
-  "brand": { "name": "BizGo", "tagline": "Nguyên liệu nấu chè & đồ ăn vặt" },
+  "brand": {
+    "name": "BizGo",
+    "tagline": "Nguyên liệu nấu chè & đồ ăn vặt"
+  },
   "common": {
     "skipToContent": "Bỏ qua và tới nội dung chính",
     "retry": "Thử lại",
@@ -21,14 +24,16 @@
     "account": "Tài khoản",
     "menu": "Danh mục",
     "mainNav": "Điều hướng chính",
-    "allCategories": "Tất cả danh mục"
+    "allCategories": "Tất cả danh mục",
+    "cart": "Giỏ hàng"
   },
   "mobileBar": {
     "home": "Trang chủ",
     "catalog": "Danh mục",
     "search": "Tìm kiếm",
     "account": "Tài khoản",
-    "label": "Điều hướng nhanh"
+    "label": "Điều hướng nhanh",
+    "cart": "Giỏ hàng"
   },
   "hero": {
     "eyebrow": "Nguồn hàng từ xưởng • BizGo",
@@ -51,13 +56,21 @@
     "carousel": "Banner giới thiệu"
   },
   "benefits": [
-    { "icon": "🏭", "title": "Nguồn hàng từ xưởng", "text": "Quy trình rõ ràng, minh bạch" },
+    {
+      "icon": "🏭",
+      "title": "Nguồn hàng từ xưởng",
+      "text": "Quy trình rõ ràng, minh bạch"
+    },
     {
       "icon": "🚚",
       "title": "Vận chuyển theo điều kiện bảo quản",
       "text": "Chỉ giao khi đã xác nhận vùng và loại hàng"
     },
-    { "icon": "🧋", "title": "Nguyên liệu đa dạng", "text": "8 nhóm hàng theo danh mục" },
+    {
+      "icon": "🧋",
+      "title": "Nguyên liệu đa dạng",
+      "text": "8 nhóm hàng theo danh mục"
+    },
     {
       "icon": "✅",
       "title": "Chỉ bán hàng đã xác minh",
@@ -79,7 +92,11 @@
     "allCategories": "Tất cả",
     "searchLabel": "Tìm trong danh mục",
     "sortLabel": "Sắp xếp",
-    "sort": { "name": "Tên A → Z", "-name": "Tên Z → A", "newest": "Mới nhất" },
+    "sort": {
+      "name": "Tên A → Z",
+      "-name": "Tên Z → A",
+      "newest": "Mới nhất"
+    },
     "apply": "Áp dụng",
     "resultCount": "{count, plural, =0 {Không có sản phẩm} other {# sản phẩm}}",
     "emptyTitle": "Chưa có sản phẩm phù hợp",
@@ -98,7 +115,16 @@
     "notForSale": "Chưa mở bán",
     "notForSaleText": "Sản phẩm này chưa có quy cách (SKU), giá và tồn kho đã xác minh nên chưa thể đặt mua.",
     "illustrativeNotice": "Ảnh chỉ mang tính minh họa, chưa phải ảnh bao bì thực tế.",
-    "category": "Nhóm hàng"
+    "category": "Nhóm hàng",
+    "chooseVariant": "Chọn quy cách",
+    "quantity": "Số lượng",
+    "unitPrice": "{price} / {pack}",
+    "addToCart": "Thêm vào giỏ",
+    "added": "Đã thêm vào giỏ hàng.",
+    "viewCart": "Xem giỏ hàng",
+    "outOfStock": "Hết hàng",
+    "loginToBuy": "Vui lòng đăng nhập để thêm vào giỏ hàng.",
+    "pricesEstimate": "Giá hiển thị chỉ để tham khảo; tổng tiền cuối cùng do hệ thống tính khi thanh toán."
   },
   "errors": {
     "title": "Không tải được dữ liệu",
@@ -116,7 +142,22 @@
       "OTP_LOCKED": "Bạn đã nhập sai quá số lần cho phép. Hãy yêu cầu mã mới.",
       "OTP_DELIVERY_NOT_CONFIGURED": "Chức năng đăng ký/xác thực tạm thời chưa khả dụng. Vui lòng liên hệ BizGo.",
       "EMAIL_OR_PHONE_TAKEN": "Email hoặc số điện thoại đã được đăng ký.",
-      "VALIDATION_ERROR": "Vui lòng kiểm tra lại thông tin đã nhập."
+      "VALIDATION_ERROR": "Vui lòng kiểm tra lại thông tin đã nhập.",
+      "UNAUTHENTICATED": "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.",
+      "ADDRESS_REQUIRED": "Vui lòng chọn địa chỉ giao hàng.",
+      "DELIVERY_UNSUPPORTED": "BizGo chưa giao hàng tới khu vực này hoặc cho loại hàng này.",
+      "IDEMPOTENCY_CONFLICT": "Yêu cầu đặt hàng bị trùng khóa. Vui lòng thử lại.",
+      "IDEMPOTENCY_IN_PROGRESS": "Đơn hàng đang được xử lý, vui lòng chờ giây lát.",
+      "INSUFFICIENT_STOCK": "Không đủ tồn kho cho số lượng đã chọn.",
+      "OUT_OF_STOCK": "Sản phẩm đã hết hàng.",
+      "PRICE_CHANGED": "Giá đã thay đổi. Vui lòng kiểm tra lại.",
+      "PRICE_NOT_SET": "Sản phẩm này chưa có giá.",
+      "QUANTITY_INVALID": "Số lượng không hợp lệ.",
+      "QUOTE_EXPIRED": "Báo giá đã hết hạn. Hệ thống đã tính lại.",
+      "SHIPPING_FEE_UNDETERMINED": "Phí giao hàng chưa được xác định.",
+      "TAX_POLICY_UNDETERMINED": "Chính sách thuế chưa được xác định.",
+      "INVALID_STATE_TRANSITION": "Đơn ở trạng thái này không thể thực hiện thao tác đó.",
+      "NOT_FOUND": "Không tìm thấy dữ liệu."
     }
   },
   "auth": {
@@ -142,7 +183,7 @@
     "verifiedTitle": "Xác thực thành công",
     "verifiedText": "Tài khoản đã được kích hoạt. Bạn có thể đăng nhập.",
     "loggedInTitle": "Đăng nhập thành công",
-    "loggedInText": "Xin chào {name}. Trang tài khoản và giỏ hàng sẽ có trong các giai đoạn tiếp theo.",
+    "loggedInText": "Xin chào {name}. Bạn có thể xem giỏ hàng và đơn hàng của mình.",
     "logout": "Đăng xuất",
     "required": "Trường này là bắt buộc.",
     "termsRequired": "Bạn cần đồng ý để tiếp tục.",
@@ -152,5 +193,103 @@
     "about": "BizGo là kênh bán hàng trực tuyến; hàng được cung ứng từ xưởng đối tác. Thông tin pháp nhân bán hàng, chính sách và liên hệ sẽ được công bố sau khi được phê duyệt.",
     "legalPending": "Thông tin người bán đang được hoàn thiện.",
     "rights": "© {year} BizGo"
+  },
+  "cart": {
+    "title": "Giỏ hàng",
+    "empty": "Giỏ hàng trống",
+    "emptyText": "Bạn chưa thêm sản phẩm nào.",
+    "continue": "Tiếp tục xem sản phẩm",
+    "item": "Sản phẩm",
+    "qty": "Số lượng",
+    "remove": "Xóa",
+    "unavailable": "Hiện không thể đặt",
+    "priceNotSet": "Chưa có giá",
+    "estimateNote": "Giá chỉ là ước tính. Tổng tiền và phí giao hàng được xác nhận ở bước thanh toán.",
+    "checkout": "Tiến hành thanh toán",
+    "loginTitle": "Đăng nhập để xem giỏ hàng",
+    "loginText": "Giỏ hàng gắn với tài khoản của bạn.",
+    "loginCta": "Đăng nhập"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "address": "Địa chỉ nhận hàng",
+    "noAddress": "Bạn chưa có địa chỉ giao hàng.",
+    "addAddress": "Thêm địa chỉ",
+    "manageAddresses": "Quản lý địa chỉ",
+    "summary": "Tóm tắt đơn hàng",
+    "subtotal": "Tạm tính",
+    "shipping": "Phí giao hàng",
+    "shippingManual": "BizGo sẽ báo phí sau khi xác nhận đơn",
+    "total": "Tổng cộng",
+    "totalUndetermined": "Chưa xác định",
+    "payment": "Phương thức thanh toán",
+    "cod": "Thanh toán khi nhận hàng (COD)",
+    "codNote": "Đơn được tạo ở trạng thái chờ xác nhận và chưa thanh toán. BizGo xác nhận lại với bạn.",
+    "blocked": "Chưa thể đặt hàng",
+    "place": "Đặt hàng",
+    "placing": "Đang đặt hàng…",
+    "priceChanged": "Giá hoặc tồn kho đã thay đổi. Vui lòng kiểm tra lại tóm tắt mới rồi đặt hàng lần nữa.",
+    "quoteLoading": "Đang tính tổng tiền…",
+    "emptyCart": "Giỏ hàng trống, không có gì để thanh toán."
+  },
+  "address": {
+    "title": "Địa chỉ giao hàng",
+    "receiverName": "Người nhận",
+    "phone": "Số điện thoại",
+    "province": "Tỉnh/Thành phố",
+    "district": "Quận/Huyện",
+    "ward": "Phường/Xã",
+    "detail": "Số nhà, đường",
+    "isDefault": "Mặc định",
+    "save": "Lưu địa chỉ",
+    "delete": "Xóa",
+    "empty": "Chưa có địa chỉ",
+    "required": "Trường này là bắt buộc."
+  },
+  "orders": {
+    "title": "Đơn hàng của tôi",
+    "empty": "Bạn chưa có đơn hàng",
+    "orderNumber": "Mã đơn",
+    "date": "Ngày đặt",
+    "status": "Trạng thái",
+    "payment": "Thanh toán",
+    "total": "Tổng tiền",
+    "details": "Chi tiết",
+    "items": "Sản phẩm",
+    "shipTo": "Giao tới",
+    "timeline": "Tiến trình",
+    "cancel": "Hủy đơn",
+    "cancelConfirm": "Xác nhận hủy đơn này?",
+    "cancelled": "Đơn đã được hủy.",
+    "testOrder": "Đơn thử nghiệm",
+    "successTitle": "Đặt hàng thành công",
+    "successText": "Đơn {number} đã được ghi nhận và đang chờ BizGo xác nhận. Bạn chưa thanh toán gì.",
+    "viewOrders": "Xem đơn hàng",
+    "statusLabels": {
+      "PENDING_CONFIRMATION": "Chờ xác nhận",
+      "CONFIRMED": "Đã xác nhận",
+      "PACKING": "Đang đóng gói",
+      "READY_TO_SHIP": "Sẵn sàng giao",
+      "PARTIALLY_SHIPPED": "Giao một phần",
+      "SHIPPED": "Đang giao",
+      "DELIVERED": "Đã giao",
+      "COMPLETED": "Hoàn tất",
+      "ON_HOLD": "Tạm giữ",
+      "CANCEL_REQUESTED": "Yêu cầu hủy",
+      "CANCELLED": "Đã hủy",
+      "RETURN_REQUESTED": "Yêu cầu trả hàng",
+      "RETURNED": "Đã trả hàng",
+      "FAILED": "Thất bại",
+      "DRAFT": "Nháp"
+    },
+    "paymentLabels": {
+      "UNPAID": "Chưa thanh toán",
+      "PAID": "Đã thanh toán",
+      "COD_PENDING": "Thanh toán khi nhận hàng"
+    },
+    "paymentMethod": {
+      "COD": "COD",
+      "BANK_TRANSFER": "Chuyển khoản"
+    }
   }
 }

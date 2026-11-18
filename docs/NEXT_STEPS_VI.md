@@ -24,12 +24,18 @@ Tạo OWNER đầu tiên: `corepack pnpm owner:bootstrap` (nhập email + mật 
 - `packages/contracts` đã có sẵn client cho giỏ hàng, báo giá, đặt hàng (`placeOrder` nhận `Idempotency-Key`), đơn của tôi, địa chỉ.
 - `corepack pnpm --filter @bizgo/db dev:fixtures` nạp 3 SKU **TEST** (giá/tồn tùy ý) và mở checkout cho Hà Nội/Hồ Chí Minh (COD, phí ship báo sau) để bấm thử shop. Chạy sau `dev:db`. Bị từ chối khi `APP_ENV=production`.
 
+## Đã làm thêm (19/11/2026, phiên 2)
+- **Web khách**: chọn quy cách + thêm giỏ ở `/san-pham/[slug]`, `/gio-hang`, `/thanh-toan` (chọn/thêm địa chỉ, báo giá từ API, `Idempotency-Key` tạo một lần/lần thử, xử lý `PRICE_CHANGED`/`QUOTE_EXPIRED`, chỉ báo thành công khi API trả 201), `/dat-hang-thanh-cong`, `/tai-khoan/don-hang` (+ chi tiết, hủy), `/tai-khoan/dia-chi`. Đăng nhập hỗ trợ `?next=` (chỉ đường dẫn nội bộ).
+- **Admin**: `/admin/orders` (+ chi tiết: xác nhận/giữ/tiếp tục/hủy, ẩn PII/lãi nếu thiếu quyền), `/admin/inventory` (xem tồn, tạo kho, điều chỉnh tồn), panel SKU trên trang sản phẩm (tạo SKU nháp, kiểm tra điều kiện mở bán, đặt giá/giá vốn, mở bán; thao tác cần MFA mới sẽ hiện ô nhập mã).
+- Đã chạy thật: DB nhúng + API + web; đăng ký → đăng nhập → giỏ → báo giá → đặt đơn COD (replay cùng key trả cùng đơn) → hủy; và đặt đơn qua giao diện trình duyệt. **Chưa** có Playwright E2E tự động, chưa kiểm tra 9 độ rộng + axe, chưa bấm thử các màn admin bằng trình duyệt (chỉ typecheck/lint/build).
+- Máy này: corepack lỗi chữ ký → dùng `pnpm --config.manage-package-manager-versions=false …` (pnpm 10 toàn cục), Node 20 (dự án yêu cầu ≥22, vẫn chạy được). pnpm 10 bỏ qua script build → chạy `npx prisma generate --schema prisma/schema.prisma` rồi build `@bizgo/db`.
+- Khi thử bằng curl trên Windows, tiếng Việt bị hỏng mã hóa → dùng Node `fetch` hoặc giao diện.
+
 ## Việc tiếp theo (theo thứ tự)
-1. **Web khách (Phase 2)**: chọn quy cách ở `/san-pham/[slug]` + thêm vào giỏ → `/gio-hang` → `/thanh-toan` (chọn địa chỉ, gọi `checkout/quote`, gửi `POST /orders` kèm `Idempotency-Key` tạo 1 lần/lần thử, xử lý `PRICE_CHANGED`, chỉ báo thành công khi API trả 201) → `/dat-hang-thanh-cong` → `/tai-khoan/don-hang` (+ chi tiết, hủy) và `/tai-khoan/dia-chi`. Cần mở rộng `packages/contracts` (cart, quote, orders, addresses) và thêm text vào `messages/vi.json`.
-2. **Admin (Phase 2)**: màn hình đơn hàng (danh sách, chi tiết, xác nhận/giữ/hủy), biến thể SKU + kiểm tra điều kiện mở bán, giá/giá vốn, kho + điều chỉnh tồn. API đã có sẵn (`/v1/admin/...`, xem `docs/api/openapi.json`).
-3. Playwright E2E + kiểm tra responsive 9 độ rộng + axe (chưa chạy lần nào).
-4. Giỏ khách vãng lai + tra cứu đơn có xác minh (cần chủ sở hữu trả lời **D15, D16**); worker hết hạn giữ tồn (cần **D06**).
-5. Sau đó Phase 3 (xưởng: nhận phiếu, soạn, đóng gói, bàn giao) — xem `docs/phase0/04_REFINED_TASKS.md`.
+1. Playwright E2E (đăng nhập → đặt hàng → admin xác nhận), responsive 320–1920, axe.
+2. Admin: danh sách kho (hiện phải nhập UUID), sửa/lọc nâng cao; bấm thử các màn admin với tài khoản OWNER + MFA.
+3. Giỏ khách vãng lai + tra cứu đơn có xác minh (cần chủ sở hữu trả lời **D15, D16**); worker hết hạn giữ tồn (cần **D06**).
+4. Sau đó Phase 3 (xưởng: nhận phiếu, soạn, đóng gói, bàn giao) — xem `docs/phase0/04_REFINED_TASKS.md`.
 
 ## Còn chặn bởi quyết định kinh doanh (không tự bịa)
 D02 (quy cách SKU thật), D04 (giá), D05 (phí/vùng giao), D14 (VAT), D17 (đơn tối thiểu), D15 (kênh gửi OTP), D16 (mua vãng lai), D06 (chuyển khoản/COD). Danh sách đầy đủ: `docs/decisions/DECISION_LOG.md`.

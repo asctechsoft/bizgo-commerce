@@ -34,6 +34,13 @@ export function errorKey(e: unknown): { key: string; requestId?: string; status?
       'FORBIDDEN',
       'MFA_REQUIRED',
       'VALIDATION_ERROR',
+      'STEP_UP_REQUIRED',
+      'SKU_NOT_READY',
+      'INVALID_STATE_TRANSITION',
+      'NOT_FOUND',
+      'INSUFFICIENT_STOCK',
+      'IDEMPOTENCY_CONFLICT',
+      'IDEMPOTENCY_IN_PROGRESS',
     ];
     return {
       key: known.includes(e.code) ? `errors.codes.${e.code}` : 'errors.generic',
@@ -42,4 +49,9 @@ export function errorKey(e: unknown): { key: string; requestId?: string; status?
     };
   }
   return { key: 'errors.generic' };
+}
+
+/** One key per user action; reused only for retries of the same action. */
+export function newKey(): string {
+  return globalThis.crypto.randomUUID();
 }

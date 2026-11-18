@@ -72,3 +72,38 @@ describe('api client', () => {
     expect(calls[1]?.credentials).toBe('include');
   });
 });
+
+describe('admin commerce client', () => {
+  it('sends the Idempotency-Key and reason for order actions', async () => {
+    const fetchImpl = vi.fn(async () =>
+      json(200, { data: { id: 'o1', status: 'CONFIRMED' }, meta: { requestId: 'r' } }),
+    ) as unknown as typeof fetch;
+    const api = createApiClient({ baseUrl: 'http://api', fetchImpl, realm: 'ADMIN' });
+    await api.admin.orders.act('o1', 'confirm', 'key-1', 'OK');
+    expect(fetchImpl).toHaveBeenCalledWith(
+      'http://api/v1/admin/orders/o1/confirm',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ reason: 'OK' }),
+        headers: expect.objectContaining({ 'Idempotency-Key': 'key-1', 'X-Realm': 'ADMIN' }),
+      }),
+    );
+  });
+
+  it('adjusts inventory with an idempotency key', async () => {
+    const fetchImpl = vi.fn(async () =>
+      json(200, { data: { onHand: 1, reserved: 0, available: 1 }, meta: { requestId: 'r' } }),
+    ) as unknown as typeof fetch;
+    const api = createApiClient({ baseUrl: 'http://api', fetchImpl });
+    await api.admin.inventory.adjust(
+      { warehouseId: 'w', variantId: 'v', delta: 1, reasonCode: 'COUNT' },
+      'k2',
+    );
+    expect(fetchImpl).toHaveBeenCalledWith(
+      'http://api/v1/admin/inventory/adjustments',
+      expect.objectContaining({
+        headers: expect.objectContaining({ 'Idempotency-Key': 'k2' }),
+      }),
+    );
+  });
+});

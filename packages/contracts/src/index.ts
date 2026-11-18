@@ -244,6 +244,69 @@ export interface OrderDetail extends OrderSummary {
   timeline: { from: OrderStatus | null; to: OrderStatus; at: string }[];
 }
 
+export interface AdminVariant {
+  id: string;
+  productId: string;
+  sku: string;
+  packLabel: string;
+  sellableUnit: string;
+  netWeightG: number | null;
+  storageClass: string | null;
+  minQty: number;
+  maxQty: number | null;
+  quantityStep: number;
+  status: string;
+  isTest: boolean;
+}
+
+export interface VariantCreateInput {
+  productId: string;
+  sku: string;
+  packLabel: string;
+  sellableUnit: string;
+  netWeightG?: number;
+  storageClass?: 'DRY' | 'AMBIENT' | 'CHILLED' | 'FROZEN' | 'FRAGILE';
+  minQty?: number;
+  maxQty?: number;
+  quantityStep?: number;
+  manufacturer?: string;
+  responsibleEntity?: string;
+  shelfLifeDays?: number;
+}
+
+export interface GateItem {
+  item: string;
+  ok: boolean;
+  message: string;
+}
+
+export interface InventoryRow {
+  warehouseId: string;
+  warehouseCode: string;
+  variantId: string;
+  sku: string;
+  onHand: number;
+  reserved: number;
+  quarantined: number;
+  available: number;
+}
+
+export interface AdminOrderSummary extends OrderSummary {
+  userId: string;
+}
+
+export interface AdminOrderDetail extends OrderDetail {
+  contact?: { name?: string; phone?: string | null };
+  /** Present only when the caller holds margin:read. */
+  financial?: {
+    revenueNetVnd: number;
+    costSnapshotVnd: number | null;
+    expectedMarginVnd: number | null;
+  };
+}
+
+export type AdminOrderAction = 'confirm' | 'hold' | 'resume' | 'cancel';
+
 export interface ClientOptions {
   baseUrl: string;
   fetchImpl?: typeof fetch;
@@ -434,6 +497,70 @@ export function createApiClient(opts: ClientOptions) {
         ).data,
     },
     admin: {
+      orders: {
+        list: async (q: { status?: string; page?: number; limit?: number } = {}) =>
+          page(await request<AdminOrderSummary[]>('GET', `/v1/admin/orders${buildQuery(q)}`)),
+        get: async (id: string) =>
+          (await request<AdminOrderDetail>('GET', `/v1/admin/orders/${id}`)).data,
+        act: async (
+          id: string,
+          action: AdminOrderAction,
+          idempotencyKey: string,
+          reason?: string,
+        ) =>
+          (
+            await request<{ id: string; status: OrderStatus }>(
+              'POST',
+              `/v1/admin/orders/${id}/${action}`,
+              reason ? { reason } : {},
+              { 'Idempotency-Key': idempotencyKey },
+            )
+          ).data,
+      },
+      variants: {
+        list: async (productId: string) =>
+          (await request<AdminVariant[]>('GET', `/v1/admin/products/${productId}/variants`)).data,
+        create: async (b: VariantCreateInput) =>
+          (await request<AdminVariant>('POST', '/v1/admin/variants', b)).data,
+        readiness: async (id: string) =>
+          (
+            await request<{ ready: boolean; items: GateItem[] }>(
+              'GET',
+              `/v1/admin/variants/${id}/readiness`,
+            )
+          ).data,
+        publish: async (id: string) =>
+          (await request<AdminVariant>('POST', `/v1/admin/variants/${id}/publish`)).data,
+        setPrice: async (b: { variantId: string; unitPriceVnd: number; minQty?: number }) =>
+          (await request<unknown>('POST', '/v1/admin/prices', b)).data,
+        setCost: async (b: { variantId: string; costVnd: number }) =>
+          (await request<unknown>('POST', '/v1/admin/costs', b)).data,
+      },
+      inventory: {
+        list: async (variantId?: string) =>
+          (await request<InventoryRow[]>('GET', `/v1/admin/inventory${buildQuery({ variantId })}`))
+            .data,
+        createWarehouse: async (b: { code: string; name: string }) =>
+          (
+            await request<{ id: string; code: string; name: string }>(
+              'POST',
+              '/v1/admin/warehouses',
+              b,
+            )
+          ).data,
+        adjust: async (
+          b: { warehouseId: string; variantId: string; delta: number; reasonCode: string },
+          idempotencyKey: string,
+        ) =>
+          (
+            await request<{ onHand: number; reserved: number; available: number }>(
+              'POST',
+              '/v1/admin/inventory/adjustments',
+              b,
+              { 'Idempotency-Key': idempotencyKey },
+            )
+          ).data,
+      },
       categories: async () => (await request<AdminCategory[]>('GET', '/v1/admin/categories')).data,
       products: async (q: {
         category?: string;

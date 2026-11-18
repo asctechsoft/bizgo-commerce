@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { ApiError, type PublicProductDetail } from '@bizgo/contracts';
+import { AddToCart } from '@/components/AddToCart';
 import { serverApi } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
@@ -36,6 +37,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await load(slug);
   const t = await getTranslations('product');
   const c = await getTranslations('common');
+  const buyable = product.variants.filter((v) => v.unitPriceVnd !== null);
   return (
     <div className="pt-6">
       <nav aria-label="breadcrumb" className="text-xs text-muted">
@@ -83,11 +85,22 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {t('category')}: {product.category.name}
           </p>
           {product.note ? <p className="mt-3 text-[13px]">{product.note}</p> : null}
-          <p className="mt-5 text-lg font-extrabold text-orange-deep">{t('priceUnavailable')}</p>
-          <div role="note" className="mt-4 rounded-card border border-[#f3d4b6] bg-[#fff4e5] p-4">
-            <strong className="block text-[14px]">{t('notForSale')}</strong>
-            <p className="mb-0 mt-1 text-[13px]">{t('notForSaleText')}</p>
-          </div>
+          {buyable.length > 0 ? (
+            <AddToCart variants={buyable} slug={product.slug} />
+          ) : (
+            <>
+              <p className="mt-5 text-lg font-extrabold text-orange-deep">
+                {t('priceUnavailable')}
+              </p>
+              <div
+                role="note"
+                className="mt-4 rounded-card border border-[#f3d4b6] bg-[#fff4e5] p-4"
+              >
+                <strong className="block text-[14px]">{t('notForSale')}</strong>
+                <p className="mb-0 mt-1 text-[13px]">{t('notForSaleText')}</p>
+              </div>
+            </>
+          )}
           {product.image?.isIllustrative ? (
             <p className="mt-4 text-xs text-muted">{t('illustrativeNotice')}</p>
           ) : null}

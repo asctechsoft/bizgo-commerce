@@ -10,6 +10,8 @@ import { useBackoffice } from './AuthGate';
 const NAV = [
   { href: '/admin', key: 'dashboard', exact: true },
   { href: '/admin/catalog/products', key: 'products' },
+  { href: '/admin/orders', key: 'orders' },
+  { href: '/admin/inventory', key: 'inventory' },
 ] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {

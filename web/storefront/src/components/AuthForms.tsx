@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button, ErrorState, Field, TextInput } from '@bizgo/ui-web';
@@ -31,6 +32,7 @@ function FormShell({ title, children }: { title: string; children: React.ReactNo
 
 export function LoginForm() {
   const t = useTranslations('auth');
+  const router = useRouter();
   const err = useApiError();
   const [busy, setBusy] = useState(false);
   const [fields, setFields] = useState<{ identity?: string; password?: string }>({});
@@ -51,6 +53,9 @@ export function LoginForm() {
     try {
       const r = await browserApi().auth.login({ identity, password, realm: 'CUSTOMER' });
       setDone(r.user.displayName);
+      // only same-site relative paths are honoured (no open redirect)
+      const next = new URLSearchParams(window.location.search).get('next');
+      if (next && /^\/(?!\/)/.test(next)) router.push(next);
     } catch (e2) {
       err.set(e2);
     } finally {

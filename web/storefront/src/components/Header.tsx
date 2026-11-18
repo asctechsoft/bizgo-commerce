@@ -40,6 +40,15 @@ export async function Header() {
           className="ml-auto hidden shrink-0 items-center gap-2 sm:flex"
         >
           <Link
+            href="/gio-hang"
+            className="inline-flex min-h-tap items-center rounded-control px-3 text-[13px] font-semibold text-ink hover:bg-green-mint hover:text-green"
+          >
+            <span aria-hidden="true" className="mr-1.5 text-lg">
+              🛒
+            </span>
+            {t('cart')}
+          </Link>
+          <Link
             href="/dang-nhap"
             className="inline-flex min-h-tap items-center rounded-control px-3 text-[13px] font-semibold text-ink hover:bg-green-mint hover:text-green"
           >

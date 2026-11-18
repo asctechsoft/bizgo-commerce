@@ -8,6 +8,7 @@ import type { AdminProduct } from '@bizgo/contracts';
 import { Badge, Button, ErrorState, Skeleton } from '@bizgo/ui-web';
 import { AdminShell } from '@/components/AdminShell';
 import { AuthGate, useBackoffice } from '@/components/AuthGate';
+import { VariantsPanel } from '@/components/VariantsPanel';
 import { errorKey } from '@/lib/api';
 
 function Detail() {
@@ -89,6 +90,7 @@ function Detail() {
             </h2>
             <p className="mb-0 mt-1 text-[13px]">{t('products.gateText')}</p>
           </section>
+          <VariantsPanel productId={p.id} />
         </>
       )}
     </AdminShell>
