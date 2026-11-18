@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "BizGo • Nguyên liệu nấu chè & đồ ăn vặt",
+    "description": "BizGo — nguyên liệu nấu chè và đồ ăn vặt, nguồn hàng từ xưởng. Sản phẩm chỉ được mở bán sau khi xác minh quy cách và giá."
+  },
+  "brand": { "name": "BizGo", "tagline": "Nguyên liệu nấu chè & đồ ăn vặt" },
+  "common": {
+    "skipToContent": "Bỏ qua và tới nội dung chính",
+    "retry": "Thử lại",
+    "backHome": "Về trang chủ",
+    "loading": "Đang tải…",
+    "illustrativeImage": "Ảnh minh họa",
+    "noImage": "Chưa có ảnh",
+    "requestRef": "Mã tham chiếu: {id}"
+  },
+  "header": {
+    "searchLabel": "Tìm kiếm nguyên liệu",
+    "searchPlaceholder": "Tìm cùi bưởi, trân châu, bột nếp…",
+    "searchButton": "Tìm",
+    "login": "Đăng nhập",
+    "account": "Tài khoản",
+    "menu": "Danh mục",
+    "mainNav": "Điều hướng chính",
+    "allCategories": "Tất cả danh mục"
+  },
+  "mobileBar": {
+    "home": "Trang chủ",
+    "catalog": "Danh mục",
+    "search": "Tìm kiếm",
+    "account": "Tài khoản",
+    "label": "Điều hướng nhanh"
+  },
+  "hero": {
+    "eyebrow": "Nguồn hàng từ xưởng • BizGo",
+    "slides": [
+      {
+        "title": "Nguyên liệu nấu chè, mua dễ dàng",
+        "text": "Khám phá các nhóm nguyên liệu và theo dõi khi sản phẩm được mở bán."
+      },
+      {
+        "title": "Mở quán thuận tiện với nguồn nguyên liệu đa dạng",
+        "text": "8 nhóm hàng cho quán chè, tiệm đồ uống và gia đình."
+      },
+      {
+        "title": "Trân châu & topping cho mọi công thức",
+        "text": "Tìm kiếm theo từng nhóm sản phẩm, minh bạch về quy cách trước khi bán."
+      }
+    ],
+    "cta": "Khám phá sản phẩm",
+    "bannerLabel": "Banner {n}",
+    "carousel": "Banner giới thiệu"
+  },
+  "benefits": [
+    { "icon": "🏭", "title": "Nguồn hàng từ xưởng", "text": "Quy trình rõ ràng, minh bạch" },
+    {
+      "icon": "🚚",
+      "title": "Vận chuyển theo điều kiện bảo quản",
+      "text": "Chỉ giao khi đã xác nhận vùng và loại hàng"
+    },
+    { "icon": "🧋", "title": "Nguyên liệu đa dạng", "text": "8 nhóm hàng theo danh mục" },
+    {
+      "icon": "✅",
+      "title": "Chỉ bán hàng đã xác minh",
+      "text": "Quy cách, giá, tồn kho được kiểm duyệt"
+    }
+  ],
+  "home": {
+    "categoriesTitle": "Danh mục nổi bật",
+    "categoriesSubtitle": "Khám phá nguyên liệu theo nhu cầu của bạn",
+    "viewAll": "Xem tất cả →",
+    "productsTitle": "Sản phẩm đang mở bán",
+    "productsSubtitle": "Chỉ hiển thị sản phẩm đã được BizGo xác minh",
+    "emptyTitle": "Sản phẩm đầu tiên sắp được mở bán",
+    "emptyText": "BizGo đang xác minh quy cách, giá và tồn kho cùng xưởng. Các mặt hàng chỉ xuất hiện ở đây khi đã sẵn sàng để bán.",
+    "categoryCount": "{count, plural, =0 {Sắp mở bán} other {# mặt hàng}}"
+  },
+  "catalog": {
+    "title": "Sản phẩm",
+    "allCategories": "Tất cả",
+    "searchLabel": "Tìm trong danh mục",
+    "sortLabel": "Sắp xếp",
+    "sort": { "name": "Tên A → Z", "-name": "Tên Z → A", "newest": "Mới nhất" },
+    "apply": "Áp dụng",
+    "resultCount": "{count, plural, =0 {Không có sản phẩm} other {# sản phẩm}}",
+    "emptyTitle": "Chưa có sản phẩm phù hợp",
+    "emptyText": "Chưa có mặt hàng nào được mở bán trong mục này. Vui lòng quay lại sau hoặc thử từ khóa khác.",
+    "emptySearchTitle": "Không tìm thấy kết quả",
+    "emptySearchText": "Không có sản phẩm nào khớp với \"{query}\". Hãy thử từ khóa khác hoặc xem toàn bộ danh mục.",
+    "clearFilters": "Xóa bộ lọc",
+    "pagination": "Phân trang",
+    "prev": "Trang trước",
+    "next": "Trang sau",
+    "page": "Trang {page} / {pages}"
+  },
+  "product": {
+    "breadcrumbHome": "Trang chủ",
+    "priceUnavailable": "Chưa niêm yết giá",
+    "notForSale": "Chưa mở bán",
+    "notForSaleText": "Sản phẩm này chưa có quy cách (SKU), giá và tồn kho đã xác minh nên chưa thể đặt mua.",
+    "illustrativeNotice": "Ảnh chỉ mang tính minh họa, chưa phải ảnh bao bì thực tế.",
+    "category": "Nhóm hàng"
+  },
+  "errors": {
+    "title": "Không tải được dữ liệu",
+    "text": "Hệ thống tạm thời không phản hồi. Vui lòng thử lại sau ít phút.",
+    "notFoundTitle": "Không tìm thấy trang",
+    "notFoundText": "Trang bạn tìm không tồn tại hoặc sản phẩm chưa được mở bán.",
+    "network": "Không thể kết nối tới máy chủ. Kiểm tra kết nối mạng và thử lại.",
+    "generic": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+    "codes": {
+      "CREDENTIALS_INVALID": "Thông tin đăng nhập không chính xác.",
+      "ACCOUNT_NOT_VERIFIED": "Tài khoản chưa được xác thực. Vui lòng nhập mã xác thực.",
+      "RATE_LIMITED": "Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.",
+      "OTP_INVALID": "Mã xác thực không đúng hoặc đã hết hiệu lực.",
+      "OTP_EXPIRED": "Mã xác thực đã hết hạn. Hãy yêu cầu mã mới.",
+      "OTP_LOCKED": "Bạn đã nhập sai quá số lần cho phép. Hãy yêu cầu mã mới.",
+      "OTP_DELIVERY_NOT_CONFIGURED": "Chức năng đăng ký/xác thực tạm thời chưa khả dụng. Vui lòng liên hệ BizGo.",
+      "EMAIL_OR_PHONE_TAKEN": "Email hoặc số điện thoại đã được đăng ký.",
+      "VALIDATION_ERROR": "Vui lòng kiểm tra lại thông tin đã nhập."
+    }
+  },
+  "auth": {
+    "loginTitle": "Đăng nhập",
+    "identity": "Email hoặc số điện thoại",
+    "password": "Mật khẩu",
+    "loginSubmit": "Đăng nhập",
+    "noAccount": "Chưa có tài khoản?",
+    "registerLink": "Đăng ký",
+    "registerTitle": "Tạo tài khoản",
+    "displayName": "Họ và tên",
+    "passwordHint": "Tối thiểu 10 ký tự.",
+    "acceptTerms": "Tôi đồng ý với điều khoản sử dụng và chính sách bảo mật (bản nháp, đang chờ BizGo phê duyệt).",
+    "registerSubmit": "Đăng ký",
+    "haveAccount": "Đã có tài khoản?",
+    "loginLink": "Đăng nhập",
+    "otpTitle": "Nhập mã xác thực",
+    "otpText": "Chúng tôi đã gửi mã gồm 6 chữ số tới {target}.",
+    "otpCode": "Mã xác thực",
+    "otpSubmit": "Xác nhận",
+    "otpResend": "Gửi lại mã",
+    "otpResendIn": "Gửi lại sau {seconds} giây",
+    "verifiedTitle": "Xác thực thành công",
+    "verifiedText": "Tài khoản đã được kích hoạt. Bạn có thể đăng nhập.",
+    "loggedInTitle": "Đăng nhập thành công",
+    "loggedInText": "Xin chào {name}. Trang tài khoản và giỏ hàng sẽ có trong các giai đoạn tiếp theo.",
+    "logout": "Đăng xuất",
+    "required": "Trường này là bắt buộc.",
+    "termsRequired": "Bạn cần đồng ý để tiếp tục.",
+    "passwordShort": "Mật khẩu tối thiểu 10 ký tự."
+  },
+  "footer": {
+    "about": "BizGo là kênh bán hàng trực tuyến; hàng được cung ứng từ xưởng đối tác. Thông tin pháp nhân bán hàng, chính sách và liên hệ sẽ được công bố sau khi được phê duyệt.",
+    "legalPending": "Thông tin người bán đang được hoàn thiện.",
+    "rights": "© {year} BizGo"
+  }
+}

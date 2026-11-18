@@ -1,0 +1,31 @@
+{
+  "name": "@bizgo/storefront-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "dependencies": {
+    "@bizgo/contracts": "workspace:*",
+    "@bizgo/shared": "workspace:*",
+    "@bizgo/ui-web": "workspace:*",
+    "next": "15.5.29",
+    "next-intl": "4.3.12",
+    "react": "19.1.10",
+    "react-dom": "19.1.10"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "@types/react": "19.1.17",
+    "@types/react-dom": "19.1.11",
+    "autoprefixer": "10.4.21",
+    "postcss": "8.5.6",
+    "tailwindcss": "3.4.19",
+    "vitest": "3.2.7"
+  }
+}

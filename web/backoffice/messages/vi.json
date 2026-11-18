@@ -1,0 +1,115 @@
+{
+  "brand": { "admin": "BizGo — Quản trị", "factory": "BizGo — Cổng xưởng" },
+  "common": {
+    "retry": "Thử lại",
+    "loading": "Đang tải…",
+    "logout": "Đăng xuất",
+    "previous": "Trước",
+    "next": "Sau",
+    "page": "Trang {page} / {pages}",
+    "skip": "Bỏ qua tới nội dung chính",
+    "all": "Tất cả",
+    "yes": "Có",
+    "no": "Không",
+    "requestRef": "Mã tham chiếu: {id}"
+  },
+  "login": {
+    "adminTitle": "Đăng nhập quản trị",
+    "factoryTitle": "Đăng nhập cổng xưởng",
+    "identity": "Email hoặc số điện thoại",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "required": "Trường này là bắt buộc."
+  },
+  "mfa": {
+    "title": "Xác thực hai lớp",
+    "enrollText": "Tài khoản của bạn bắt buộc dùng xác thực hai lớp. Thêm khóa bên dưới vào ứng dụng xác thực (Google Authenticator, Authy, 1Password…) rồi nhập mã 6 số.",
+    "enrollStart": "Bắt đầu đăng ký",
+    "secret": "Khóa bí mật (chỉ hiển thị một lần)",
+    "otpauth": "Liên kết otpauth",
+    "verifyText": "Nhập mã 6 số từ ứng dụng xác thực, hoặc một mã khôi phục dạng XXXXX-XXXXX.",
+    "code": "Mã xác thực",
+    "submit": "Xác nhận",
+    "recoveryTitle": "Lưu mã khôi phục",
+    "recoveryText": "Mỗi mã chỉ dùng được một lần. Hãy lưu ở nơi an toàn — chúng sẽ không hiển thị lại.",
+    "recoveryDone": "Tôi đã lưu các mã này",
+    "invalid": "Mã không đúng. Vui lòng thử lại."
+  },
+  "nav": {
+    "aria": "Điều hướng quản trị",
+    "dashboard": "Tổng quan",
+    "products": "Sản phẩm",
+    "categories": "Nhóm hàng",
+    "comingSoon": "Sắp có"
+  },
+  "dashboard": {
+    "title": "Tổng quan",
+    "welcome": "Xin chào {name}",
+    "roles": "Vai trò: {roles}",
+    "phaseNote": "Giai đoạn 1: chỉ xem danh mục 82 mặt hàng nguồn (trạng thái nháp). Đơn hàng, kho, giá và tài chính sẽ có ở các giai đoạn sau.",
+    "draftProducts": "Sản phẩm nháp",
+    "activeProducts": "Sản phẩm đang bán",
+    "categories": "Nhóm hàng"
+  },
+  "products": {
+    "title": "Sản phẩm (nguồn)",
+    "subtitle": "Dữ liệu gốc từ danh mục nguyên liệu. Tên, đơn vị và ghi chú nguồn không thể sửa.",
+    "search": "Tìm kiếm",
+    "status": "Trạng thái",
+    "category": "Nhóm hàng",
+    "colIndex": "STT",
+    "colName": "Tên theo nguồn",
+    "colUnit": "ĐVT nguồn",
+    "colCategory": "Nhóm",
+    "colStatus": "Trạng thái",
+    "colMedia": "Ảnh",
+    "empty": "Không có sản phẩm phù hợp bộ lọc.",
+    "total": "{count} sản phẩm",
+    "mediaIllustrative": "Minh họa AI",
+    "mediaNone": "Chưa có",
+    "back": "← Danh sách",
+    "sourceBlock": "Dữ liệu nguồn (bất biến)",
+    "sourceName": "Tên theo nguồn",
+    "sourceUnit": "Đơn vị tính",
+    "sourceNote": "Ghi chú nguồn (nguyên văn)",
+    "displayNote": "Ghi chú hiển thị",
+    "origin": "Loại nguồn gốc",
+    "aliases": "Từ khóa tìm kiếm",
+    "gateTitle": "Điều kiện mở bán",
+    "gateText": "Sản phẩm chưa có SKU. Cần quy cách thực tế, giá vốn, giá bán, tồn kho, hạn dùng/bảo quản, ảnh thật và hồ sơ chất lượng trước khi được kích hoạt (Giai đoạn 2)."
+  },
+  "status": {
+    "DRAFT": "Nháp",
+    "UNDER_REVIEW": "Chờ duyệt",
+    "ACTIVE": "Đang bán",
+    "PAUSED": "Tạm dừng",
+    "ARCHIVED": "Lưu trữ"
+  },
+  "origin": {
+    "UNVERIFIED": "Chưa xác minh",
+    "FACTORY_MADE": "Xưởng sản xuất",
+    "FACTORY_PACKED": "Xưởng đóng gói",
+    "FACTORY_DISTRIBUTED": "Xưởng phân phối",
+    "INTERNAL_SUPPLY": "Vật tư nội bộ"
+  },
+  "factory": {
+    "title": "Cổng xưởng",
+    "welcome": "Xin chào {name}",
+    "notReady": "Danh sách phiếu soạn hàng sẽ có ở Giai đoạn 3. Hiện chưa có chức năng nào cho xưởng — tài khoản đã đăng nhập và phân quyền đúng, không có quyền xem giá, giá vốn hay lãi."
+  },
+  "errors": {
+    "title": "Không tải được dữ liệu",
+    "network": "Không thể kết nối tới máy chủ.",
+    "generic": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+    "forbidden": "Bạn không có quyền xem nội dung này.",
+    "codes": {
+      "CREDENTIALS_INVALID": "Thông tin đăng nhập không chính xác.",
+      "RATE_LIMITED": "Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.",
+      "OTP_INVALID": "Mã không đúng. Vui lòng thử lại.",
+      "OTP_LOCKED": "Quá số lần thử. Vui lòng thử lại sau.",
+      "FORBIDDEN": "Bạn không có quyền thực hiện thao tác này.",
+      "MFA_REQUIRED": "Cần hoàn tất xác thực hai lớp.",
+      "VALIDATION_ERROR": "Vui lòng kiểm tra lại thông tin đã nhập."
+    }
+  }
+}

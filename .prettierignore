@@ -1,0 +1,12 @@
+node_modules
+dist
+.next
+coverage
+pnpm-lock.yaml
+source
+prisma/migrations
+# Handoff documents are the owner's source of truth: never reformat them.
+CLAUDE.md
+README_START_HERE.md
+README_VI_HUONG_DAN.md
+docs

@@ -1,0 +1,15 @@
+@import '@bizgo/ui-web/tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.01em;
+  }
+  body {
+    background: #f7faf6;
+  }
+}

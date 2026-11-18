@@ -1,0 +1,125 @@
+# Local / staging-like stack:  docker compose -f infra/docker/docker-compose.yml --env-file .env up --build
+# NOTE: validated by review only in the authoring environment (Docker is not installed there).
+# Data stores sit on an internal network with NO published ports; only the web apps and API are exposed.
+name: bizgo
+
+x-app-env: &app-env
+  APP_ENV: ${APP_ENV:-local}
+  DATABASE_URL: postgresql://bizgo:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/bizgo?schema=public
+  REDIS_URL: redis://redis:6379
+  APP_SECRET: ${APP_SECRET:?set APP_SECRET}
+  MFA_ENCRYPTION_KEY: ${MFA_ENCRYPTION_KEY:?set MFA_ENCRYPTION_KEY}
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
+  DEV_OTP_CONSOLE: ${DEV_OTP_CONSOLE:-false}
+  TRUST_PROXY: ${TRUST_PROXY:-false}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bizgo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: bizgo
+      POSTGRES_INITDB_ARGS: --encoding=UTF8
+    volumes: [pgdata:/var/lib/postgresql/data]
+    networks: [private]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U bizgo -d bizgo]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: [redis-server, --appendonly, 'yes']
+    volumes: [redisdata:/data]
+    networks: [private]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: [server, /data, --console-address, ':9001']
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-bizgo-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}
+    volumes: [miniodata:/data]
+    networks: [private]
+    profiles: [media] # object storage is used from Phase 2/3 onwards
+
+  migrate:
+    build:
+      { context: ../.., dockerfile: infra/docker/Dockerfile, target: build, args: { APP: api } }
+    environment: *app-env
+    command: [sh, -c, 'pnpm db:migrate:deploy && pnpm db:seed']
+    depends_on: { postgres: { condition: service_healthy } }
+    networks: [private]
+    restart: 'no'
+
+  api:
+    build: { context: ../.., dockerfile: infra/docker/Dockerfile, args: { APP: api } }
+    restart: unless-stopped
+    environment:
+      <<: *app-env
+      PORT: 4000
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    ports: ['4000:4000']
+    networks: [private, edge]
+    healthcheck:
+      test: [CMD, wget, -qO-, 'http://127.0.0.1:4000/health/ready']
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  worker:
+    build: { context: ../.., dockerfile: infra/docker/Dockerfile, args: { APP: worker } }
+    restart: unless-stopped
+    environment: *app-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [private]
+
+  storefront-web:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+      args:
+        APP: storefront-web
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:4000}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: http://api:4000
+    depends_on: { api: { condition: service_healthy } }
+    ports: ['3000:3000']
+    networks: [edge]
+
+  backoffice-web:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+      args:
+        APP: backoffice-web
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:4000}
+    restart: unless-stopped
+    depends_on: { api: { condition: service_healthy } }
+    ports: ['3001:3001']
+    networks: [edge]
+
+networks:
+  private:
+    internal: true # no outbound/inbound internet; DB/Redis/MinIO unreachable from outside
+  edge: {}
+
+volumes:
+  pgdata: {}
+  redisdata: {}
+  miniodata: {}

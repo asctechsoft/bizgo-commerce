@@ -1,0 +1,3924 @@
+openapi: 3.1.0
+info:
+  title: BizGo API
+  version: 0.1.0-skeleton
+  summary: Phase 0 OpenAPI skeleton (contract draft, not generated from code yet)
+  description: |
+    Draft contract assembled from Master Spec §09, Architecture §05, and docs/ui_route_api_matrix.csv.
+    Request/response bodies for most operations are intentionally generic placeholders; they will be replaced by
+    NestJS-generated schemas (ADR-0006). `x-phase` = delivery phase; `x-permission` = permission code (PERMISSION_MATRIX.md);
+    `x-blocked-by` = BLOCKED_DECISION / feature flag that keeps the feature fail-closed until approved.
+    No price, stock, SKU, or fee in examples is real business data.
+servers:
+  - url: http://localhost:4000
+    description: local development
+tags:
+  - name: Admin Catalog
+  - name: Admin Content
+  - name: Admin Finance
+  - name: Admin Fulfillment
+  - name: Admin Inventory
+  - name: Admin Orders
+  - name: Admin Support
+  - name: Admin System
+  - name: Admin Users
+  - name: Admin Wholesale
+  - name: Auth
+  - name: Cart
+  - name: Catalog
+  - name: Checkout
+  - name: Content
+  - name: Factory
+  - name: Files
+  - name: Me
+  - name: Orders
+  - name: Payments
+  - name: Pricing
+  - name: Returns
+  - name: Shipping
+  - name: Support
+  - name: System
+  - name: Webhooks
+  - name: Wholesale
+paths:
+  '/health/live':
+    get:
+      operationId: get_health_live
+      tags: ['System']
+      summary: 'Liveness probe'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/health/ready':
+    get:
+      operationId: get_health_ready
+      tags: ['System']
+      summary: 'Readiness probe (DB, Redis)'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/audit':
+    get:
+      operationId: get_v1_admin_audit
+      tags: ['Admin System']
+      summary: 'Audit log (cursor)'
+      x-phase: 1
+      x-permission: 'audit:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/categories':
+    get:
+      operationId: get_v1_admin_categories
+      tags: ['Admin Catalog']
+      summary: 'List categorys'
+      x-phase: 1
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_categories
+      tags: ['Admin Catalog']
+      summary: 'Create category'
+      x-phase: 1
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/categories/{id}':
+    get:
+      operationId: get_v1_admin_categories_id
+      tags: ['Admin Catalog']
+      summary: 'Get category'
+      x-phase: 1
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    patch:
+      operationId: patch_v1_admin_categories_id
+      tags: ['Admin Catalog']
+      summary: 'Update category (audited)'
+      x-phase: 1
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/content/banners':
+    get:
+      operationId: get_v1_admin_content_banners
+      tags: ['Admin Content']
+      summary: 'Banners'
+      x-phase: 4
+      x-permission: 'content:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/content/pages':
+    get:
+      operationId: get_v1_admin_content_pages
+      tags: ['Admin Content']
+      summary: 'Pages/policies (draft/published)'
+      x-phase: 4
+      x-permission: 'content:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/costs':
+    get:
+      operationId: get_v1_admin_costs
+      tags: ['Admin Finance']
+      summary: 'List supplier costs'
+      x-phase: 2
+      x-permission: 'cost:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_costs
+      tags: ['Admin Finance']
+      summary: 'Create supplier cost (step-up MFA)'
+      x-phase: 2
+      x-permission: 'cost:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/customers':
+    get:
+      operationId: get_v1_admin_customers
+      tags: ['Admin Users']
+      summary: 'Customers (PII masked by default)'
+      x-phase: 4
+      x-permission: 'pii:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/factories':
+    get:
+      operationId: get_v1_admin_factories
+      tags: ['Admin Fulfillment']
+      summary: 'Factories & assignments'
+      x-phase: 3
+      x-permission: 'user:manage'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/fulfillments':
+    get:
+      operationId: get_v1_admin_fulfillments
+      tags: ['Admin Fulfillment']
+      summary: 'Fulfillment progress'
+      x-phase: 3
+      x-permission: 'order:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/inventory':
+    get:
+      operationId: get_v1_admin_inventory
+      tags: ['Admin Inventory']
+      summary: 'Inventory balances'
+      x-phase: 2
+      x-permission: 'inventory:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/inventory/adjustments':
+    post:
+      operationId: post_v1_admin_inventory_adjustments
+      tags: ['Admin Inventory']
+      summary: 'Stock adjustment with reason (ledger)'
+      x-phase: 2
+      x-permission: 'inventory:adjust'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/inventory/lots':
+    get:
+      operationId: get_v1_admin_inventory_lots
+      tags: ['Admin Inventory']
+      summary: 'Lots / expiry'
+      x-phase: 3
+      x-permission: 'inventory:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_inventory_lots
+      tags: ['Admin Inventory']
+      summary: 'Receive lot'
+      x-phase: 3
+      x-permission: 'inventory:adjust'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/inventory/lots/{id}/quarantine':
+    post:
+      operationId: post_v1_admin_inventory_lots_id_quarantine
+      tags: ['Admin Inventory']
+      summary: 'Quarantine/release lot'
+      x-phase: 3
+      x-permission: 'inventory:adjust'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/orders':
+    get:
+      operationId: get_v1_admin_orders
+      tags: ['Admin Orders']
+      summary: 'Order queue (filters, SLA)'
+      x-phase: 2
+      x-permission: 'order:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_orders
+      tags: ['Admin Orders']
+      summary: 'Create order on behalf of customer (DRAFT)'
+      x-phase: 3
+      x-permission: 'checkout:quote/create'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/orders/{id}':
+    get:
+      operationId: get_v1_admin_orders_id
+      tags: ['Admin Orders']
+      summary: 'Order detail (PII masked w/o pii:read)'
+      x-phase: 2
+      x-permission: 'order:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/orders/{id}/assign-factory':
+    post:
+      operationId: post_v1_admin_orders_id_assign_factory
+      tags: ['Admin Orders']
+      summary: 'Create factory fulfillment'
+      x-phase: 3
+      x-permission: 'order:assign-factory'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/orders/{id}/cancel':
+    post:
+      operationId: post_v1_admin_orders_id_cancel
+      tags: ['Admin Orders']
+      summary: 'Cancel order (releases stock once)'
+      x-phase: 2
+      x-permission: 'order:confirm/cancel/hold'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/orders/{id}/confirm':
+    post:
+      operationId: post_v1_admin_orders_id_confirm
+      tags: ['Admin Orders']
+      summary: 'Confirm order'
+      x-phase: 2
+      x-permission: 'order:confirm/cancel/hold'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/orders/{id}/hold':
+    post:
+      operationId: post_v1_admin_orders_id_hold
+      tags: ['Admin Orders']
+      summary: 'Put on hold with reason'
+      x-phase: 2
+      x-permission: 'order:confirm/cancel/hold'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/payments/{id}/verify-transfer':
+    post:
+      operationId: post_v1_admin_payments_id_verify_transfer
+      tags: ['Payments']
+      summary: 'Match transfer; PAID once'
+      x-phase: 4
+      x-permission: 'payment:verify-transfer'
+      x-blocked-by: 'D06'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/price-lists':
+    get:
+      operationId: get_v1_admin_price_lists
+      tags: ['Admin Catalog']
+      summary: 'List price lists'
+      x-phase: 2
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_price_lists
+      tags: ['Admin Catalog']
+      summary: 'Create price list'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/price-lists/{id}':
+    get:
+      operationId: get_v1_admin_price_lists_id
+      tags: ['Admin Catalog']
+      summary: 'Get price list'
+      x-phase: 2
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    patch:
+      operationId: patch_v1_admin_price_lists_id
+      tags: ['Admin Catalog']
+      summary: 'Update price list (audited)'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/products':
+    get:
+      operationId: get_v1_admin_products
+      tags: ['Admin Catalog']
+      summary: 'List products'
+      x-phase: 1
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_products
+      tags: ['Admin Catalog']
+      summary: 'Create product'
+      x-phase: 1
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/products/import':
+    post:
+      operationId: post_v1_admin_products_import
+      tags: ['Admin Catalog']
+      summary: 'Validated spreadsheet import (dry-run + commit)'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/products/{id}':
+    get:
+      operationId: get_v1_admin_products_id
+      tags: ['Admin Catalog']
+      summary: 'Get product'
+      x-phase: 1
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    patch:
+      operationId: patch_v1_admin_products_id
+      tags: ['Admin Catalog']
+      summary: 'Update product (audited)'
+      x-phase: 1
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/products/{id}/media':
+    post:
+      operationId: post_v1_admin_products_id_media
+      tags: ['Admin Catalog']
+      summary: 'Attach media (illustrative vs verified)'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/quotes':
+    get:
+      operationId: get_v1_admin_quotes
+      tags: ['Admin Wholesale']
+      summary: 'Quotes'
+      x-phase: 5
+      x-permission: 'quote:approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/quotes/{id}/offer':
+    post:
+      operationId: post_v1_admin_quotes_id_offer
+      tags: ['Admin Wholesale']
+      summary: 'Offer quote with expiry'
+      x-phase: 5
+      x-permission: 'quote:approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/recalls/{lotId}/orders':
+    get:
+      operationId: get_v1_admin_recalls_lotId_orders
+      tags: ['Admin Inventory']
+      summary: 'Orders that received a lot (recall trace)'
+      x-phase: 3
+      x-permission: 'inventory:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: lotId, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/reconciliation':
+    get:
+      operationId: get_v1_admin_reconciliation
+      tags: ['Admin Finance']
+      summary: 'COD/payment reconciliation view'
+      x-phase: 4
+      x-permission: 'settlement:read/approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/reconciliation/cod':
+    post:
+      operationId: post_v1_admin_reconciliation_cod
+      tags: ['Admin Finance']
+      summary: 'Record carrier COD remittance and match'
+      x-phase: 4
+      x-permission: 'settlement:read/approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/refunds':
+    post:
+      operationId: post_v1_admin_refunds
+      tags: ['Payments']
+      summary: 'Create/approve refund (step-up MFA)'
+      x-phase: 4
+      x-permission: 'refund:approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/reports/kpis':
+    get:
+      operationId: get_v1_admin_reports_kpis
+      tags: ['Admin Finance']
+      summary: 'GMV, AOV, conversion, SLA...'
+      x-phase: 4
+      x-permission: 'report:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/reports/margins':
+    get:
+      operationId: get_v1_admin_reports_margins
+      tags: ['Admin Finance']
+      summary: 'Expected vs actual margin'
+      x-phase: 4
+      x-permission: 'margin:read'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/returns':
+    get:
+      operationId: get_v1_admin_returns
+      tags: ['Admin Support']
+      summary: 'Return cases'
+      x-phase: 4
+      x-permission: 'return:review'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/returns/{id}/decision':
+    post:
+      operationId: post_v1_admin_returns_id_decision
+      tags: ['Admin Support']
+      summary: 'Approve/reject return'
+      x-phase: 4
+      x-permission: 'return:review'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/settings':
+    get:
+      operationId: get_v1_admin_settings
+      tags: ['Admin System']
+      summary: 'Settings and feature flags'
+      x-phase: 1
+      x-permission: 'settings:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/settings/{key}':
+    patch:
+      operationId: patch_v1_admin_settings_key
+      tags: ['Admin System']
+      summary: 'Change setting (audited, MFA)'
+      x-phase: 1
+      x-permission: 'settings:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: key, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/settlements':
+    get:
+      operationId: get_v1_admin_settlements
+      tags: ['Admin Finance']
+      summary: 'Settlements'
+      x-phase: 4
+      x-permission: 'settlement:read/approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/settlements/{id}/approve':
+    post:
+      operationId: post_v1_admin_settlements_id_approve
+      tags: ['Admin Finance']
+      summary: 'Approve settlement'
+      x-phase: 4
+      x-permission: 'settlement:read/approve'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/shipments':
+    post:
+      operationId: post_v1_admin_shipments
+      tags: ['Shipping']
+      summary: 'Create shipment (manual carrier/tracking MVP)'
+      x-phase: 3
+      x-permission: 'shipment:create/update'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/shipments/{id}':
+    patch:
+      operationId: patch_v1_admin_shipments_id
+      tags: ['Shipping']
+      summary: 'Update status/tracking'
+      x-phase: 3
+      x-permission: 'shipment:create/update'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/support/tickets':
+    get:
+      operationId: get_v1_admin_support_tickets
+      tags: ['Admin Support']
+      summary: 'Tickets'
+      x-phase: 2
+      x-permission: 'support:handle'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/users':
+    get:
+      operationId: get_v1_admin_users
+      tags: ['Admin Users']
+      summary: 'Staff users'
+      x-phase: 1
+      x-permission: 'user:manage'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_users
+      tags: ['Admin Users']
+      summary: 'Create staff user (OWNER; step-up MFA)'
+      x-phase: 1
+      x-permission: 'user:manage'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/users/{id}/roles':
+    put:
+      operationId: put_v1_admin_users_id_roles
+      tags: ['Admin Users']
+      summary: 'Set roles/assignments (audited)'
+      x-phase: 1
+      x-permission: 'role:manage'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/variants':
+    get:
+      operationId: get_v1_admin_variants
+      tags: ['Admin Catalog']
+      summary: 'List variants'
+      x-phase: 2
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_admin_variants
+      tags: ['Admin Catalog']
+      summary: 'Create variant'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/variants/{id}':
+    get:
+      operationId: get_v1_admin_variants_id
+      tags: ['Admin Catalog']
+      summary: 'Get variant'
+      x-phase: 2
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    patch:
+      operationId: patch_v1_admin_variants_id
+      tags: ['Admin Catalog']
+      summary: 'Update variant (audited)'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    delete:
+      operationId: delete_v1_admin_variants_id
+      tags: ['Admin Catalog']
+      summary: 'Archive variant'
+      x-phase: 2
+      x-permission: 'catalog:write'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/variants/{id}/publish':
+    post:
+      operationId: post_v1_admin_variants_id_publish
+      tags: ['Admin Catalog']
+      summary: 'Publish SKU through readiness gate (422 SKU_NOT_READY with blockers)'
+      x-phase: 2
+      x-permission: 'variant:publish'
+      x-blocked-by: 'D02'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/variants/{id}/readiness':
+    get:
+      operationId: get_v1_admin_variants_id_readiness
+      tags: ['Admin Catalog']
+      summary: 'SKU readiness checklist'
+      x-phase: 2
+      x-permission: 'catalog:read:all'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/wholesale/applications':
+    get:
+      operationId: get_v1_admin_wholesale_applications
+      tags: ['Admin Wholesale']
+      summary: 'Applications'
+      x-phase: 5
+      x-permission: 'wholesale:review'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/admin/wholesale/applications/{id}/decision':
+    post:
+      operationId: post_v1_admin_wholesale_applications_id_decision
+      tags: ['Admin Wholesale']
+      summary: 'Approve (tier) / reject / needs-info'
+      x-phase: 5
+      x-permission: 'wholesale:review'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/login':
+    post:
+      operationId: post_v1_auth_login
+      tags: ['Auth']
+      summary: 'Login (rate limited); returns session cookies or bearer pair'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/logout':
+    post:
+      operationId: post_v1_auth_logout
+      tags: ['Auth']
+      summary: 'Revoke current session family'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/mfa/enroll':
+    post:
+      operationId: post_v1_auth_mfa_enroll
+      tags: ['Auth']
+      summary: 'Start TOTP enrollment (privileged roles)'
+      x-phase: 1
+      x-blocked-by: 'D20'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/mfa/verify':
+    post:
+      operationId: post_v1_auth_mfa_verify
+      tags: ['Auth']
+      summary: 'Verify TOTP / recovery code, step-up'
+      x-phase: 1
+      x-blocked-by: 'D20'
+      security: [{ adminSession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/otp/request':
+    post:
+      operationId: post_v1_auth_otp_request
+      tags: ['Auth']
+      summary: 'Request OTP for identity verification'
+      x-phase: 1
+      x-blocked-by: 'D15'
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/otp/resend':
+    post:
+      operationId: post_v1_auth_otp_resend
+      tags: ['Auth']
+      summary: 'Resend OTP (cooldown)'
+      x-phase: 1
+      x-blocked-by: 'D15'
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/otp/verify':
+    post:
+      operationId: post_v1_auth_otp_verify
+      tags: ['Auth']
+      summary: 'Verify OTP (TTL, max attempts)'
+      x-phase: 1
+      x-blocked-by: 'D15'
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/password/change':
+    post:
+      operationId: post_v1_auth_password_change
+      tags: ['Auth']
+      summary: 'Change password (re-auth); revokes other sessions'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/password/forgot':
+    post:
+      operationId: post_v1_auth_password_forgot
+      tags: ['Auth']
+      summary: 'Non-enumerating password recovery request'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/password/reset':
+    post:
+      operationId: post_v1_auth_password_reset
+      tags: ['Auth']
+      summary: 'Reset with one-use token; revokes sessions'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/refresh':
+    post:
+      operationId: post_v1_auth_refresh
+      tags: ['Auth']
+      summary: 'Rotate refresh token (reuse detection)'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/auth/register':
+    post:
+      operationId: post_v1_auth_register
+      tags: ['Auth']
+      summary: 'Register account (requires verification before ordering)'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/cart':
+    get:
+      operationId: get_v1_cart
+      tags: ['Cart']
+      summary: 'Get server cart (guest session or customer)'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/cart/items':
+    post:
+      operationId: post_v1_cart_items
+      tags: ['Cart']
+      summary: 'Add item'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/cart/items/{id}':
+    patch:
+      operationId: patch_v1_cart_items_id
+      tags: ['Cart']
+      summary: 'Change quantity'
+      x-phase: 2
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    delete:
+      operationId: delete_v1_cart_items_id
+      tags: ['Cart']
+      summary: 'Remove item'
+      x-phase: 2
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/cart/merge':
+    post:
+      operationId: post_v1_cart_merge
+      tags: ['Cart']
+      summary: 'Merge guest cart into customer cart on login'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/categories':
+    get:
+      operationId: get_v1_categories
+      tags: ['Catalog']
+      summary: 'List categories (ACTIVE products only counted)'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/checkout/quote':
+    post:
+      operationId: post_v1_checkout_quote
+      tags: ['Checkout']
+      summary: 'Server quote with version, TTL, blockers'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/complaints':
+    post:
+      operationId: post_v1_complaints
+      tags: ['Returns']
+      summary: 'Create complaint'
+      x-phase: 4
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/contact-requests':
+    post:
+      operationId: post_v1_contact_requests
+      tags: ['Support']
+      summary: 'Create contact request (rate limited, spam defended)'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/content/articles':
+    get:
+      operationId: get_v1_content_articles
+      tags: ['Content']
+      summary: 'Article list'
+      x-phase: 4
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/content/articles/{slug}':
+    get:
+      operationId: get_v1_content_articles_slug
+      tags: ['Content']
+      summary: 'Article detail'
+      x-phase: 4
+      security: []
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/content/banners':
+    get:
+      operationId: get_v1_content_banners
+      tags: ['Content']
+      summary: 'Published banners'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/content/pages/{key}':
+    get:
+      operationId: get_v1_content_pages_key
+      tags: ['Content']
+      summary: 'Published page (about, contact...)'
+      x-phase: 4
+      x-blocked-by: 'D09'
+      security: []
+      parameters:
+        - { name: key, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/content/policies/{key}':
+    get:
+      operationId: get_v1_content_policies_key
+      tags: ['Content']
+      summary: 'Published reviewed policy'
+      x-phase: 4
+      x-blocked-by: 'D09'
+      security: []
+      parameters:
+        - { name: key, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/history':
+    get:
+      operationId: get_v1_factory_history
+      tags: ['Factory']
+      summary: 'Completed jobs'
+      x-phase: 3
+      x-permission: 'fulfillment:read:asg'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/inventory/count':
+    post:
+      operationId: post_v1_factory_inventory_count
+      tags: ['Factory']
+      summary: 'Stock count for assigned warehouse'
+      x-phase: 3
+      x-permission: 'inventory:count'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs':
+    get:
+      operationId: get_v1_factory_jobs
+      tags: ['Factory']
+      summary: 'Assigned job queue (FactoryJobSummaryDTO)'
+      x-phase: 3
+      x-permission: 'fulfillment:read:asg'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}':
+    get:
+      operationId: get_v1_factory_jobs_id
+      tags: ['Factory']
+      summary: 'Job detail (FactoryJobResponseDTO allowlist)'
+      x-phase: 3
+      x-permission: 'fulfillment:read:asg'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}/accept':
+    post:
+      operationId: post_v1_factory_jobs_id_accept
+      tags: ['Factory']
+      summary: 'Accept job (manager)'
+      x-phase: 3
+      x-permission: 'fulfillment:act'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}/exception':
+    post:
+      operationId: post_v1_factory_jobs_id_exception
+      tags: ['Factory']
+      summary: 'Report SHORTAGE|QUALITY_HOLD|LOT_EXPIRED with reason/evidence'
+      x-phase: 3
+      x-permission: 'fulfillment:act'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}/handover':
+    post:
+      operationId: post_v1_factory_jobs_id_handover
+      tags: ['Factory']
+      summary: 'Hand over to carrier (dispatch ledger once)'
+      x-phase: 3
+      x-permission: 'fulfillment:act'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}/pack':
+    post:
+      operationId: post_v1_factory_jobs_id_pack
+      tags: ['Factory']
+      summary: 'Record parcels, weights, evidence'
+      x-phase: 3
+      x-permission: 'fulfillment:act'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}/pick':
+    post:
+      operationId: post_v1_factory_jobs_id_pick
+      tags: ['Factory']
+      summary: 'Record FEFO lot picks'
+      x-phase: 3
+      x-permission: 'fulfillment:act'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/factory/jobs/{id}/stock-confirm':
+    post:
+      operationId: post_v1_factory_jobs_id_stock_confirm
+      tags: ['Factory']
+      summary: 'Confirm stock/lot availability'
+      x-phase: 3
+      x-permission: 'fulfillment:act'
+      security: [{ factorySession: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/files/presign':
+    post:
+      operationId: post_v1_files_presign
+      tags: ['Files']
+      summary: 'Presigned upload (purpose-scoped MIME/size)'
+      x-phase: 3
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me':
+    get:
+      operationId: get_v1_me
+      tags: ['Me']
+      summary: 'Current profile'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    patch:
+      operationId: patch_v1_me
+      tags: ['Me']
+      summary: 'Update own profile'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/account-deletion-request':
+    post:
+      operationId: post_v1_me_account_deletion_request
+      tags: ['Me']
+      summary: 'Record deletion request (flag-gated, D09)'
+      x-phase: 4
+      x-blocked-by: 'D09'
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/addresses':
+    get:
+      operationId: get_v1_me_addresses
+      tags: ['Me']
+      summary: 'List own addresses'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_me_addresses
+      tags: ['Me']
+      summary: 'Create address'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/addresses/{id}':
+    patch:
+      operationId: patch_v1_me_addresses_id
+      tags: ['Me']
+      summary: 'Update own address / set default'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    delete:
+      operationId: delete_v1_me_addresses_id
+      tags: ['Me']
+      summary: 'Delete own address'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/notifications':
+    get:
+      operationId: get_v1_me_notifications
+      tags: ['Me']
+      summary: 'List notifications'
+      x-phase: 3
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    patch:
+      operationId: patch_v1_me_notifications
+      tags: ['Me']
+      summary: 'Mark read / set preferences'
+      x-phase: 3
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/orders':
+    get:
+      operationId: get_v1_me_orders
+      tags: ['Orders']
+      summary: 'Own order list (status filter, pagination)'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/orders/{id}':
+    get:
+      operationId: get_v1_me_orders_id
+      tags: ['Orders']
+      summary: 'Own order detail + timeline + shipment'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/orders/{id}/cancel':
+    post:
+      operationId: post_v1_me_orders_id_cancel
+      tags: ['Orders']
+      summary: 'Request/perform cancellation per state rules'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/orders/{id}/payment-evidence':
+    post:
+      operationId: post_v1_me_orders_id_payment_evidence
+      tags: ['Payments']
+      summary: 'Submit transfer evidence -> AWAITING_VERIFICATION'
+      x-phase: 4
+      x-blocked-by: 'D06'
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/permissions':
+    get:
+      operationId: get_v1_me_permissions
+      tags: ['Me']
+      summary: 'Effective permission codes for UI gating (UX only)'
+      x-phase: 1
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/quotes':
+    get:
+      operationId: get_v1_me_quotes
+      tags: ['Wholesale']
+      summary: 'List own/org quotes'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/quotes/{id}':
+    get:
+      operationId: get_v1_me_quotes_id
+      tags: ['Wholesale']
+      summary: 'Quote detail'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/support':
+    get:
+      operationId: get_v1_me_support
+      tags: ['Support']
+      summary: 'Own tickets/cases'
+      x-phase: 4
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/wishlist':
+    get:
+      operationId: get_v1_me_wishlist
+      tags: ['Me']
+      summary: 'List wishlist'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+    post:
+      operationId: post_v1_me_wishlist
+      tags: ['Me']
+      summary: 'Add to wishlist'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/me/wishlist/{variantOrProductId}':
+    delete:
+      operationId: delete_v1_me_wishlist_variantOrProductId
+      tags: ['Me']
+      summary: 'Remove from wishlist'
+      x-phase: 2
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: variantOrProductId, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/orders':
+    post:
+      operationId: post_v1_orders
+      tags: ['Orders']
+      summary: 'Create order (Idempotency-Key required)'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/orders/guest-track':
+    post:
+      operationId: post_v1_orders_guest_track
+      tags: ['Orders']
+      summary: 'Verified guest tracking (code + verified contact)'
+      x-phase: 2
+      x-blocked-by: 'D15'
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/payments/intents':
+    post:
+      operationId: post_v1_payments_intents
+      tags: ['Payments']
+      summary: 'Create gateway intent (only if gateway approved)'
+      x-phase: 5
+      x-blocked-by: 'PAYMENT_GATEWAY_ENABLED'
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/pricing/quote':
+    get:
+      operationId: get_v1_pricing_quote
+      tags: ['Pricing']
+      summary: 'Single-variant price preview (informational, not checkout)'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/pricing/tiers/me':
+    get:
+      operationId: get_v1_pricing_tiers_me
+      tags: ['Wholesale']
+      summary: 'Tier prices for own approved organization'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/products':
+    get:
+      operationId: get_v1_products
+      tags: ['Catalog']
+      summary: 'List/search products (ACTIVE only); query: category, search, sort, page, limit, featured'
+      x-phase: 1
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/products/{slug}':
+    get:
+      operationId: get_v1_products_slug
+      tags: ['Catalog']
+      summary: 'Product detail with ACTIVE variants'
+      x-phase: 1
+      security: []
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/quotes':
+    post:
+      operationId: post_v1_quotes
+      tags: ['Wholesale']
+      summary: 'Request quote'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/quotes/{id}/accept':
+    post:
+      operationId: post_v1_quotes_id_accept
+      tags: ['Wholesale']
+      summary: 'Accept unexpired quote -> order'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/returns':
+    post:
+      operationId: post_v1_returns
+      tags: ['Returns']
+      summary: 'Create return request with evidence file ids'
+      x-phase: 4
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/shipments/{id}':
+    get:
+      operationId: get_v1_shipments_id
+      tags: ['Shipping']
+      summary: 'Shipment tracking (owner / admin)'
+      x-phase: 3
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/support/tickets':
+    post:
+      operationId: post_v1_support_tickets
+      tags: ['Support']
+      summary: 'Create support ticket'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/support/topics':
+    get:
+      operationId: get_v1_support_topics
+      tags: ['Support']
+      summary: 'Support topic list'
+      x-phase: 2
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/variants/{id}':
+    get:
+      operationId: get_v1_variants_id
+      tags: ['Catalog']
+      summary: 'Variant detail (ACTIVE only)'
+      x-phase: 2
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/variants/{id}/availability':
+    get:
+      operationId: get_v1_variants_id_availability
+      tags: ['Catalog']
+      summary: "Availability + price for caller's tier"
+      x-phase: 2
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/webhooks/carriers/{provider}':
+    post:
+      operationId: post_v1_webhooks_carriers_provider
+      tags: ['Webhooks']
+      summary: 'Carrier webhook (signed, replay-safe)'
+      x-phase: 5
+      x-blocked-by: 'CARRIER_API_ENABLED'
+      security: [{ webhookSignature: [] }]
+      parameters:
+        - { name: provider, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/webhooks/payments/{provider}':
+    post:
+      operationId: post_v1_webhooks_payments_provider
+      tags: ['Webhooks']
+      summary: 'Payment webhook (signature, amount match, unique event id)'
+      x-phase: 5
+      x-blocked-by: 'PAYMENT_GATEWAY_ENABLED'
+      security: [{ webhookSignature: [] }]
+      parameters:
+        - { name: provider, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/wholesale/applications':
+    post:
+      operationId: post_v1_wholesale_applications
+      tags: ['Wholesale']
+      summary: 'Submit organization application'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '201':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/wholesale/applications/me':
+    get:
+      operationId: get_v1_wholesale_applications_me
+      tags: ['Wholesale']
+      summary: 'Own application status'
+      x-phase: 5
+      security: [{ customerSession: [] }, { bearerAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  '/v1/wholesale/info':
+    get:
+      operationId: get_v1_wholesale_info
+      tags: ['Wholesale']
+      summary: 'B2B landing info and pricing rules disclosure'
+      x-phase: 5
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/RequestId' }
+      responses:
+        '200':
+          description: Success envelope
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessEnvelope' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+components:
+  securitySchemes:
+    customerSession: { type: apiKey, in: cookie, name: bg_sid }
+    adminSession: { type: apiKey, in: cookie, name: bg_admin_sid }
+    factorySession: { type: apiKey, in: cookie, name: bg_factory_sid }
+    bearerAuth: { type: http, scheme: bearer }
+    webhookSignature: { type: apiKey, in: header, name: X-Signature }
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 128 }
+    RequestId:
+      name: X-Request-Id
+      in: header
+      required: false
+      schema: { type: string, maxLength: 64 }
+  schemas:
+    SuccessEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: {}
+        meta:
+          {
+            type: object,
+            properties:
+              {
+                requestId: { type: string },
+                page: { type: integer },
+                limit: { type: integer },
+                total: { type: integer },
+              },
+          }
+    ErrorEnvelope:
+      type: object
+      required: [code, message, requestId]
+      properties:
+        code: { $ref: '#/components/schemas/ErrorCode' }
+        message: { type: string, description: Vietnamese, safe to show }
+        details: { type: array, items: { type: object, additionalProperties: true } }
+        requestId: { type: string }
+    ErrorCode:
+      type: string
+      enum:
+        [
+          VALIDATION_ERROR,
+          UNAUTHENTICATED,
+          FORBIDDEN,
+          NOT_FOUND,
+          RATE_LIMITED,
+          SKU_NOT_READY,
+          PRICE_NOT_SET,
+          PRICE_CHANGED,
+          OUT_OF_STOCK,
+          INSUFFICIENT_STOCK,
+          INVALID_PACK_CONVERSION,
+          DELIVERY_UNSUPPORTED,
+          SHIPPING_FEE_UNDETERMINED,
+          TAX_POLICY_UNDETERMINED,
+          QUOTE_EXPIRED,
+          PAYMENT_NOT_VERIFIED,
+          UNAUTHORIZED_SCOPE,
+          INVALID_STATE_TRANSITION,
+          IDEMPOTENCY_CONFLICT,
+          IDEMPOTENCY_IN_PROGRESS,
+          LOT_EXPIRED,
+          OTP_DELIVERY_NOT_CONFIGURED,
+          OTP_INVALID,
+          OTP_EXPIRED,
+          OTP_LOCKED,
+          FEATURE_DISABLED,
+          MFA_REQUIRED,
+          STEP_UP_REQUIRED,
+        ]
+    OrderStatus:
+      type: string
+      enum:
+        [
+          DRAFT,
+          PENDING_CONFIRMATION,
+          CONFIRMED,
+          PACKING,
+          READY_TO_SHIP,
+          PARTIALLY_SHIPPED,
+          SHIPPED,
+          DELIVERED,
+          COMPLETED,
+          ON_HOLD,
+          CANCEL_REQUESTED,
+          CANCELLED,
+          RETURN_REQUESTED,
+          RETURNED,
+          FAILED,
+        ]
+    PaymentStatus:
+      type: string
+      enum:
+        [
+          PENDING,
+          AWAITING_VERIFICATION,
+          AUTHORIZED,
+          PAID,
+          FAILED,
+          EXPIRED,
+          PARTIALLY_REFUNDED,
+          REFUNDED,
+        ]
+    FulfillmentStatus:
+      type: string
+      enum:
+        [
+          QUEUED,
+          ACCEPTED,
+          STOCK_CONFIRMED,
+          PICKING,
+          PACKING,
+          PACKED,
+          READY_FOR_HANDOVER,
+          HANDED_OVER,
+          BLOCKED,
+          PARTIAL,
+          REJECTED,
+          CANCELLED,
+        ]
+    ShipmentStatus:
+      type: string
+      enum:
+        [
+          DRAFT,
+          LABELLED,
+          PICKED_UP,
+          IN_TRANSIT,
+          DELIVERED,
+          DELIVERY_FAILED,
+          RETURN_TO_SENDER,
+          RETURNED,
+        ]
+    ProductStatus:
+      type: string
+      enum: [DRAFT, UNDER_REVIEW, ACTIVE, PAUSED, ARCHIVED]
+    QuoteBlocker:
+      type: object
+      required: [code]
+      properties:
+        code: { $ref: '#/components/schemas/ErrorCode' }
+        variantId: { type: string, format: uuid }
+        message: { type: string }
+    CheckoutQuote:
+      type: object
+      description: Numbers are nullable when undetermined; null means 'not known', never zero.
+      required: [quoteId, version, expiresAt, currency, lines, canPlaceOrder, blockers]
+      properties:
+        quoteId: { type: string, format: uuid }
+        version: { type: integer }
+        expiresAt: { type: string, format: date-time }
+        currency: { type: string, enum: [VND] }
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              variantId: { type: string, format: uuid }
+              quantity: { type: integer, minimum: 1 }
+              unitPriceVnd: { type: [integer, 'null'] }
+              lineTotalVnd: { type: [integer, 'null'] }
+        shippingFeeVnd: { type: [integer, 'null'] }
+        totalVnd: { type: [integer, 'null'] }
+        canPlaceOrder: { type: boolean }
+        blockers: { type: array, items: { $ref: '#/components/schemas/QuoteBlocker' } }
+    CreateOrderRequest:
+      type: object
+      required: [checkoutQuoteId, acceptedQuoteVersion, paymentMethod]
+      properties:
+        checkoutQuoteId: { type: string, format: uuid }
+        acceptedQuoteVersion: { type: integer }
+        paymentMethod: { type: string, enum: [COD, BANK_TRANSFER] }
+        guestContact: { type: [object, 'null'], description: only if GUEST_CHECKOUT_ENABLED }
+    FactoryJobResponseDTO:
+      type: object
+      description: Strict allowlist. MUST NOT contain price, discount, total, payment, cost, margin, customer email.
+      additionalProperties: false
+      properties:
+        jobCode: { type: string }
+        orderRef: { type: string }
+        status: { $ref: '#/components/schemas/FulfillmentStatus' }
+        slaDueAt: { type: string, format: date-time }
+        storageClass: { type: string, enum: [DRY, AMBIENT, CHILLED, FROZEN, FRAGILE] }
+        items:
+          type: array
+          items:
+            {
+              type: object,
+              additionalProperties: false,
+              properties:
+                {
+                  sku: { type: string },
+                  displayName: { type: string },
+                  packLabel: { type: string },
+                  quantity: { type: integer },
+                  notes: { type: string },
+                },
+            }
+        lotPicks:
+          type: array
+          items:
+            {
+              type: object,
+              additionalProperties: false,
+              properties:
+                {
+                  lotCode: { type: string },
+                  expiresAt: { type: string, format: date },
+                  quantity: { type: integer },
+                },
+            }
+        shipLabel:
+          {
+            type: object,
+            additionalProperties: false,
+            properties:
+              {
+                receiverName: { type: string },
+                phone: { type: string },
+                addressLines: { type: array, items: { type: string } },
+              },
+          }
+        packagingNotes: { type: string }
+  responses:
+    ValidationError:
+      description: '400 VALIDATION_ERROR'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    Unauthenticated:
+      description: '401'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    Forbidden:
+      description: '403'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    NotFound:
+      description: '404 (also for out-of-scope resources)'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    Conflict:
+      description: '409 state/idempotency/stock/price'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    Unprocessable:
+      description: '422 business rule / blocker'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }
+    RateLimited:
+      description: '429 with Retry-After'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorEnvelope' }

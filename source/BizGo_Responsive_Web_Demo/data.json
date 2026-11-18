@@ -1,0 +1,740 @@
+[
+  {
+    "id": 1,
+    "name": "Bột viên",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p01.webp"
+  },
+  {
+    "id": 2,
+    "name": "Bột mịn",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p02.webp"
+  },
+  {
+    "id": 3,
+    "name": "Ngô bung tím",
+    "unit": "Kg / Bì / Bao",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p03.webp"
+  },
+  {
+    "id": 4,
+    "name": "Ngô bung trắng",
+    "unit": "Kg / Bì / Bao",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p04.webp"
+  },
+  {
+    "id": 5,
+    "name": "Bột báng",
+    "unit": "Kg / Bao / Túi",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p05.webp"
+  },
+  {
+    "id": 6,
+    "name": "Trân châu 3Q trắng",
+    "unit": "Túi / Thùng",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p06.webp"
+  },
+  {
+    "id": 7,
+    "name": "Trân châu 3Q đen",
+    "unit": "Túi / Thùng",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p07.webp"
+  },
+  {
+    "id": 8,
+    "name": "Bột nếp",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p08.webp"
+  },
+  {
+    "id": 9,
+    "name": "Bột tẻ",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p09.webp"
+  },
+  {
+    "id": 10,
+    "name": "Bột nếp Thái",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p10.webp"
+  },
+  {
+    "id": 11,
+    "name": "Bột béo Tài Ký",
+    "unit": "Kg / Túi / Thùng",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p11.webp"
+  },
+  {
+    "id": 12,
+    "name": "Bột năng Tài Ký",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": "assets/p12.webp"
+  },
+  {
+    "id": 13,
+    "name": "Bột agar (túi aga)",
+    "unit": "Túi / Bì",
+    "note": "",
+    "category": "Bột Nấu Chè, Tinh Bột & Ngô Bung",
+    "categoryIndex": 0,
+    "image": null
+  },
+  {
+    "id": 14,
+    "name": "Cùi bưởi tươi trắng",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tạ / Yến",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p14.webp"
+  },
+  {
+    "id": 15,
+    "name": "Cùi bưởi tươi hồng",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tạ / Yến",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p15.webp"
+  },
+  {
+    "id": 16,
+    "name": "Cùi phớt hồng (Trắng bánh tẻ)",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": null
+  },
+  {
+    "id": 17,
+    "name": "Cùi hồng nhỏ",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p17.webp"
+  },
+  {
+    "id": 18,
+    "name": "Cùi hồng vuông",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p18.webp"
+  },
+  {
+    "id": 19,
+    "name": "Cùi hồng hải",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p19.webp"
+  },
+  {
+    "id": 20,
+    "name": "Cùi đẹp",
+    "unit": "Kg / Bao / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p20.webp"
+  },
+  {
+    "id": 21,
+    "name": "Cùi Zip",
+    "unit": "Túi / Bì / Kg",
+    "note": "Đóng túi zip",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": null
+  },
+  {
+    "id": 22,
+    "name": "Cùi bưởi lá dứa",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p22.webp"
+  },
+  {
+    "id": 23,
+    "name": "Cùi bưởi thốt nốt",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p23.webp"
+  },
+  {
+    "id": 24,
+    "name": "Cùi thốt nốt VIP",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p24.webp"
+  },
+  {
+    "id": 25,
+    "name": "Ruột bưởi da xanh",
+    "unit": "Kg / Bì / Bao",
+    "note": "Tạ / Yến",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p25.webp"
+  },
+  {
+    "id": 26,
+    "name": "Ruột bưởi",
+    "unit": "Kg / Bì / Bao",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p26.webp"
+  },
+  {
+    "id": 27,
+    "name": "Bưởi quả",
+    "unit": "Quả / Bao",
+    "note": "Đếm quả hoặc cân bì",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": null
+  },
+  {
+    "id": 28,
+    "name": "Cước",
+    "unit": "Cuộn / Bì",
+    "note": "Vật tư sơ chế",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": null
+  },
+  {
+    "id": 29,
+    "name": "Bao bưởi",
+    "unit": "Bao / Cái",
+    "note": "Bao bì đóng gói",
+    "category": "Cùi Bưởi, Ruột Bưởi & Phụ Liệu",
+    "categoryIndex": 1,
+    "image": "assets/p29.webp"
+  },
+  {
+    "id": 30,
+    "name": "Cốm",
+    "unit": "Kg / Túi / Bao",
+    "note": "",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p30.webp"
+  },
+  {
+    "id": 31,
+    "name": "Cốm tươi",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p31.webp"
+  },
+  {
+    "id": 32,
+    "name": "Cốm xanh bao 5kg",
+    "unit": "Bao / Bì",
+    "note": "Quy cách $5\\text{ kg}$/bao",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p32.webp"
+  },
+  {
+    "id": 33,
+    "name": "Sen tươi",
+    "unit": "Kg / Túi / Bì",
+    "note": "Tạ / Yến",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p33.webp"
+  },
+  {
+    "id": 34,
+    "name": "Sen khô",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tạ / Yến",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p34.webp"
+  },
+  {
+    "id": 35,
+    "name": "Đường chảy",
+    "unit": "Kg / Túi / Bao",
+    "note": "Đường thốt nốt sệt",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p35.webp"
+  },
+  {
+    "id": 36,
+    "name": "Đường Nhật Tường",
+    "unit": "Kg / Túi / Thùng",
+    "note": "Đường thốt nốt",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p36.webp"
+  },
+  {
+    "id": 37,
+    "name": "Đường Lan Nhi",
+    "unit": "Kg / Túi / Thùng",
+    "note": "Đường thốt nốt",
+    "category": "Cốm, Sen & Đường",
+    "categoryIndex": 2,
+    "image": "assets/p37.webp"
+  },
+  {
+    "id": 38,
+    "name": "Đậu đỏ to",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Các Loại Đậu & Hạt",
+    "categoryIndex": 3,
+    "image": "assets/p38.webp"
+  },
+  {
+    "id": 39,
+    "name": "Đậu ngự",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Các Loại Đậu & Hạt",
+    "categoryIndex": 3,
+    "image": "assets/p39.webp"
+  },
+  {
+    "id": 40,
+    "name": "Đậu xanh tách vỏ",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tấn / Tạ / Yến",
+    "category": "Các Loại Đậu & Hạt",
+    "categoryIndex": 3,
+    "image": "assets/p40.webp"
+  },
+  {
+    "id": 41,
+    "name": "Hạt đác",
+    "unit": "Kg / Túi / Bì",
+    "note": "Tạ / Yến",
+    "category": "Các Loại Đậu & Hạt",
+    "categoryIndex": 3,
+    "image": "assets/p41.webp"
+  },
+  {
+    "id": 42,
+    "name": "Khoai dẻo Zip",
+    "unit": "Túi / Kg / Bì",
+    "note": "Đóng túi zip",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p42.webp"
+  },
+  {
+    "id": 43,
+    "name": "Khoai dẻo đẹp",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p43.webp"
+  },
+  {
+    "id": 44,
+    "name": "Khoai dẻo VIP",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p44.webp"
+  },
+  {
+    "id": 45,
+    "name": "Mochi",
+    "unit": "Kg / Khay / Túi",
+    "note": "",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p45.webp"
+  },
+  {
+    "id": 46,
+    "name": "Mochi nhân đậu xanh",
+    "unit": "Kg / Khay / Túi",
+    "note": "",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p46.webp"
+  },
+  {
+    "id": 47,
+    "name": "Lọt mềm",
+    "unit": "Kg / Túi / Bì",
+    "note": "Bánh lọt mềm",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p47.webp"
+  },
+  {
+    "id": 48,
+    "name": "Set bánh trôi",
+    "unit": "Set / Khay",
+    "note": "",
+    "category": "Khoai Dẻo, Mochi & Bánh Trôi",
+    "categoryIndex": 4,
+    "image": "assets/p48.webp"
+  },
+  {
+    "id": 49,
+    "name": "Khoai kén cũ",
+    "unit": "Túi / Kg / Bì",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p49.webp"
+  },
+  {
+    "id": 50,
+    "name": "Khoai kén mới",
+    "unit": "Túi / Kg / Bì",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p50.webp"
+  },
+  {
+    "id": 51,
+    "name": "Khoai thanh",
+    "unit": "Túi / Kg / Bì",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p51.webp"
+  },
+  {
+    "id": 52,
+    "name": "Thanh tẩm vừng",
+    "unit": "Túi / Kg / Bì",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p52.webp"
+  },
+  {
+    "id": 53,
+    "name": "Khoai tây đỏ",
+    "unit": "Kg / Bao / Bì",
+    "note": "Tạ / Yến",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p53.webp"
+  },
+  {
+    "id": 54,
+    "name": "Ngô chiên",
+    "unit": "Túi / Kg / Bì",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p54.webp"
+  },
+  {
+    "id": 55,
+    "name": "Bột chiên chuối",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p55.webp"
+  },
+  {
+    "id": 56,
+    "name": "Xúc xích Winner (xx winer)",
+    "unit": "Gói / Cây / Thùng",
+    "note": "",
+    "category": "Đồ Chiên & Đồ Ăn Vặt",
+    "categoryIndex": 5,
+    "image": "assets/p56.webp"
+  },
+  {
+    "id": 57,
+    "name": "Trân châu túi đẹp",
+    "unit": "Túi / Thùng",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p57.webp"
+  },
+  {
+    "id": 58,
+    "name": "Trân châu túi zip",
+    "unit": "Túi / Thùng",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p58.webp"
+  },
+  {
+    "id": 59,
+    "name": "Trân châu hoàng kim",
+    "unit": "Túi / Thùng / Kg",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p59.webp"
+  },
+  {
+    "id": 60,
+    "name": "Trân châu đen",
+    "unit": "Túi / Thùng / Kg",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p60.webp"
+  },
+  {
+    "id": 61,
+    "name": "Trân châu xanh",
+    "unit": "Túi / Thùng / Kg",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p61.webp"
+  },
+  {
+    "id": 62,
+    "name": "Trân châu đỏ",
+    "unit": "Túi / Thùng / Kg",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p62.webp"
+  },
+  {
+    "id": 63,
+    "name": "Trân châu vàng",
+    "unit": "Túi / Thùng / Kg",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p63.webp"
+  },
+  {
+    "id": 64,
+    "name": "Sương sa hạt lựu",
+    "unit": "Kg / Túi / Hộp",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p64.webp"
+  },
+  {
+    "id": 65,
+    "name": "Hạt lựu khô",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p65.webp"
+  },
+  {
+    "id": 66,
+    "name": "Thạch nỏ hồng",
+    "unit": "Kg / Túi / Hộp",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p66.webp"
+  },
+  {
+    "id": 67,
+    "name": "Họt thạch dẻo",
+    "unit": "Kg / Túi / Hộp",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p67.webp"
+  },
+  {
+    "id": 68,
+    "name": "Dừa sên đường",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p68.webp"
+  },
+  {
+    "id": 69,
+    "name": "Dừa sợi",
+    "unit": "Kg / Bì / Túi",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p69.webp"
+  },
+  {
+    "id": 70,
+    "name": "Dừa khô",
+    "unit": "Kg / Bì / Bao",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p70.webp"
+  },
+  {
+    "id": 71,
+    "name": "Đu đủ sợi",
+    "unit": "Kg / Bì / Túi",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p71.webp"
+  },
+  {
+    "id": 72,
+    "name": "Mứt sơ ri",
+    "unit": "Kg / Hộp / Bì",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p72.webp"
+  },
+  {
+    "id": 73,
+    "name": "Chuối dẻo",
+    "unit": "Kg / Túi / Bì",
+    "note": "",
+    "category": "Trân Châu, Thạch, Hạt Lựu & Topping",
+    "categoryIndex": 6,
+    "image": "assets/p73.webp"
+  },
+  {
+    "id": 74,
+    "name": "Whipping Base",
+    "unit": "Hộp / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p74.webp"
+  },
+  {
+    "id": 75,
+    "name": "Rich lùn (Kem béo Rich's)",
+    "unit": "Hộp / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p75.webp"
+  },
+  {
+    "id": 76,
+    "name": "Nhất Hương lùn",
+    "unit": "Hộp / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p76.webp"
+  },
+  {
+    "id": 77,
+    "name": "Icehot lùn",
+    "unit": "Hộp / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p77.webp"
+  },
+  {
+    "id": 78,
+    "name": "Kem béo Nhất Hương",
+    "unit": "Hộp / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p78.webp"
+  },
+  {
+    "id": 79,
+    "name": "Nước cốt dừa Thái Chaokoh",
+    "unit": "Lon / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p79.webp"
+  },
+  {
+    "id": 80,
+    "name": "Nước cốt dừa Wonderfarm",
+    "unit": "Lon / Thùng",
+    "note": "",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p80.webp"
+  },
+  {
+    "id": 81,
+    "name": "Túi cốt dừa ép 2kg",
+    "unit": "Túi / Thùng",
+    "note": "Đóng túi $2\\text{ kg}$",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p81.webp"
+  },
+  {
+    "id": 82,
+    "name": "Túi sầu nhuyễn 2kg",
+    "unit": "Túi / Thùng",
+    "note": "Đóng túi $2\\text{ kg}$",
+    "category": "Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",
+    "categoryIndex": 7,
+    "image": "assets/p82.webp"
+  }
+]

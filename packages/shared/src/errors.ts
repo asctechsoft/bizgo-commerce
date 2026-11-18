@@ -1,0 +1,88 @@
+/** API error codes (ADR-0006). UI maps `code` → Vietnamese message key. */
+export const ERROR_CODES = [
+  'VALIDATION_ERROR',
+  'UNAUTHENTICATED',
+  'FORBIDDEN',
+  'NOT_FOUND',
+  'RATE_LIMITED',
+  'SKU_NOT_READY',
+  'PRICE_NOT_SET',
+  'PRICE_CHANGED',
+  'OUT_OF_STOCK',
+  'INSUFFICIENT_STOCK',
+  'INVALID_PACK_CONVERSION',
+  'DELIVERY_UNSUPPORTED',
+  'SHIPPING_FEE_UNDETERMINED',
+  'TAX_POLICY_UNDETERMINED',
+  'QUOTE_EXPIRED',
+  'PAYMENT_NOT_VERIFIED',
+  'UNAUTHORIZED_SCOPE',
+  'INVALID_STATE_TRANSITION',
+  'IDEMPOTENCY_CONFLICT',
+  'IDEMPOTENCY_IN_PROGRESS',
+  'LOT_EXPIRED',
+  'OTP_DELIVERY_NOT_CONFIGURED',
+  'OTP_INVALID',
+  'OTP_EXPIRED',
+  'OTP_LOCKED',
+  'FEATURE_DISABLED',
+  'MFA_REQUIRED',
+  'STEP_UP_REQUIRED',
+  'CREDENTIALS_INVALID',
+  'ACCOUNT_NOT_VERIFIED',
+  'EMAIL_OR_PHONE_TAKEN',
+  'INTERNAL_ERROR',
+] as const;
+export type ErrorCode = (typeof ERROR_CODES)[number];
+
+export const ERROR_HTTP_STATUS: Record<ErrorCode, number> = {
+  VALIDATION_ERROR: 400,
+  UNAUTHENTICATED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  RATE_LIMITED: 429,
+  SKU_NOT_READY: 422,
+  PRICE_NOT_SET: 422,
+  PRICE_CHANGED: 409,
+  OUT_OF_STOCK: 409,
+  INSUFFICIENT_STOCK: 409,
+  INVALID_PACK_CONVERSION: 422,
+  DELIVERY_UNSUPPORTED: 422,
+  SHIPPING_FEE_UNDETERMINED: 422,
+  TAX_POLICY_UNDETERMINED: 422,
+  QUOTE_EXPIRED: 422,
+  PAYMENT_NOT_VERIFIED: 422,
+  UNAUTHORIZED_SCOPE: 403,
+  INVALID_STATE_TRANSITION: 409,
+  IDEMPOTENCY_CONFLICT: 409,
+  IDEMPOTENCY_IN_PROGRESS: 409,
+  LOT_EXPIRED: 422,
+  OTP_DELIVERY_NOT_CONFIGURED: 503,
+  OTP_INVALID: 400,
+  OTP_EXPIRED: 400,
+  OTP_LOCKED: 429,
+  FEATURE_DISABLED: 503,
+  MFA_REQUIRED: 401,
+  STEP_UP_REQUIRED: 401,
+  CREDENTIALS_INVALID: 401,
+  ACCOUNT_NOT_VERIFIED: 403,
+  EMAIL_OR_PHONE_TAKEN: 409,
+  INTERNAL_ERROR: 500,
+};
+
+/** Domain error carried from services to the global exception filter. */
+export class AppError extends Error {
+  constructor(
+    readonly code: ErrorCode,
+    /** Vietnamese, safe to show to end users. */
+    message: string,
+    readonly details: ReadonlyArray<Record<string, unknown>> = [],
+  ) {
+    super(message);
+    this.name = 'AppError';
+  }
+
+  get status(): number {
+    return ERROR_HTTP_STATUS[this.code];
+  }
+}

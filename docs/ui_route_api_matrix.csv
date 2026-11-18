@@ -1,0 +1,32 @@
+﻿web_demo_route,nextjs_route,api,auth,acceptance,priority
+/,/,GET /v1/categories; GET /v1/products?featured=true; GET /v1/content/banners,public,"Hero, categories, products rendered from API, SEO and responsive",P0
+/catalog,/danh-muc,GET /v1/products; GET /v1/categories,public,URL-synced category/search/sort/page; empty/error/loading,P0
+/product/:id,/san-pham/[slug],GET /v1/products/:slug; GET /v1/variants/:id; GET /v1/pricing/quote,public,"SKU, accurate prices, stock, package, safe add-to-cart",P0
+/cart,/gio-hang,GET /v1/cart; POST/PATCH/DELETE /v1/cart/items,guest/customer,Cart persistent server side after login and server repricing,P0
+/checkout,/thanh-toan,POST /v1/checkout/quote; POST /v1/orders,guest/customer,"Address, shipping eligibility, server totals, idempotent order",P0
+/success,/dat-hang-thanh-cong,GET /v1/me/orders/:id or verified guest token,order owner,Real order id and authoritative payment state,P0
+/login,/dang-nhap,POST /v1/auth/login,public,Valid credentials/verification; rate limit; no demo login,P0
+/register,/dang-ky,POST /v1/auth/register,public,Verify identity and privacy consent,P0
+/otp,/xac-thuc-otp,POST /v1/auth/otp/verify; POST /v1/auth/otp/resend,public,"TTL attempts limit, no fixed demo OTP",P0
+/forgot,/quen-mat-khau,POST /v1/auth/password/forgot,public,Non-enumerating recovery flow,P0
+/reset,/dat-lai-mat-khau,POST /v1/auth/password/reset,public,"One-use expiring token, invalidate sessions",P0
+/account,/tai-khoan,GET /v1/me,customer,Profile and menu gated by login,P0
+/profile,/tai-khoan/ho-so,GET/PATCH /v1/me,customer,Read/write only own data,P0
+/addresses,/tai-khoan/dia-chi,GET/POST/PATCH/DELETE /v1/me/addresses,customer,Province district ward; ownership; default address,P0
+/orders,/tai-khoan/don-hang,GET /v1/me/orders,customer,Status tabs and pagination,P0
+/order/:id,/tai-khoan/don-hang/[id],GET /v1/me/orders/:id,order owner,Financial snapshot and shipment timeline,P0
+/track,/tra-cuu-don,POST /v1/orders/guest-track,verified guest,Require code and phone/OTP token to avoid IDOR,P0
+/likes,/tai-khoan/yeu-thich,GET/POST/DELETE /v1/me/wishlist,customer,Wishlist persists across devices,P1
+/notifications,/tai-khoan/thong-bao,GET/PATCH /v1/me/notifications,customer,Read/unread and preferences,P1
+/security,/tai-khoan/bao-mat,POST /v1/auth/password/change,customer,Reauthentication and session revoke,P1
+/wholesale,/ban-si,GET /v1/wholesale/info,public,B2B landing and pricing rules disclosure,P1
+/wholesale/register,/ban-si/dang-ky,POST /v1/wholesale/applications,customer,Submit organization profile for review,P1
+/wholesale/status,/ban-si/trang-thai,GET /v1/wholesale/applications/me,customer,Pending/approved/rejected with reason,P1
+/quote,/yeu-cau-bao-gia,POST /v1/quotes; GET /v1/me/quotes,approved/pending by policy,Quote request not a finalized order,P1
+/return,/doi-tra,POST /v1/returns; POST /v1/files/presign,order owner,Evidence upload and real ticket creation,P1
+/support,/ho-tro,GET /v1/support/topics; POST /v1/support/tickets,public/customer,"Ticket persists, no fake success toast",P1
+/contact,/lien-he,POST /v1/contact-requests,public,Rate-limited contact request,P1
+/guides,/cam-nang,GET /v1/content/articles,public,CMS listing,P2
+/guide/:slug,/cam-nang/[slug],GET /v1/content/articles/:slug,public,CMS article SEO,P2
+/policy/:type,/chinh-sach/[type],GET /v1/content/policies/:type,public,Only published reviewed policy,P0
+/about,/gioi-thieu,GET /v1/content/pages/about,public,Verified brand/legal info,P1

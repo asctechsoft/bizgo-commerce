@@ -1,0 +1,52 @@
+/*
+ * BizGo design tokens, taken from the HTML prototype (source/BizGo_Responsive_Web_Demo/index.html :root).
+ * Green/orange branding and radii are preserved; semantics/accessibility are rebuilt (ADR-0011).
+ */
+:root {
+  --bg-green: #176a3a;
+  --bg-deep: #104b2a;
+  --bg-mint: #e9f7ed;
+  --bg-soft: #f5f8f4;
+  --bg-ink: #1c2c24;
+  --bg-muted: #5f6f66; /* prototype #718077 darkened to meet 4.5:1 on white for body text */
+  --bg-border: #e3ebe4;
+  --bg-orange: #f67829;
+  --bg-orange-deep: #c9560f; /* accessible orange for text on white */
+  --bg-focus: #7edc99;
+  --bg-danger: #b3261e;
+  --bg-warning-bg: #fff4e5;
+  --bg-radius: 18px;
+  --bg-radius-sm: 11px;
+  --bg-shadow: 0 12px 40px #184b2c12;
+  --bg-container: 1240px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--bg-ink);
+  font-family: var(--font-be-vietnam), 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--bg-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

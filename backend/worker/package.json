@@ -1,0 +1,22 @@
+{
+  "name": "@bizgo/worker",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "dev": "tsc -p tsconfig.build.json && node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "dependencies": {
+    "@bizgo/db": "workspace:*",
+    "@bizgo/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "vitest": "3.2.7"
+  }
+}

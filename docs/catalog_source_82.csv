@@ -1,0 +1,83 @@
+﻿source_index,category_source,source_name,source_unit,source_note,is_sellable,sku_verified,images_verified
+1,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột viên,Kg / Bao / Bì,,false,false,false
+2,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột mịn,Kg / Bao / Bì,,false,false,false
+3,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Ngô bung tím,Kg / Bì / Bao,Tấn / Tạ / Yến,false,false,false
+4,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Ngô bung trắng,Kg / Bì / Bao,Tấn / Tạ / Yến,false,false,false
+5,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột báng,Kg / Bao / Túi,,false,false,false
+6,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Trân châu 3Q trắng,Túi / Thùng,,false,false,false
+7,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Trân châu 3Q đen,Túi / Thùng,,false,false,false
+8,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột nếp,Kg / Bao / Bì,Tấn / Tạ / Yến,false,false,false
+9,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột tẻ,Kg / Bao / Bì,Tấn / Tạ / Yến,false,false,false
+10,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột nếp Thái,Kg / Bao / Bì,,false,false,false
+11,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột béo Tài Ký,Kg / Túi / Thùng,,false,false,false
+12,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột năng Tài Ký,Kg / Bao / Bì,Tấn / Tạ / Yến,false,false,false
+13,"Bột Nấu Chè, Tinh Bột & Ngô Bung",Bột agar (túi aga),Túi / Bì,,false,false,false
+14,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi bưởi tươi trắng,Kg / Bao / Bì,Tạ / Yến,false,false,false
+15,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi bưởi tươi hồng,Kg / Bao / Bì,Tạ / Yến,false,false,false
+16,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi phớt hồng (Trắng bánh tẻ),Kg / Bao / Bì,,false,false,false
+17,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi hồng nhỏ,Kg / Bao / Bì,,false,false,false
+18,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi hồng vuông,Kg / Bao / Bì,,false,false,false
+19,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi hồng hải,Kg / Bao / Bì,,false,false,false
+20,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi đẹp,Kg / Bao / Bì,,false,false,false
+21,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi Zip,Túi / Bì / Kg,Đóng túi zip,false,false,false
+22,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi bưởi lá dứa,Kg / Túi / Bì,,false,false,false
+23,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi bưởi thốt nốt,Kg / Túi / Bì,,false,false,false
+24,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cùi thốt nốt VIP,Kg / Túi / Bì,,false,false,false
+25,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Ruột bưởi da xanh,Kg / Bì / Bao,Tạ / Yến,false,false,false
+26,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Ruột bưởi,Kg / Bì / Bao,Tấn / Tạ / Yến,false,false,false
+27,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Bưởi quả,Quả / Bao,Đếm quả hoặc cân bì,false,false,false
+28,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Cước,Cuộn / Bì,Vật tư sơ chế,false,false,false
+29,"Cùi Bưởi, Ruột Bưởi & Phụ Liệu",Bao bưởi,Bao / Cái,Bao bì đóng gói,false,false,false
+30,"Cốm, Sen & Đường",Cốm,Kg / Túi / Bao,,false,false,false
+31,"Cốm, Sen & Đường",Cốm tươi,Kg / Túi / Bì,,false,false,false
+32,"Cốm, Sen & Đường",Cốm xanh bao 5kg,Bao / Bì,Quy cách $5\text{ kg}$/bao,false,false,false
+33,"Cốm, Sen & Đường",Sen tươi,Kg / Túi / Bì,Tạ / Yến,false,false,false
+34,"Cốm, Sen & Đường",Sen khô,Kg / Bao / Bì,Tạ / Yến,false,false,false
+35,"Cốm, Sen & Đường",Đường chảy,Kg / Túi / Bao,Đường thốt nốt sệt,false,false,false
+36,"Cốm, Sen & Đường",Đường Nhật Tường,Kg / Túi / Thùng,Đường thốt nốt,false,false,false
+37,"Cốm, Sen & Đường",Đường Lan Nhi,Kg / Túi / Thùng,Đường thốt nốt,false,false,false
+38,Các Loại Đậu & Hạt,Đậu đỏ to,Kg / Bao / Bì,Tấn / Tạ / Yến,false,false,false
+39,Các Loại Đậu & Hạt,Đậu ngự,Kg / Bao / Bì,Tấn / Tạ / Yến,false,false,false
+40,Các Loại Đậu & Hạt,Đậu xanh tách vỏ,Kg / Bao / Bì,Tấn / Tạ / Yến,false,false,false
+41,Các Loại Đậu & Hạt,Hạt đác,Kg / Túi / Bì,Tạ / Yến,false,false,false
+42,"Khoai Dẻo, Mochi & Bánh Trôi",Khoai dẻo Zip,Túi / Kg / Bì,Đóng túi zip,false,false,false
+43,"Khoai Dẻo, Mochi & Bánh Trôi",Khoai dẻo đẹp,Kg / Túi / Bì,,false,false,false
+44,"Khoai Dẻo, Mochi & Bánh Trôi",Khoai dẻo VIP,Kg / Túi / Bì,,false,false,false
+45,"Khoai Dẻo, Mochi & Bánh Trôi",Mochi,Kg / Khay / Túi,,false,false,false
+46,"Khoai Dẻo, Mochi & Bánh Trôi",Mochi nhân đậu xanh,Kg / Khay / Túi,,false,false,false
+47,"Khoai Dẻo, Mochi & Bánh Trôi",Lọt mềm,Kg / Túi / Bì,Bánh lọt mềm,false,false,false
+48,"Khoai Dẻo, Mochi & Bánh Trôi",Set bánh trôi,Set / Khay,,false,false,false
+49,Đồ Chiên & Đồ Ăn Vặt,Khoai kén cũ,Túi / Kg / Bì,,false,false,false
+50,Đồ Chiên & Đồ Ăn Vặt,Khoai kén mới,Túi / Kg / Bì,,false,false,false
+51,Đồ Chiên & Đồ Ăn Vặt,Khoai thanh,Túi / Kg / Bì,,false,false,false
+52,Đồ Chiên & Đồ Ăn Vặt,Thanh tẩm vừng,Túi / Kg / Bì,,false,false,false
+53,Đồ Chiên & Đồ Ăn Vặt,Khoai tây đỏ,Kg / Bao / Bì,Tạ / Yến,false,false,false
+54,Đồ Chiên & Đồ Ăn Vặt,Ngô chiên,Túi / Kg / Bì,,false,false,false
+55,Đồ Chiên & Đồ Ăn Vặt,Bột chiên chuối,Kg / Túi / Bì,,false,false,false
+56,Đồ Chiên & Đồ Ăn Vặt,Xúc xích Winner (xx winer),Gói / Cây / Thùng,,false,false,false
+57,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu túi đẹp,Túi / Thùng,,false,false,false
+58,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu túi zip,Túi / Thùng,,false,false,false
+59,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu hoàng kim,Túi / Thùng / Kg,,false,false,false
+60,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu đen,Túi / Thùng / Kg,,false,false,false
+61,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu xanh,Túi / Thùng / Kg,,false,false,false
+62,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu đỏ,Túi / Thùng / Kg,,false,false,false
+63,"Trân Châu, Thạch, Hạt Lựu & Topping",Trân châu vàng,Túi / Thùng / Kg,,false,false,false
+64,"Trân Châu, Thạch, Hạt Lựu & Topping",Sương sa hạt lựu,Kg / Túi / Hộp,,false,false,false
+65,"Trân Châu, Thạch, Hạt Lựu & Topping",Hạt lựu khô,Kg / Túi / Bì,,false,false,false
+66,"Trân Châu, Thạch, Hạt Lựu & Topping",Thạch nỏ hồng,Kg / Túi / Hộp,,false,false,false
+67,"Trân Châu, Thạch, Hạt Lựu & Topping",Họt thạch dẻo,Kg / Túi / Hộp,,false,false,false
+68,"Trân Châu, Thạch, Hạt Lựu & Topping",Dừa sên đường,Kg / Túi / Bì,,false,false,false
+69,"Trân Châu, Thạch, Hạt Lựu & Topping",Dừa sợi,Kg / Bì / Túi,,false,false,false
+70,"Trân Châu, Thạch, Hạt Lựu & Topping",Dừa khô,Kg / Bì / Bao,,false,false,false
+71,"Trân Châu, Thạch, Hạt Lựu & Topping",Đu đủ sợi,Kg / Bì / Túi,,false,false,false
+72,"Trân Châu, Thạch, Hạt Lựu & Topping",Mứt sơ ri,Kg / Hộp / Bì,,false,false,false
+73,"Trân Châu, Thạch, Hạt Lựu & Topping",Chuối dẻo,Kg / Túi / Bì,,false,false,false
+74,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Whipping Base,Hộp / Thùng,,false,false,false
+75,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Rich lùn (Kem béo Rich's),Hộp / Thùng,,false,false,false
+76,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Nhất Hương lùn,Hộp / Thùng,,false,false,false
+77,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Icehot lùn,Hộp / Thùng,,false,false,false
+78,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Kem béo Nhất Hương,Hộp / Thùng,,false,false,false
+79,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Nước cốt dừa Thái Chaokoh,Lon / Thùng,,false,false,false
+80,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Nước cốt dừa Wonderfarm,Lon / Thùng,,false,false,false
+81,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Túi cốt dừa ép 2kg,Túi / Thùng,Đóng túi $2\text{ kg}$,false,false,false
+82,"Kem Béo, Nước Cốt Dừa, Whipping & Sầu Riêng",Túi sầu nhuyễn 2kg,Túi / Thùng,Đóng túi $2\text{ kg}$,false,false,false
