@@ -147,7 +147,8 @@
     "viewCart": "Xem giỏ hàng",
     "outOfStock": "Hết hàng",
     "loginToBuy": "Vui lòng đăng nhập để thêm vào giỏ hàng.",
-    "pricesEstimate": "Giá hiển thị chỉ để tham khảo; tổng tiền cuối cùng do hệ thống tính khi thanh toán."
+    "pricesEstimate": "Giá hiển thị chỉ để tham khảo; tổng tiền cuối cùng do hệ thống tính khi thanh toán.",
+    "available": "Có thể đặt mua"
   },
   "errors": {
     "title": "Không tải được dữ liệu",

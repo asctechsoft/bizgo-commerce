@@ -24,3 +24,8 @@
 | D18 | BLOCKED_DECISION | Definition of combo/set bundles                                                                          | TBD             | TBD   | TBD  | bundles (P1)                                          |
 | D19 | BLOCKED_DECISION | Reviews: eligibility & moderation                                                                        | TBD             | TBD   | TBD  | reviews (P1)                                          |
 | D20 | BLOCKED_DECISION | Privileged-account MFA method & recovery process                                                         | TBD             | TBD   | TBD  | auth, owner bootstrap                                 |
+
+## ADR-0014 — Public catalogue shows DRAFT source items as browse-only (2026-11-19)
+- Decision: the public catalogue API lists ACTIVE **and** DRAFT products (PAUSED/ARCHIVED stay hidden). Each item carries `sellable` (= ACTIVE). DRAFT items show "Chưa mở bán", expose no variants/prices, and cannot enter a cart (unchanged server gate: SKU readiness + ACTIVE variant).
+- Why: the owner wants the storefront to look like the prototype with all 82 source items and their illustrative images. No SKU, price, stock or legal status is invented.
+- Reverting: filter `BROWSABLE` to `['ACTIVE']` in `catalog.service.ts`.

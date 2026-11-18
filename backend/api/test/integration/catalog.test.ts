@@ -11,13 +11,16 @@ afterAll(async () => {
   await t.close();
 });
 
-describe('public catalog (P1-09): ACTIVE only', () => {
-  it('lists the 8 ACTIVE categories with zero active products (everything is DRAFT)', async () => {
+describe('public catalog (P1-09): ACTIVE + DRAFT browsable, only ACTIVE sellable', () => {
+  it('lists the 8 ACTIVE categories counting the 82 browsable source items', async () => {
     const res = await request(t.server).get('/v1/categories').expect(200);
     expect(res.body.data).toHaveLength(8);
     expect(
-      res.body.data.every((c: { activeProductCount: number }) => c.activeProductCount === 0),
-    ).toBe(true);
+      res.body.data.reduce(
+        (n: number, c: { activeProductCount: number }) => n + c.activeProductCount,
+        0,
+      ),
+    ).toBe(82);
     expect(res.body.data[0]).toEqual(
       expect.objectContaining({ slug: 'bot-nau-che-tinh-bot', name: 'Bột nấu chè & tinh bột' }),
     );
@@ -30,20 +33,29 @@ describe('public catalog (P1-09): ACTIVE only', () => {
     ]);
   });
 
-  it('returns an empty product page, never DRAFT items', async () => {
+  it('lists DRAFT source items as browsable but never sellable', async () => {
     const res = await request(t.server).get('/v1/products').expect(200);
-    expect(res.body.data).toEqual([]);
-    expect(res.body.meta).toEqual(expect.objectContaining({ page: 1, limit: 24, total: 0 }));
+    expect(res.body.meta).toEqual(expect.objectContaining({ page: 1, limit: 24, total: 82 }));
+    expect(res.body.data.every((p: { sellable: boolean }) => p.sellable === false)).toBe(true);
   });
 
-  it('search never reveals DRAFT products', async () => {
+  it('search finds DRAFT products and flags them not sellable', async () => {
     const res = await request(t.server).get('/v1/products?search=cui%20zip').expect(200);
-    expect(res.body.meta.total).toBe(0);
+    expect(res.body.meta.total).toBe(1);
+    expect(res.body.data[0].sellable).toBe(false);
   });
 
-  it('PDP of a DRAFT product is 404', async () => {
-    const res = await request(t.server).get('/v1/products/cui-zip').expect(404);
-    expect(res.body.code).toBe('NOT_FOUND');
+  it('PDP of a DRAFT product is viewable, not sellable, and has no variants', async () => {
+    const res = await request(t.server).get('/v1/products/cui-zip').expect(200);
+    expect(res.body.data.sellable).toBe(false);
+    expect(res.body.data.variants).toEqual([]);
+  });
+
+  it('paused/archived products are hidden', async () => {
+    const p = await t.prisma.product.findFirstOrThrow({ where: { sourceName: 'Cùi Zip' } });
+    await t.prisma.product.update({ where: { id: p.id }, data: { status: 'PAUSED' } });
+    await request(t.server).get('/v1/products/cui-zip').expect(404);
+    await t.prisma.product.update({ where: { id: p.id }, data: { status: 'DRAFT' } });
   });
 
   it('exposes a product publicly only once it is ACTIVE (and hides it again when paused)', async () => {
@@ -59,14 +71,22 @@ describe('public catalog (P1-09): ACTIVE only', () => {
       isIllustrative: true,
     } satisfies object);
     // public DTO has no provenance, cost or status fields
-    expect(Object.keys(item).sort()).toEqual(['category', 'id', 'image', 'name', 'slug']);
+    expect(Object.keys(item).sort()).toEqual([
+      'category',
+      'id',
+      'image',
+      'name',
+      'sellable',
+      'slug',
+    ]);
+    expect(item.sellable).toBe(true);
     const detail = await request(t.server).get('/v1/products/cui-dep').expect(200);
     expect(detail.body.data.variants).toEqual([]);
     const cats = await request(t.server).get('/v1/categories').expect(200);
     expect(
       cats.body.data.find((c: { slug: string }) => c.slug === 'cui-buoi-phu-lieu')
         .activeProductCount,
-    ).toBe(1);
+    ).toBe(16);
 
     await t.prisma.product.update({ where: { id: p.id }, data: { status: 'PAUSED' } });
     await request(t.server).get('/v1/products/cui-dep').expect(404);
@@ -95,7 +115,7 @@ describe('public catalog (P1-09): ACTIVE only', () => {
       .get('/v1/products?search=tran%20chau&sort=-name&limit=2&page=1')
       .expect(200);
     expect(c.body.data).toHaveLength(2);
-    expect(c.body.meta.total).toBe(3);
+    expect(c.body.meta.total).toBe(9);
   });
 
   it('treats SQL/wildcard characters in search as plain text', async () => {

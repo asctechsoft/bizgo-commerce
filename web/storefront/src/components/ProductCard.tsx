@@ -41,8 +41,10 @@ export async function ProductCard({ product }: { product: PublicProduct }) {
           </Link>
         </h3>
         <p className="m-0 text-xs text-muted">{product.category.name}</p>
-        <p className="m-0 mt-auto text-[13px] font-bold text-orange-deep">
-          {p('priceUnavailable')}
+        <p
+          className={`m-0 mt-auto text-[13px] font-bold ${product.sellable ? 'text-green' : 'text-orange-deep'}`}
+        >
+          {product.sellable ? p('available') : p('notForSale')}
         </p>
         <Link
           href={`/san-pham/${product.slug}`}

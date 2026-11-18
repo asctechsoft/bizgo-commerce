@@ -67,6 +67,7 @@ export interface PublicProduct {
   id: string;
   slug: string;
   name: string;
+  sellable: boolean;
   category: { slug: string; name: string };
   image: { url: string; isIllustrative: boolean } | null;
 }

@@ -761,7 +761,10 @@ describe('SKU activation gate and owner pricing/inventory APIs', () => {
     expect((await t.prisma.productVariant.findUniqueOrThrow({ where: { id: vid } })).status).toBe(
       'DRAFT',
     );
-    expect((await request(t.server).get('/v1/products/bot-te')).status).toBe(404);
+    // still only browsable: not sellable and no variant is exposed
+    const pdp = await request(t.server).get('/v1/products/bot-te').expect(200);
+    expect(pdp.body.data.sellable).toBe(false);
+    expect(pdp.body.data.variants).toEqual([]);
   });
 
   it('a TEST SKU passes the gate; the product then appears publicly with price and in-stock flag but never cost', async () => {

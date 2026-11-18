@@ -74,6 +74,8 @@ export interface PublicProductDto {
   id: string;
   slug: string;
   name: string;
+  /** false while the source item is DRAFT: browsable, but no SKU/price/stock is verified so it cannot be bought. */
+  sellable: boolean;
   category: { slug: string; name: string };
   image: { url: string; isIllustrative: boolean } | null;
 }

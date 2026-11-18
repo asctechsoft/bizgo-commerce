@@ -52,6 +52,9 @@ function adminSort(sort: string | undefined): Prisma.ProductOrderByWithRelationI
   }
 }
 
+/** Source catalogue items stay browsable while DRAFT, but only ACTIVE items (passed the SKU gate) can be sold. */
+const BROWSABLE: Array<'ACTIVE' | 'DRAFT'> = ['ACTIVE', 'DRAFT'];
+
 @Injectable()
 export class CatalogService {
   constructor(
@@ -59,7 +62,7 @@ export class CatalogService {
     private readonly clock: Clock,
   ) {}
 
-  // ───────────────────────────── Public (ACTIVE only) ─────────────────────────────
+  // ───────────────────────────── Public (browsable: ACTIVE + DRAFT; only ACTIVE is sellable) ─────────────────────────────
 
   async listCategories(): Promise<PublicCategoryDto[]> {
     const cats = await this.prisma.category.findMany({
@@ -68,7 +71,7 @@ export class CatalogService {
     });
     const counts = await this.prisma.product.groupBy({
       by: ['categoryId'],
-      where: { status: 'ACTIVE' },
+      where: { status: { in: BROWSABLE } },
       _count: { _all: true },
     });
     const byCat = new Map(counts.map((c) => [c.categoryId, c._count._all]));
@@ -90,7 +93,7 @@ export class CatalogService {
     const page = q.page ?? 1;
     const limit = q.limit ?? DEFAULT_LIMIT;
     const where: Prisma.ProductWhereInput = {
-      status: 'ACTIVE',
+      status: { in: BROWSABLE },
       category: { status: 'ACTIVE', ...(q.category ? { slug: q.category } : {}) },
       AND: searchFilter(q.search),
     };
@@ -115,7 +118,7 @@ export class CatalogService {
   async getProduct(slug: string): Promise<PublicProductDetailDto> {
     const now = this.clock.now();
     const p = await this.prisma.product.findFirst({
-      where: { slug, status: 'ACTIVE', category: { status: 'ACTIVE' } },
+      where: { slug, status: { in: BROWSABLE }, category: { status: 'ACTIVE' } },
       include: {
         category: true,
         media: { orderBy: { sortOrder: 'asc' }, take: 1 },
@@ -153,6 +156,7 @@ export class CatalogService {
     id: string;
     slug: string;
     displayName: string;
+    status: string;
     category: { slug: string; displayName: string };
     media: { storageKey: string; isIllustrative: boolean }[];
   }): PublicProductDto {
@@ -161,6 +165,7 @@ export class CatalogService {
       id: p.id,
       slug: p.slug,
       name: p.displayName,
+      sellable: p.status === 'ACTIVE',
       category: { slug: p.category.slug, name: p.category.displayName },
       image: m ? { url: m.storageKey, isIllustrative: m.isIllustrative } : null,
     };
