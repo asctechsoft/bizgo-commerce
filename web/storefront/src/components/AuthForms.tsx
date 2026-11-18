@@ -55,7 +55,7 @@ export function LoginForm() {
       setDone(r.user.displayName);
       // only same-site relative paths are honoured (no open redirect)
       const next = new URLSearchParams(window.location.search).get('next');
-      if (next && /^\/(?!\/)/.test(next)) router.push(next);
+      router.push(next && /^\/(?!\/)/.test(next) ? next : '/tai-khoan');
     } catch (e2) {
       err.set(e2);
     } finally {

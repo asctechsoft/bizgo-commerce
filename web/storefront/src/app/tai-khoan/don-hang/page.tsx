@@ -10,8 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const t = await getTranslations('orders');
   return (
-    <div className="pt-6">
-      <h1 className="m-0 text-2xl font-extrabold">{t('title')}</h1>
+    <div>
+      <h2 className="m-0 text-xl font-extrabold">{t('title')}</h2>
       <OrdersList />
     </div>
   );

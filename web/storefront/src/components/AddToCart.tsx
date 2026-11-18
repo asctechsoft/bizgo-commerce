@@ -9,6 +9,7 @@ import { browserApi } from '@/lib/api';
 import { formatVnd } from '@/lib/format';
 import { isUnauthenticated } from '@/lib/errors';
 import { ApiErrorBox } from './ApiErrorBox';
+import { CART_CHANGED } from './HeaderTools';
 
 /** Only variants with a backend-provided price are purchasable; price/stock are re-validated by the API. */
 export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug: string }) {
@@ -37,6 +38,7 @@ export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug:
     try {
       await browserApi().cart.add(variant!.id, qty);
       setDone(true);
+      window.dispatchEvent(new Event(CART_CHANGED));
     } catch (e) {
       setError(e);
     } finally {

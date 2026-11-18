@@ -87,10 +87,10 @@ export function CheckoutView() {
   const list: Address[] = addresses.data ?? [];
 
   return (
-    <div className="mt-4 grid gap-6 md:grid-cols-[1fr_380px]">
-      <section aria-labelledby="addr-h">
-        <h2 id="addr-h" className="mt-0 text-lg font-bold">
-          {t('address')}
+    <div className="mt-5 grid items-start gap-[26px] md:grid-cols-[1fr_350px]">
+      <section aria-labelledby="addr-h" className="rounded-[15px] border border-line p-5">
+        <h2 id="addr-h" className="mb-[17px] mt-0 text-[14px] font-bold">
+          {t('step1')}
         </h2>
         {list.length === 0 && !adding ? (
           <EmptyState
@@ -136,8 +136,11 @@ export function CheckoutView() {
         ) : null}
       </section>
 
-      <aside aria-labelledby="sum-h" className="h-fit rounded-card border border-line bg-white p-4">
-        <h2 id="sum-h" className="mt-0 text-lg font-bold">
+      <aside
+        aria-labelledby="sum-h"
+        className="h-fit rounded-[17px] border border-line bg-white p-5"
+      >
+        <h2 id="sum-h" className="mt-0 text-[14px] font-bold">
           {t('summary')}
         </h2>
         <div aria-live="polite">
@@ -201,7 +204,7 @@ export function CheckoutView() {
                 </ul>
               </div>
             ) : null}
-            <h3 className="mb-1 mt-4 text-[14px] font-bold">{t('payment')}</h3>
+            <h3 className="mb-1 mt-4 text-[14px] font-bold">{t('step2')}</h3>
             <p className="m-0 text-[13px] font-semibold">{t('cod')}</p>
             <p className="mt-1 text-xs text-muted">{t('codNote')}</p>
             {placeError ? (

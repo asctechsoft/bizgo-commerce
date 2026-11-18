@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { EmptyState } from '@bizgo/ui-web';
+import { PageHead } from '@/components/PageHead';
 import { Pagination } from '@/components/Pagination';
 import { ProductGrid } from '@/components/ProductCard';
 import { serverApi } from '@/lib/api';
@@ -33,6 +34,16 @@ export default async function CatalogPage({
       limit: LIMIT,
     }),
   ]);
+  const current = categories.find((c) => c.slug === params.category);
+  const title = params.search
+    ? t('searchResultTitle', { query: params.search })
+    : (current?.name ?? t('heading'));
+  const sideItem = (active: boolean) =>
+    `block w-full rounded-lg px-[5px] py-2.5 text-left text-[11px] ${
+      active
+        ? 'bg-green-mint font-bold text-green'
+        : 'text-[#506559] hover:bg-green-mint hover:text-green'
+    }`;
   const chip = (active: boolean) =>
     `inline-flex min-h-tap items-center whitespace-nowrap rounded-full border px-4 text-[13px] font-semibold ${
       active
@@ -41,10 +52,18 @@ export default async function CatalogPage({
     }`;
 
   return (
-    <div className="pt-6">
-      <h1 className="m-0 text-2xl font-extrabold">{t('title')}</h1>
+    <div>
+      <PageHead
+        crumbs={[{ label: current?.name ?? t('title') }]}
+        title={title}
+        sub={t('subtitle')}
+      />
 
-      <nav aria-label={t('title')} className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-2">
+      {/* phones: horizontally scrollable chips (prototype .mobile-filter) */}
+      <nav
+        aria-label={t('title')}
+        className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-2 md:hidden"
+      >
         <Link
           href={catalogHref({ search: params.search, sort: params.sort })}
           aria-current={!params.category ? 'page' : undefined}
@@ -64,77 +83,96 @@ export default async function CatalogPage({
         ))}
       </nav>
 
-      <form
-        id="tim-kiem"
-        action="/danh-muc"
-        method="get"
-        className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end"
-      >
-        {params.category ? <input type="hidden" name="category" value={params.category} /> : null}
-        <div className="flex-1">
-          <label htmlFor="catalog-search" className="mb-1.5 block text-[13px] font-semibold">
-            {t('searchLabel')}
-          </label>
-          <input
-            id="catalog-search"
-            name="search"
-            type="search"
-            maxLength={100}
-            defaultValue={params.search ?? ''}
-            className="min-h-tap w-full rounded-control border border-line px-3 text-[14px]"
-          />
-        </div>
-        <div>
-          <label htmlFor="catalog-sort" className="mb-1.5 block text-[13px] font-semibold">
-            {t('sortLabel')}
-          </label>
-          <select
-            id="catalog-sort"
-            name="sort"
-            defaultValue={params.sort}
-            className="min-h-tap w-full rounded-control border border-line bg-white px-3 text-[14px] sm:w-auto"
-          >
-            {SORTS.map((s) => (
-              <option key={s} value={s}>
-                {t(`sort.${s}`)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="min-h-tap rounded-control bg-green px-5 text-[13px] font-bold text-white hover:bg-green-deep"
-        >
-          {t('apply')}
-        </button>
-      </form>
-
-      <p role="status" className="mb-4 mt-6 text-[13px] text-muted">
-        {t('resultCount', { count: result.total })}
-      </p>
-
-      {result.items.length > 0 ? (
-        <>
-          <ProductGrid products={result.items} />
-          <Pagination params={params} total={result.total} limit={LIMIT} />
-        </>
-      ) : params.search ? (
-        <EmptyState
-          title={t('emptySearchTitle')}
-          description={t('emptySearchText', { query: params.search })}
-          icon="🔍"
-          action={
+      <div className="mt-5 grid gap-[25px] md:grid-cols-[235px_minmax(0,1fr)]">
+        <aside className="hidden h-fit rounded-[17px] border border-line bg-white p-5 md:block">
+          <h2 className="mb-[13px] mt-0 text-[13px]">{t('sidebarTitle')}</h2>
+          <nav aria-label={t('sidebarTitle')}>
             <Link
-              href="/danh-muc"
-              className="inline-flex min-h-tap items-center rounded-control bg-green px-5 text-[13px] font-bold text-white"
+              href={catalogHref({ search: params.search, sort: params.sort })}
+              aria-current={!params.category ? 'page' : undefined}
+              className={sideItem(!params.category)}
             >
-              {t('clearFilters')}
+              {t('allCategories')}
             </Link>
-          }
-        />
-      ) : (
-        <EmptyState title={t('emptyTitle')} description={t('emptyText')} icon="🥣" />
-      )}
+            {categories.map((c) => (
+              <Link
+                key={c.id}
+                href={catalogHref({ category: c.slug, search: params.search, sort: params.sort })}
+                aria-current={params.category === c.slug ? 'page' : undefined}
+                className={sideItem(params.category === c.slug)}
+              >
+                {c.name}
+              </Link>
+            ))}
+          </nav>
+          <hr className="my-[17px] border-0 border-t border-line" />
+          <h2 className="mb-[13px] mt-0 text-[13px]">{t('sellStatusTitle')}</h2>
+          <p className="m-0 text-[12px] leading-[1.9] text-muted">{t('sellStatusText')}</p>
+        </aside>
+
+        <div className="min-w-0">
+          <form
+            id="tim-kiem"
+            action="/danh-muc"
+            method="get"
+            className="mb-[18px] flex flex-wrap items-center justify-between gap-2.5"
+          >
+            {params.category ? (
+              <input type="hidden" name="category" value={params.category} />
+            ) : null}
+            {params.search ? <input type="hidden" name="search" value={params.search} /> : null}
+            <p role="status" className="m-0 text-[12px] text-muted">
+              {t('showing', { count: result.total })}
+            </p>
+            <div className="flex items-center gap-2">
+              <label htmlFor="catalog-sort" className="sr-only">
+                {t('sortLabel')}
+              </label>
+              <select
+                id="catalog-sort"
+                name="sort"
+                defaultValue={params.sort}
+                className="min-h-[40px] max-w-[190px] rounded-[9px] border border-line bg-white px-2.5 text-[13px]"
+              >
+                {SORTS.map((s) => (
+                  <option key={s} value={s}>
+                    {t(`sort.${s}`)}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="min-h-[40px] rounded-[9px] bg-green px-4 text-[12px] font-bold text-white hover:bg-green-deep"
+              >
+                {t('apply')}
+              </button>
+            </div>
+          </form>
+
+          {result.items.length > 0 ? (
+            <>
+              <ProductGrid products={result.items} />
+              <Pagination params={params} total={result.total} limit={LIMIT} />
+            </>
+          ) : params.search ? (
+            <EmptyState
+              title={t('emptySearchTitle')}
+              description={t('emptySearchText', { query: params.search })}
+              icon="🔍"
+              action={
+                <Link
+                  href="/danh-muc"
+                  className="inline-flex min-h-tap items-center rounded-control bg-green px-5 text-[13px] font-bold text-white"
+                >
+                  {t('clearFilters')}
+                </Link>
+              }
+            />
+          ) : (
+            <EmptyState title={t('emptyTitle')} description={t('emptyText')} icon="🥣" />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

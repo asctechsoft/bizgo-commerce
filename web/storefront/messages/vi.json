@@ -14,18 +14,25 @@
     "loading": "Đang tải…",
     "illustrativeImage": "Ảnh minh họa",
     "noImage": "Chưa có ảnh",
-    "requestRef": "Mã tham chiếu: {id}"
+    "requestRef": "Mã tham chiếu: {id}",
+    "home": "Trang chủ"
   },
   "header": {
     "searchLabel": "Tìm kiếm nguyên liệu",
-    "searchPlaceholder": "Tìm cùi bưởi, trân châu, bột nếp…",
-    "searchButton": "Tìm",
+    "searchPlaceholder": "Tìm bột báng, trân châu, cùi bưởi…",
+    "searchButton": "Tìm kiếm",
     "login": "Đăng nhập",
     "account": "Tài khoản",
     "menu": "Danh mục",
     "mainNav": "Điều hướng chính",
     "allCategories": "Tất cả danh mục",
-    "cart": "Giỏ hàng"
+    "cart": "Giỏ hàng",
+    "stripLeft": "BizGo – Nguồn nguyên liệu nấu chè & đồ ăn vặt",
+    "stripRight": "Sản phẩm chỉ mở bán sau khi xác minh quy cách và giá",
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "announcement": "Nguồn hàng từ xưởng đối tác",
+    "cartCount": "Số sản phẩm trong giỏ"
   },
   "mobileBar": {
     "home": "Trang chủ",
@@ -33,7 +40,8 @@
     "search": "Tìm kiếm",
     "account": "Tài khoản",
     "label": "Điều hướng nhanh",
-    "cart": "Giỏ hàng"
+    "cart": "Giỏ hàng",
+    "orders": "Đơn hàng"
   },
   "hero": {
     "eyebrow": "Nguồn hàng từ xưởng • BizGo",
@@ -107,7 +115,15 @@
     "pagination": "Phân trang",
     "prev": "Trang trước",
     "next": "Trang sau",
-    "page": "Trang {page} / {pages}"
+    "page": "Trang {page} / {pages}",
+    "sidebarTitle": "Danh mục sản phẩm",
+    "showing": "Hiển thị {count} mặt hàng",
+    "sellStatusTitle": "Trạng thái bán hàng",
+    "sellStatusText": "Chỉ những mặt hàng đã xác minh quy cách, giá và tồn kho mới được mở bán.",
+    "subtitle": "Danh mục nguyên liệu nấu chè và đồ ăn vặt của BizGo.",
+    "heading": "Tất cả nguyên liệu BizGo",
+    "viewDetails": "Xem chi tiết",
+    "searchResultTitle": "Kết quả tìm kiếm: {query}"
   },
   "product": {
     "breadcrumbHome": "Trang chủ",
@@ -192,7 +208,21 @@
   "footer": {
     "about": "BizGo là kênh bán hàng trực tuyến; hàng được cung ứng từ xưởng đối tác. Thông tin pháp nhân bán hàng, chính sách và liên hệ sẽ được công bố sau khi được phê duyệt.",
     "legalPending": "Thông tin người bán đang được hoàn thiện.",
-    "rights": "© {year} BizGo"
+    "rights": "© {year} BizGo",
+    "explore": "Khám phá",
+    "allProducts": "Tất cả sản phẩm",
+    "policies": "Chính sách",
+    "support": "Hỗ trợ",
+    "soon": "đang hoàn thiện",
+    "shipping": "Giao hàng",
+    "returns": "Đổi trả",
+    "privacy": "Bảo mật",
+    "terms": "Điều khoản",
+    "myOrders": "Đơn hàng của tôi",
+    "myAccount": "Tài khoản",
+    "addresses": "Sổ địa chỉ",
+    "cart": "Giỏ hàng",
+    "note": "Thông tin sản phẩm, giá và chính sách chỉ được công bố khi đã xác minh; chưa có thông tin pháp nhân bán hàng chính thức."
   },
   "cart": {
     "title": "Giỏ hàng",
@@ -208,7 +238,18 @@
     "checkout": "Tiến hành thanh toán",
     "loginTitle": "Đăng nhập để xem giỏ hàng",
     "loginText": "Giỏ hàng gắn với tài khoản của bạn.",
-    "loginCta": "Đăng nhập"
+    "loginCta": "Đăng nhập",
+    "items": "sản phẩm",
+    "colProduct": "Sản phẩm",
+    "colPrice": "Đơn giá",
+    "colQty": "Số lượng",
+    "colTotal": "Tạm tính",
+    "summary": "Tóm tắt đơn hàng",
+    "goodsEstimate": "Tiền hàng (ước tính)",
+    "shippingLine": "Vận chuyển",
+    "shippingNotCalc": "Chưa tính",
+    "undetermined": "Chưa xác định",
+    "estimateTotal": "Tạm tính"
   },
   "checkout": {
     "title": "Thanh toán",
@@ -230,7 +271,9 @@
     "placing": "Đang đặt hàng…",
     "priceChanged": "Giá hoặc tồn kho đã thay đổi. Vui lòng kiểm tra lại tóm tắt mới rồi đặt hàng lần nữa.",
     "quoteLoading": "Đang tính tổng tiền…",
-    "emptyCart": "Giỏ hàng trống, không có gì để thanh toán."
+    "emptyCart": "Giỏ hàng trống, không có gì để thanh toán.",
+    "step1": "1. Địa chỉ nhận hàng",
+    "step2": "2. Phương thức thanh toán"
   },
   "address": {
     "title": "Địa chỉ giao hàng",
@@ -291,5 +334,20 @@
       "COD": "COD",
       "BANK_TRANSFER": "Chuyển khoản"
     }
+  },
+  "account": {
+    "title": "Tài khoản BizGo",
+    "nav": {
+      "overview": "Tổng quan",
+      "orders": "Đơn hàng của tôi",
+      "addresses": "Sổ địa chỉ",
+      "logout": "Đăng xuất"
+    },
+    "hello": "Xin chào",
+    "helloText": "Quản lý đơn hàng và địa chỉ giao hàng của bạn tại đây.",
+    "cardOrders": "Đơn hàng",
+    "cardAddresses": "Địa chỉ",
+    "cardCart": "Giỏ hàng",
+    "loginTitle": "Bạn chưa đăng nhập"
   }
 }

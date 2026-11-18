@@ -7,6 +7,7 @@ import type { PublicProduct } from '@bizgo/contracts';
 export async function ProductCard({ product }: { product: PublicProduct }) {
   const t = await getTranslations('common');
   const p = await getTranslations('product');
+  const c = await getTranslations('catalog');
   return (
     <article className="flex flex-col overflow-hidden rounded-[17px] border border-line bg-white transition hover:-translate-y-0.5 hover:shadow-card">
       <Link href={`/san-pham/${product.slug}`} className="block" aria-label={product.name}>
@@ -43,6 +44,12 @@ export async function ProductCard({ product }: { product: PublicProduct }) {
         <p className="m-0 mt-auto text-[13px] font-bold text-orange-deep">
           {p('priceUnavailable')}
         </p>
+        <Link
+          href={`/san-pham/${product.slug}`}
+          className="flex min-h-[40px] items-center justify-center rounded-[11px] border border-green bg-white px-2 text-[11px] font-bold text-green hover:bg-green-mint"
+        >
+          {c('viewDetails')}
+        </Link>
       </div>
     </article>
   );
