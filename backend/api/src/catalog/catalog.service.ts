@@ -146,10 +146,16 @@ export class CatalogService {
         maxQty: v.maxQty,
         quantityStep: v.quantityStep,
         unitPriceVnd: price === null ? null : vndToJson(price),
+        isTest: v.isTest,
         inStock: available >= BigInt(v.minQty),
       };
     });
-    return { ...this.toPublic(p), note: p.displayNote || null, variants };
+    return {
+      ...this.toPublic(p),
+      referenceCode: `BIZ-${String(p.sourceIndex).padStart(3, '0')}`,
+      note: p.displayNote || null,
+      variants,
+    };
   }
 
   private toPublic(p: {

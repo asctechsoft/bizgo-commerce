@@ -6,8 +6,9 @@ import type { PrismaClient, StorageClass } from '@prisma/client';
  * Refused when APP_ENV=production. Real SKUs require owner decisions D02/D04.
  */
 export interface TestSkuInput {
-  /** Exact `source_name` of an existing seeded product. */
-  productSourceName: string;
+  /** Exact `source_name` of an existing seeded product (ignored when `productId` is given). */
+  productSourceName?: string;
+  productId?: string;
   sku: string;
   packLabel?: string;
   netWeightG?: number;
@@ -40,7 +41,9 @@ export async function ensureTestWarehouse(prisma: PrismaClient, code = 'TEST-WH'
 export async function createTestSku(prisma: PrismaClient, input: TestSkuInput) {
   assertFixturesAllowed();
   const product = await prisma.product.findFirstOrThrow({
-    where: { sourceName: input.productSourceName },
+    where: input.productId
+      ? { id: input.productId }
+      : { sourceName: input.productSourceName ?? '' },
   });
   const warehouse = await ensureTestWarehouse(prisma, input.warehouseCode);
   const active = input.active ?? true;

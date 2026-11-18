@@ -82,10 +82,12 @@ export interface PublicVariant {
   maxQty: number | null;
   quantityStep: number;
   unitPriceVnd: number | null;
+  isTest: boolean;
   inStock: boolean;
 }
 
 export interface PublicProductDetail extends PublicProduct {
+  referenceCode: string;
   note: string | null;
   variants: PublicVariant[];
 }

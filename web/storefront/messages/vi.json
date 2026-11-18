@@ -148,7 +148,24 @@
     "outOfStock": "Hết hàng",
     "loginToBuy": "Vui lòng đăng nhập để thêm vào giỏ hàng.",
     "pricesEstimate": "Giá hiển thị chỉ để tham khảo; tổng tiền cuối cùng do hệ thống tính khi thanh toán.",
-    "available": "Có thể đặt mua"
+    "available": "Có thể đặt mua",
+    "statusDemo": "Dữ liệu thử nghiệm · Giá minh họa",
+    "statusOnSale": "Đang mở bán",
+    "statusDraft": "Danh mục mẫu · Chưa mở bán chính thức",
+    "refCode": "Mã tham chiếu danh mục: {code}",
+    "demoPrice": "giá minh họa",
+    "unitPriceNote": "đã gồm các khoản theo chính sách",
+    "variantNote": "Giá, tồn kho theo từng quy cách; hệ thống xác nhận lại ở bước thanh toán.",
+    "decrease": "Giảm số lượng",
+    "increase": "Tăng số lượng",
+    "wholesaleQuote": "Yêu cầu báo giá sỉ",
+    "loginLink": "Đăng nhập",
+    "shippingNotice": "Lưu ý vận chuyển: mặt hàng tươi, cần lạnh hoặc giới hạn khu vực sẽ được kiểm tra theo từng SKU khi triển khai thật.",
+    "infoTitle": "Thông tin sản phẩm",
+    "infoDefault": "Nguyên liệu thuộc danh mục BizGo.",
+    "infoNeeds": "Để mở bán chính thức, BizGo cần nhập thêm xuất xứ, nhãn, hạn dùng, bảo quản, giá và tồn kho của sản phẩm thực tế.",
+    "relatedTitle": "Sản phẩm cùng nhóm",
+    "relatedMore": "Xem thêm →"
   },
   "errors": {
     "title": "Không tải được dữ liệu",
@@ -365,5 +382,14 @@
     "wholesaleTitle": "Mua sỉ B2B",
     "guidesTitle": "Cẩm nang",
     "contactTitle": "Liên hệ"
+  },
+  "zoom": {
+    "hint": "Phóng to",
+    "open": "Phóng to ảnh {name}",
+    "in": "Phóng to",
+    "out": "Thu nhỏ",
+    "reset": "Đặt lại",
+    "close": "Đóng",
+    "help": "Cuộn chuột hoặc nút +/− để phóng to · Kéo để xem các góc · Nhấp đúp để đổi mức · Esc để đóng"
   }
 }

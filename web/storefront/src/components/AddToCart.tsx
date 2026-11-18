@@ -11,7 +11,10 @@ import { isUnauthenticated } from '@/lib/errors';
 import { ApiErrorBox } from './ApiErrorBox';
 import { CART_CHANGED } from './HeaderTools';
 
-/** Only variants with a backend-provided price are purchasable; price/stock are re-validated by the API. */
+/**
+ * Price + variant chips + quantity stepper + add-to-cart. Price/stock are only DISPLAYED here;
+ * the API re-validates everything on add, quote and order.
+ */
 export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug: string }) {
   const t = useTranslations('product');
   const [variantId, setVariantId] = useState(variants[0]?.id ?? '');
@@ -23,6 +26,12 @@ export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug:
 
   if (!variant) return null;
   const canBuy = variant.inStock && variant.unitPriceVnd !== null;
+  const step = variant.quantityStep;
+  const clamp = (n: number) =>
+    Math.min(
+      variant.maxQty ?? 100_000,
+      Math.max(variant.minQty, Number.isFinite(n) ? n : variant.minQty),
+    );
 
   function pick(id: string) {
     const v = variants.find((x) => x.id === id);
@@ -47,55 +56,90 @@ export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug:
   }
 
   return (
-    <section aria-labelledby="variant-h" className="mt-5">
-      <h2 id="variant-h" className="m-0 text-[14px] font-bold">
-        {t('chooseVariant')}
-      </h2>
-      <div role="radiogroup" aria-labelledby="variant-h" className="mt-2 grid gap-2">
-        {variants.map((v) => (
-          <label
-            key={v.id}
-            className={`flex min-h-tap cursor-pointer items-center justify-between gap-3 rounded-control border px-3 py-2 text-[13px] ${v.id === variant.id ? 'border-green bg-green-mint' : 'border-line bg-white'}`}
-          >
-            <span className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="variant"
-                checked={v.id === variant.id}
-                onChange={() => pick(v.id)}
-              />
-              <span className="font-semibold">{v.packLabel}</span>
-              {!v.inStock ? <span className="text-danger">{t('outOfStock')}</span> : null}
-            </span>
-            <span className="font-extrabold text-orange-deep">
-              {formatVnd(v.unitPriceVnd) ?? t('priceUnavailable')}
-            </span>
-          </label>
-        ))}
+    <div>
+      <div className="my-5 text-[27px] font-extrabold text-green">
+        {formatVnd(variant.unitPriceVnd) ?? t('priceUnavailable')}{' '}
+        {variant.unitPriceVnd !== null ? (
+          <small className="text-[11px] font-bold text-[#87998a]">
+            / {variant.packLabel} · {variant.isTest ? t('demoPrice') : t('unitPriceNote')}
+          </small>
+        ) : null}
       </div>
-      <div className="mt-4 flex items-end gap-3">
-        <div>
-          <label htmlFor={`qty-${slug}`} className="mb-1.5 block text-[13px] font-semibold">
-            {t('quantity')}
-          </label>
+
+      <div className="my-[15px] rounded-[12px] border border-line p-3.5">
+        <b id="variant-h" className="text-[13px]">
+          {t('chooseVariant')}
+        </b>
+        <div role="radiogroup" aria-labelledby="variant-h" className="mt-1">
+          {variants.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              role="radio"
+              aria-checked={v.id === variant.id}
+              onClick={() => pick(v.id)}
+              className={`mr-1.5 mt-[7px] min-h-[40px] rounded-lg border px-[11px] text-[12px] ${v.id === variant.id ? 'border-[#75ba87] bg-green-mint text-green' : 'border-line bg-white'}`}
+            >
+              {v.packLabel}
+              {!v.inStock ? ` · ${t('outOfStock')}` : ''}
+            </button>
+          ))}
+        </div>
+        <p className="mb-0 mt-3 text-[12px] leading-[1.8] text-muted">{t('variantNote')}</p>
+      </div>
+
+      <div className="my-[19px] flex flex-wrap items-center gap-[11px]">
+        <span className="text-[13px]">{t('quantity')}:</span>
+        <span className="inline-flex items-center overflow-hidden rounded-[9px] border border-line">
+          <button
+            type="button"
+            aria-label={t('decrease')}
+            className="min-h-[40px] min-w-[44px] bg-[#f6f9f5] text-[16px]"
+            onClick={() => setQty(clamp(qty - step))}
+          >
+            −
+          </button>
           <input
-            id={`qty-${slug}`}
+            aria-label={t('quantity')}
             type="number"
             inputMode="numeric"
             min={variant.minQty}
             {...(variant.maxQty !== null ? { max: variant.maxQty } : {})}
-            step={variant.quantityStep}
+            step={step}
             value={qty}
             onChange={(e) => setQty(Number(e.target.value))}
-            className="min-h-tap w-28 rounded-control border border-line px-3 py-2 text-[14px]"
+            onBlur={() => setQty(clamp(qty))}
+            className="h-[40px] w-16 border-0 text-center text-[14px] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
           />
-        </div>
-        <Button onClick={add} loading={busy} disabled={!canBuy} variant="orange">
-          {t('addToCart')}
-        </Button>
+          <button
+            type="button"
+            aria-label={t('increase')}
+            className="min-h-[40px] min-w-[44px] bg-[#f6f9f5] text-[16px]"
+            onClick={() => setQty(clamp(qty + step))}
+          >
+            +
+          </button>
+        </span>
       </div>
-      <p className="mt-3 text-xs text-muted">{t('pricesEstimate')}</p>
-      <div aria-live="polite" className="mt-3">
+
+      <div className="my-[19px] flex flex-wrap items-center gap-[11px]">
+        <Button
+          onClick={add}
+          loading={busy}
+          disabled={!canBuy}
+          className="rounded-[11px] px-[18px] py-3 text-[12px]"
+        >
+          🛒 {t('addToCart')}
+        </Button>
+        <Link
+          href="/mua-si"
+          className="inline-flex min-h-tap items-center rounded-[11px] border border-green bg-white px-[18px] text-[12px] font-bold text-green hover:bg-green-mint"
+        >
+          {t('wholesaleQuote')}
+        </Link>
+      </div>
+
+      <div aria-live="polite">
         {done ? (
           <p role="status" className="text-[13px] font-semibold text-green">
             {t('added')}{' '}
@@ -112,7 +156,7 @@ export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug:
                 href={`/dang-nhap?next=${encodeURIComponent(`/san-pham/${slug}`)}`}
                 className="font-bold text-green underline"
               >
-                OK
+                {t('loginLink')}
               </Link>
             </p>
           ) : (
@@ -120,6 +164,6 @@ export function AddToCart({ variants, slug }: { variants: PublicVariant[]; slug:
           )
         ) : null}
       </div>
-    </section>
+    </div>
   );
 }

@@ -91,10 +91,14 @@ export interface PublicVariantDto {
   quantityStep: number;
   /** Retail unit price at the minimum quantity; null when no live price rule exists. Never a cost. */
   unitPriceVnd: number | null;
+  /** TEST/demo SKU: its price is illustrative, not a commercial price. */
+  isTest: boolean;
   inStock: boolean;
 }
 
 export interface PublicProductDetailDto extends PublicProductDto {
+  /** Catalogue reference code, e.g. BIZ-031 (not a SKU). */
+  referenceCode: string;
   note: string | null;
   /** Only ACTIVE variants that passed the SKU readiness gate. */
   variants: PublicVariantDto[];

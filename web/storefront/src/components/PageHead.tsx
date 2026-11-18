@@ -8,7 +8,7 @@ export async function PageHead({
   sub,
 }: {
   crumbs: Array<{ label: string; href?: string }>;
-  title: string;
+  title?: string;
   sub?: string;
 }) {
   const t = await getTranslations('common');
@@ -35,9 +35,11 @@ export async function PageHead({
           ))}
         </ol>
       </nav>
-      <h1 className="mb-3 mt-2 text-[22px] font-extrabold tracking-[-0.7px] sm:text-[28px]">
-        {title}
-      </h1>
+      {title ? (
+        <h1 className="mb-3 mt-2 text-[22px] font-extrabold tracking-[-0.7px] sm:text-[28px]">
+          {title}
+        </h1>
+      ) : null}
       {sub ? <p className="m-0 text-[12px] leading-[1.8] text-muted">{sub}</p> : null}
     </>
   );
