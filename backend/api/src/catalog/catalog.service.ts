@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@bizgo/db';
-import { AppError, normalizeVi } from '@bizgo/shared';
+import { AppError, normalizeVi, vndToJson } from '@bizgo/shared';
 import { Paginated } from '../common/http';
+import { Clock } from '../common/clock';
+import { resolveUnitPrice } from '../commerce/pricing.engine';
 import { PrismaService } from '../infra/prisma.service';
 import type {
   AdminCategoryDto,
@@ -52,7 +54,10 @@ function adminSort(sort: string | undefined): Prisma.ProductOrderByWithRelationI
 
 @Injectable()
 export class CatalogService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly clock: Clock,
+  ) {}
 
   // ───────────────────────────── Public (ACTIVE only) ─────────────────────────────
 
@@ -108,12 +113,40 @@ export class CatalogService {
   }
 
   async getProduct(slug: string): Promise<PublicProductDetailDto> {
+    const now = this.clock.now();
     const p = await this.prisma.product.findFirst({
       where: { slug, status: 'ACTIVE', category: { status: 'ACTIVE' } },
-      include: { category: true, media: { orderBy: { sortOrder: 'asc' }, take: 1 } },
+      include: {
+        category: true,
+        media: { orderBy: { sortOrder: 'asc' }, take: 1 },
+        variants: {
+          where: { status: 'ACTIVE' },
+          orderBy: { createdAt: 'asc' },
+          include: { priceRules: { where: { channel: 'RETAIL' } }, balances: true },
+        },
+      },
     });
     if (!p) throw new AppError('NOT_FOUND', 'Không tìm thấy sản phẩm.');
-    return { ...this.toPublic(p), note: p.displayNote || null, variants: [] };
+    const variants = p.variants.map((v) => {
+      const price = resolveUnitPrice(v.priceRules, v.minQty, now);
+      const available = v.balances.reduce(
+        (a, b) => a + (b.onHand - b.reserved - b.quarantined),
+        0n,
+      );
+      return {
+        id: v.id,
+        sku: v.sku,
+        packLabel: v.packLabel,
+        netWeightG: v.netWeightG,
+        storageClass: v.storageClass,
+        minQty: v.minQty,
+        maxQty: v.maxQty,
+        quantityStep: v.quantityStep,
+        unitPriceVnd: price === null ? null : vndToJson(price),
+        inStock: available >= BigInt(v.minQty),
+      };
+    });
+    return { ...this.toPublic(p), note: p.displayNote || null, variants };
   }
 
   private toPublic(p: {

@@ -72,18 +72,6 @@ export class AuthGuard implements CanActivate {
     if (auth.mfaRequired && !auth.mfaVerifiedAt && !allowPendingMfa) {
       throw new AppError('MFA_REQUIRED', 'Vui lòng hoàn tất xác thực hai lớp để tiếp tục.');
     }
-    if (freshMfa !== undefined) {
-      const ageMs = auth.mfaVerifiedAt
-        ? this.clock.now().getTime() - auth.mfaVerifiedAt.getTime()
-        : Infinity;
-      if (ageMs > freshMfa * 1000) {
-        throw new AppError(
-          'STEP_UP_REQUIRED',
-          'Vui lòng xác thực lại bằng mã hai lớp để thực hiện thao tác này.',
-        );
-      }
-    }
-
     if (required.length > 0 && !required.every((p) => auth.permissions.has(p))) {
       this.logger.warn(
         `forbidden requestId=${req.requestId} user=${auth.userId} ${req.method} ${req.path} needs=${required.join(',')}`,
@@ -101,6 +89,18 @@ export class AuthGuard implements CanActivate {
         .catch(() => undefined);
       throw new AppError('FORBIDDEN', 'Bạn không có quyền thực hiện thao tác này.');
     }
+    if (freshMfa !== undefined) {
+      const ageMs = auth.mfaVerifiedAt
+        ? this.clock.now().getTime() - auth.mfaVerifiedAt.getTime()
+        : Infinity;
+      if (ageMs > freshMfa * 1000) {
+        throw new AppError(
+          'STEP_UP_REQUIRED',
+          'Vui lòng xác thực lại bằng mã hai lớp để thực hiện thao tác này.',
+        );
+      }
+    }
+
     // Make sure proxies/browsers never cache authenticated responses.
     res.setHeader('Cache-Control', 'no-store');
     return true;

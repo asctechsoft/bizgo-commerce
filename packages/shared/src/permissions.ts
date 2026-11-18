@@ -19,6 +19,7 @@ export const PERMISSIONS = [
   'cart:own',
   'checkout:create',
   'order:read:own',
+  'order:cancel:own',
   'order:read:all',
   'order:manage',
   'order:assign-factory',
@@ -52,6 +53,7 @@ const CUSTOMER_BASE: Permission[] = [
   'cart:own',
   'checkout:create',
   'order:read:own',
+  'order:cancel:own',
 ];
 
 /** Default role → permission grants. Seeded into DB; DB is the runtime source of truth. */

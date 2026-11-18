@@ -78,10 +78,24 @@ export interface PublicProductDto {
   image: { url: string; isIllustrative: boolean } | null;
 }
 
+export interface PublicVariantDto {
+  id: string;
+  sku: string;
+  packLabel: string;
+  netWeightG: number | null;
+  storageClass: string | null;
+  minQty: number;
+  maxQty: number | null;
+  quantityStep: number;
+  /** Retail unit price at the minimum quantity; null when no live price rule exists. Never a cost. */
+  unitPriceVnd: number | null;
+  inStock: boolean;
+}
+
 export interface PublicProductDetailDto extends PublicProductDto {
   note: string | null;
-  /** Variants/prices arrive in Phase 2 behind the SKU readiness gate. */
-  variants: never[];
+  /** Only ACTIVE variants that passed the SKU readiness gate. */
+  variants: PublicVariantDto[];
 }
 
 export interface AdminCategoryDto {

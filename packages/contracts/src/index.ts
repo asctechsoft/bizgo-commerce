@@ -71,9 +71,22 @@ export interface PublicProduct {
   image: { url: string; isIllustrative: boolean } | null;
 }
 
+export interface PublicVariant {
+  id: string;
+  sku: string;
+  packLabel: string;
+  netWeightG: number | null;
+  storageClass: string | null;
+  minQty: number;
+  maxQty: number | null;
+  quantityStep: number;
+  unitPriceVnd: number | null;
+  inStock: boolean;
+}
+
 export interface PublicProductDetail extends PublicProduct {
   note: string | null;
-  variants: never[];
+  variants: PublicVariant[];
 }
 
 export type Realm = 'CUSTOMER' | 'ADMIN' | 'FACTORY';

@@ -57,6 +57,11 @@ export const DEFAULT_SETTINGS: Record<string, unknown> = {
   'flags.wholesale_enabled': false,
   'flags.account_deletion_enabled': false,
   'flags.public_catalog_show_draft_as_contact': false,
+  // Checkout policies blocked on D05/D14: the safe value blocks checkout instead of inventing fees/tax.
+  'checkout.shipping_policy': 'BLOCK',
+  'checkout.tax_policy': 'UNDETERMINED',
+  'delivery.allowed_provinces': [],
+  'delivery.chilled_provinces': [],
 };
 
 export async function seedRbac(

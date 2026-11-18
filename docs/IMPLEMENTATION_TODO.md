@@ -17,15 +17,16 @@
 - [x] Rebuild HTML prototype header, hero, category, PDP and mobile menu with genuine API
 - [ ] Accessibility, responsive QA and search; SEO for approved public pages — no horizontal overflow verified at 320–1024 px, search and sitemap done; **axe, 1280–1920 px, 200% zoom and Playwright NOT RUN**
 
-## Phase 2: transaction-safe commerce
-- [ ] SKU activation with verified pack/price/cost/stock/lot/region requirements
-- [ ] Retail/wholesale price rules and quote calculation
-- [ ] Authenticated/guest cart and merge; checkout quote with version+TTL
-- [ ] Atomic reservation with PostgreSQL and rollback; hold expiry worker
-- [ ] Idempotent order creation and immutable snapshots/events/outbox
-- [ ] Customer order history and verified guest tracking
-- [ ] Admin order queue/confirm/cancel with audit
-- [ ] E2E test last stock concurrency; price change; double-click
+## Phase 2: transaction-safe commerce (backend done; web screens NOT done — see docs/phase2/PHASE2_PROGRESS_VI.md)
+- [x] SKU activation with verified pack/price/cost/stock/lot/region requirements (gate API; real products stay blocked: AI images + unverified origin)
+- [x] Retail/wholesale price rules and quote calculation (retail only; wholesale tiers arrive in Phase 5)
+- [ ] Authenticated/guest cart and merge; checkout quote with version+TTL — customer cart + quote done and tested; **guest cart/merge NOT built** (D16)
+- [x] Atomic reservation with PostgreSQL and rollback; hold expiry worker — atomic reservation done; **expiry worker NOT built** (only needed for bank transfer, D06)
+- [x] Idempotent order creation and immutable snapshots/events/outbox
+- [ ] Customer order history and verified guest tracking — order history/detail/cancel done; **guest tracking NOT built** (D15/D16)
+- [x] Admin order queue/confirm/cancel with audit (API; no admin screens yet)
+- [x] E2E test last stock concurrency; price change; double-click (API-level on real PostgreSQL, 25 tests; browser E2E NOT RUN)
+- [ ] Storefront screens: PDP add-to-cart, cart, checkout, success, account orders; admin screens for SKU/prices/inventory/orders — **NOT built**
 
 ## Phase 3: fulfillment and delivery
 - [ ] Factory assigned queue and secure job detail DTO

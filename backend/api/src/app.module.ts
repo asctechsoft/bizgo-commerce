@@ -9,6 +9,18 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AdminController } from './admin/admin.controller';
 import { AdminService } from './admin/admin.service';
 import { AuthModule } from './auth/auth.module';
+import { CartService } from './commerce/cart.service';
+import {
+  AdminCommerceController,
+  CartController,
+  CheckoutController,
+  MeOrdersController,
+} from './commerce/commerce.controllers';
+import { InventoryService } from './commerce/inventory.service';
+import { OrdersService } from './commerce/orders.service';
+import { QuoteService } from './commerce/quote.service';
+import { SettingsService } from './commerce/settings.service';
+import { VariantsAdminService } from './commerce/variants-admin.service';
 import { CatalogController } from './catalog/catalog.controller';
 import { CatalogService } from './catalog/catalog.service';
 import { AllExceptionsFilter, EnvelopeInterceptor, RequestIdMiddleware } from './common/http';
@@ -25,12 +37,27 @@ export class AppModule implements NestModule {
       module: AppModule,
       global: true,
       imports: [InfraModule, AuthModule],
-      controllers: [HealthController, CatalogController, MeController, AdminController],
+      controllers: [
+        HealthController,
+        CatalogController,
+        MeController,
+        AdminController,
+        CartController,
+        CheckoutController,
+        MeOrdersController,
+        AdminCommerceController,
+      ],
       providers: [
         { provide: APP_CONFIG, useValue: config },
         CatalogService,
         MeService,
         AdminService,
+        SettingsService,
+        InventoryService,
+        QuoteService,
+        CartService,
+        OrdersService,
+        VariantsAdminService,
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
         { provide: APP_INTERCEPTOR, useClass: EnvelopeInterceptor },
       ],

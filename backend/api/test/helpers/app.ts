@@ -78,6 +78,8 @@ export async function createTestApp(env: Record<string, string> = {}): Promise<T
   const app = moduleRef.createNestApplication();
   configureApp(app, config);
   await app.init();
+  // Listen once: supertest closes a server it started itself, which resets parallel in-flight requests.
+  await app.listen(0, '127.0.0.1');
 
   const prisma = new PrismaClient({ datasources: { db: { url: db.url } } });
   await seedAll(prisma);

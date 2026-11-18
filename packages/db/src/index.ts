@@ -17,3 +17,10 @@ export {
   type SeedOptions,
   type SeedReport,
 } from './seed/seed';
+export {
+  createTestSku,
+  ensureTestWarehouse,
+  unlockCheckoutForTests,
+  assertFixturesAllowed,
+  type TestSkuInput,
+} from './fixtures/test-fixtures';
