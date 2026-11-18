@@ -34,12 +34,34 @@ export default async function HomePage() {
         </div>
         <CategoryGrid categories={categories} />
       </section>
-      <section aria-labelledby="home-products" className="mt-10">
-        <div className="mb-5">
-          <h2 id="home-products" className="m-0 text-xl font-extrabold sm:text-2xl">
-            {t('productsTitle')}
+      <section
+        aria-labelledby="home-promo"
+        className="mt-[42px] flex flex-col items-start justify-between gap-[25px] rounded-[20px] bg-gradient-to-br from-[#155e36] to-[#309c59] px-[23px] py-[27px] text-white sm:flex-row sm:items-center sm:px-[35px]"
+      >
+        <div>
+          <h2 id="home-promo" className="mb-2 mt-0 text-[19px] font-extrabold sm:text-[23px]">
+            {t('promoTitle')}
           </h2>
-          <p className="mt-1.5 text-[13px] text-muted">{t('productsSubtitle')}</p>
+          <p className="m-0 text-[12px] text-[#dbf3e4]">{t('promoText')}</p>
+        </div>
+        <Link
+          href="/mua-si"
+          className="inline-flex min-h-tap shrink-0 items-center rounded-[11px] border border-white bg-white px-[18px] text-[12px] font-bold text-green"
+        >
+          {t('promoCta')}
+        </Link>
+      </section>
+      <section aria-labelledby="home-products" className="mt-[38px]">
+        <div className="mb-[19px] flex items-end justify-between gap-3">
+          <div>
+            <h2 id="home-products" className="m-0 text-xl font-extrabold sm:text-2xl">
+              {t('productsTitle')}
+            </h2>
+            <p className="mt-1.5 text-[12px] text-muted">{t('productsSubtitle')}</p>
+          </div>
+          <Link href="/danh-muc" className="whitespace-nowrap text-[12px] font-bold text-green">
+            {t('moreLink')}
+          </Link>
         </div>
         {products.items.length > 0 ? (
           <ProductGrid products={products.items} />

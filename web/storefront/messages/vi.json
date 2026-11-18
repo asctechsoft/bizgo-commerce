@@ -31,8 +31,11 @@
     "stripRight": "Sản phẩm chỉ mở bán sau khi xác minh quy cách và giá",
     "home": "Trang chủ",
     "products": "Sản phẩm",
-    "announcement": "Nguồn hàng từ xưởng đối tác",
-    "cartCount": "Số sản phẩm trong giỏ"
+    "announcement": "Bán lẻ & B2B trực tiếp",
+    "cartCount": "Số sản phẩm trong giỏ",
+    "wholesale": "Mua sỉ B2B",
+    "guides": "Cẩm nang",
+    "contact": "Liên hệ"
   },
   "mobileBar": {
     "home": "Trang chủ",
@@ -89,11 +92,15 @@
     "categoriesTitle": "Danh mục nổi bật",
     "categoriesSubtitle": "Khám phá nguyên liệu theo nhu cầu của bạn",
     "viewAll": "Xem tất cả →",
-    "productsTitle": "Sản phẩm đang mở bán",
-    "productsSubtitle": "Chỉ hiển thị sản phẩm đã được BizGo xác minh",
+    "productsTitle": "Gợi ý thêm cho bạn",
+    "productsSubtitle": "Mỗi mặt hàng có thể có nhiều quy cách SKU sau khi xác minh",
     "emptyTitle": "Sản phẩm đầu tiên sắp được mở bán",
     "emptyText": "BizGo đang xác minh quy cách, giá và tồn kho cùng xưởng. Các mặt hàng chỉ xuất hiện ở đây khi đã sẵn sàng để bán.",
-    "categoryCount": "{count, plural, =0 {Sắp mở bán} other {# mặt hàng}}"
+    "categoryCount": "{count, plural, =0 {Sắp mở bán} other {# mặt hàng}}",
+    "moreLink": "Xem thêm →",
+    "promoTitle": "BizGo dành cho quán & đại lý",
+    "promoText": "Nhu cầu nhập sỉ cho quán và đại lý: báo giá theo số lượng và điều kiện giao hàng sẽ được công bố khi sẵn sàng.",
+    "promoCta": "Tìm hiểu mua sỉ →"
   },
   "catalog": {
     "title": "Sản phẩm",
@@ -349,5 +356,13 @@
     "cardAddresses": "Địa chỉ",
     "cardCart": "Giỏ hàng",
     "loginTitle": "Bạn chưa đăng nhập"
+  },
+  "pages": {
+    "soonTitle": "Đang hoàn thiện",
+    "soonText": "Nội dung này đang được BizGo chuẩn bị và chưa mở. Bạn vẫn có thể xem và đặt các sản phẩm đang mở bán.",
+    "goShop": "Xem sản phẩm",
+    "wholesaleTitle": "Mua sỉ B2B",
+    "guidesTitle": "Cẩm nang",
+    "contactTitle": "Liên hệ"
   }
 }
