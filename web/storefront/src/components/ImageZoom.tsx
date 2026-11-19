@@ -82,7 +82,8 @@ export function ImageZoom({ src, alt, hint }: { src: string; alt: string; hint?:
 
 function Viewer({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   const t = useTranslations('zoom');
-  const [scale, setScale] = useState(2);
+  // Opens at 100%: the viewer is already full-screen, so the image fits the whole window; zoom in from there.
+  const [scale, setScale] = useState(1);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
   const dialog = useRef<HTMLDivElement>(null);

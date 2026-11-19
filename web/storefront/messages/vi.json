@@ -762,5 +762,265 @@
         }
       ]
     }
+  },
+  "wholesale": {
+    "title": "Mua sỉ B2B",
+    "crumb": "Mua sỉ B2B",
+    "eyebrow": "Giải pháp mua sỉ cho doanh nghiệp",
+    "heroTitle": "Mua sỉ nguyên liệu pha chế & đồ ăn vặt với giá tốt tại BizGo",
+    "heroSub": "Dành cho quán trà sữa, quán chè, quán ăn vặt, nhà phân phối và đại lý. Nguồn hàng đa dạng, ổn định, giá sỉ cạnh tranh và hỗ trợ tận tâm.",
+    "ctaRegister": "Đăng ký đại lý",
+    "ctaQuote": "Yêu cầu báo giá",
+    "ctaTiers": "Xem bảng giá sỉ",
+    "benefits": [
+      {
+        "icon": "🏷️",
+        "title": "Giá sỉ theo cấp",
+        "text": "Chiết khấu hấp dẫn, càng mua nhiều càng ưu đãi."
+      },
+      {
+        "icon": "📚",
+        "title": "Nguồn hàng ổn định",
+        "text": "Đa dạng sản phẩm từ nhà máy đối tác, đáp ứng nhu cầu của quán."
+      },
+      {
+        "icon": "🚚",
+        "title": "Hỗ trợ vận chuyển",
+        "text": "Hỗ trợ giao hàng theo khu vực và điều kiện bảo quản."
+      },
+      {
+        "icon": "⚡",
+        "title": "Báo giá nhanh",
+        "text": "Nhận báo giá theo nhu cầu và số lượng của bạn."
+      }
+    ],
+    "processTitle": "Quy trình mua sỉ tại BizGo",
+    "steps": [
+      {
+        "icon": "📝",
+        "title": "Đăng ký / Liên hệ",
+        "text": "Đăng ký đại lý hoặc gửi yêu cầu báo giá."
+      },
+      {
+        "icon": "🎧",
+        "title": "Tư vấn & báo giá",
+        "text": "BizGo tư vấn sản phẩm, số lượng và gửi báo giá sỉ phù hợp."
+      },
+      {
+        "icon": "✅",
+        "title": "Xác nhận đơn hàng",
+        "text": "Thống nhất đơn hàng, phương thức thanh toán và giao hàng."
+      },
+      {
+        "icon": "📦",
+        "title": "Giao hàng & đồng hành",
+        "text": "Giao hàng theo thỏa thuận, hỗ trợ sau bán hàng."
+      }
+    ],
+    "tiersTitle": "Bảng giá theo cấp khách hàng",
+    "tiersSub": "Chính sách giá sỉ linh hoạt, chiết khấu hấp dẫn theo sản lượng đặt hàng mỗi tháng.",
+    "popular": "Phổ biến",
+    "discountUpTo": "Chiết khấu đến",
+    "minOrder": "Đơn hàng từ {amount}/tháng",
+    "tiersEmptyTitle": "Chính sách giá sỉ đang được BizGo cập nhật",
+    "tiersEmptyText": "Gửi yêu cầu báo giá để được tư vấn mức giá và chiết khấu phù hợp với nhu cầu của bạn.",
+    "formTitle": "Gửi yêu cầu báo giá sản phẩm",
+    "formSub": "Để lại thông tin, BizGo sẽ liên hệ và gửi báo giá chi tiết cho bạn.",
+    "faqTitle": "Câu hỏi thường gặp về mua sỉ B2B",
+    "faqSub": "Giải đáp nhanh các thắc mắc phổ biến khi mua sỉ tại BizGo.",
+    "faq": [
+      {
+        "q": "Làm thế nào để trở thành đại lý của BizGo?",
+        "a": "Gửi yêu cầu báo giá ngay trên trang này hoặc đăng ký tài khoản. BizGo sẽ liên hệ để tư vấn chương trình phù hợp với quy mô của bạn."
+      },
+      {
+        "q": "Số lượng tối thiểu khi mua sỉ là bao nhiêu?",
+        "a": "Mức tối thiểu phụ thuộc từng sản phẩm và cấp khách hàng. Hãy gửi yêu cầu để được báo cụ thể."
+      },
+      {
+        "q": "Tôi có thể yêu cầu báo giá cho nhiều sản phẩm cùng lúc không?",
+        "a": "Có. Bạn ghi danh sách sản phẩm và số lượng dự kiến vào ô “Sản phẩm quan tâm”."
+      },
+      {
+        "q": "BizGo có hỗ trợ giao hàng toàn quốc không?",
+        "a": "Khu vực giao hàng và điều kiện bảo quản được xác nhận theo từng đơn. Bạn có thể xem thêm ở trang Vận chuyển theo điều kiện bảo quản."
+      },
+      {
+        "q": "Có chính sách đổi trả cho đơn hàng sỉ không?",
+        "a": "Chính sách đổi trả đơn sỉ được thống nhất khi xác nhận đơn. Với đơn đặt trên BizGo, bạn có thể gửi yêu cầu hỗ trợ trong trang chi tiết đơn hàng."
+      }
+    ]
+  },
+  "inquiry": {
+    "fullName": "Họ và tên",
+    "fullNamePh": "Nhập họ và tên",
+    "phone": "Số điện thoại",
+    "phonePh": "Nhập số điện thoại",
+    "email": "Email",
+    "emailPh": "Nhập email của bạn",
+    "businessType": "Loại hình kinh doanh",
+    "businessTypePh": "Chọn loại hình",
+    "businessTypes": {
+      "MILK_TEA_SHOP": "Quán trà sữa",
+      "DESSERT_SHOP": "Quán chè",
+      "SNACK_SHOP": "Quán ăn vặt",
+      "DISTRIBUTOR": "Nhà phân phối",
+      "AGENT": "Đại lý",
+      "OTHER": "Khác"
+    },
+    "province": "Khu vực nhận hàng",
+    "provincePh": "Nhập tỉnh/thành",
+    "interest": "Sản phẩm quan tâm",
+    "interestPh": "Ví dụ: trân châu đen, bột báng, thạch, topping… và số lượng dự kiến",
+    "topic": "Nhu cầu",
+    "topicPh": "Chọn nhu cầu",
+    "topics": {
+      "QUOTE": "Yêu cầu báo giá",
+      "WHOLESALE_AGENT": "Đăng ký đại lý",
+      "PRODUCT_ADVICE": "Tư vấn sản phẩm",
+      "ORDER_SUPPORT": "Hỗ trợ đơn hàng",
+      "PARTNERSHIP": "Hợp tác",
+      "OTHER": "Khác"
+    },
+    "message": "Nội dung",
+    "messagePh": "Nhập nội dung chi tiết (sản phẩm quan tâm, số lượng, thời gian cần, …)",
+    "consent": "Tôi đồng ý để BizGo liên hệ lại về yêu cầu này.",
+    "required": "Vui lòng nhập thông tin này.",
+    "phoneInvalid": "Số điện thoại chưa đúng định dạng.",
+    "emailInvalid": "Email chưa đúng định dạng.",
+    "messageShort": "Vui lòng nhập tối thiểu 10 ký tự.",
+    "consentRequired": "Vui lòng đồng ý để BizGo liên hệ với bạn.",
+    "submitQuote": "Gửi yêu cầu báo giá",
+    "submitContact": "Gửi liên hệ",
+    "successTitle": "BizGo đã nhận được yêu cầu của bạn",
+    "successText": "Đội ngũ BizGo sẽ liên hệ với bạn qua thông tin đã cung cấp.",
+    "again": "Gửi yêu cầu khác"
+  },
+  "guides": {
+    "title": "Cẩm nang",
+    "crumb": "Cẩm nang",
+    "sub": "Chia sẻ công thức, kiến thức nguyên liệu và kinh nghiệm kinh doanh chè từ BizGo.",
+    "readNow": "Đọc ngay",
+    "minutes": "{n} phút đọc",
+    "featuredTitle": "Bài viết nổi bật",
+    "tipsTitle": "Mẹo nhanh",
+    "filterLabel": "Lọc bài viết theo chủ đề",
+    "filterAll": "Tất cả",
+    "categories": {
+      "RECIPE": "Công thức nấu chè",
+      "INGREDIENT": "Nguyên liệu",
+      "BUSINESS": "Kinh doanh quán chè",
+      "STORAGE": "Bảo quản",
+      "WHOLESALE": "Mua sỉ"
+    },
+    "emptyTitle": "Chưa có bài viết nào",
+    "emptyText": "BizGo đang chuẩn bị nội dung cho mục này. Mời bạn quay lại sau.",
+    "pagination": "Phân trang bài viết",
+    "prev": "Trước",
+    "next": "Sau",
+    "page": "Trang {page}/{pages}",
+    "newsletterTitle": "Theo dõi BizGo và nhận mẹo mới!",
+    "newsletterText": "Đăng ký để nhận công thức nấu chè, mẹo chọn nguyên liệu và kinh nghiệm kinh doanh hữu ích.",
+    "newsletterEmail": "Email của bạn",
+    "newsletterEmailPh": "Nhập email của bạn...",
+    "newsletterSubmit": "Đăng ký ngay",
+    "newsletterConsent": "Tôi đồng ý nhận email từ BizGo.",
+    "newsletterDone": "Cảm ơn bạn! BizGo đã ghi nhận email của bạn.",
+    "back": "Về cẩm nang",
+    "related": "Bài viết liên quan",
+    "notFound": "Không tìm thấy bài viết"
+  },
+  "contact": {
+    "title": "Liên hệ",
+    "crumb": "Liên hệ",
+    "sub": "BizGo luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy gửi thông tin hoặc liên hệ trực tiếp với chúng tôi để được tư vấn.",
+    "formTitle": "Gửi yêu cầu liên hệ",
+    "formSub": "Điền thông tin bên dưới, đội ngũ BizGo sẽ phản hồi sớm nhất có thể.",
+    "infoTitle": "Thông tin liên hệ",
+    "infoSub": "Bạn có thể liên hệ với BizGo qua các kênh sau:",
+    "hotline": "Hotline tư vấn",
+    "hotlineNote": "Hỗ trợ tư vấn sản phẩm & báo giá sỉ",
+    "email": "Email",
+    "emailNote": "Nhận yêu cầu, báo giá và hợp tác",
+    "hours": "Giờ làm việc",
+    "address": "Địa chỉ kho/xưởng",
+    "social": "Kết nối với BizGo",
+    "socialFacebook": "Facebook",
+    "socialZalo": "Zalo",
+    "socialYoutube": "YouTube",
+    "socialTiktok": "TikTok",
+    "infoEmpty": "Thông tin liên hệ đang được BizGo cập nhật. Bạn có thể gửi yêu cầu ở biểu mẫu bên cạnh.",
+    "areaTitle": "Khu vực phục vụ",
+    "areaText": "BizGo cung cấp nguyên liệu và hỗ trợ giao hàng theo khu vực. Khu vực và điều kiện bảo quản được xác nhận theo từng đơn hàng.",
+    "areaLink": "Xem điều kiện vận chuyển",
+    "receiveTitle": "Nhận hàng & giao hàng",
+    "receive": [
+      {
+        "label": "Nhận hàng tại kho:",
+        "text": "Vui lòng liên hệ BizGo để xác nhận trước khi đến."
+      },
+      {
+        "label": "Giao hàng tận nơi:",
+        "text": "Hỗ trợ theo đơn hàng và khu vực."
+      },
+      {
+        "label": "Hỗ trợ linh hoạt:",
+        "text": "Trao đổi phương thức, thời gian giao theo nhu cầu."
+      }
+    ],
+    "quickTitle": "Hỗ trợ nhanh",
+    "quickSub": "Liên hệ ngay qua các kênh phổ biến để được hỗ trợ.",
+    "chatTitle": "Chat với BizGo",
+    "chatText": "Nhắn tư vấn nhanh qua Zalo hoặc Facebook.",
+    "chatCta": "Chat ngay",
+    "callTitle": "Gọi hotline",
+    "callText": "Tư vấn sản phẩm, báo giá sỉ, hỗ trợ đơn hàng.",
+    "quoteTitle": "Gửi yêu cầu báo giá",
+    "quoteText": "Nhận báo giá chi tiết cho đơn hàng sỉ của bạn.",
+    "quoteCta": "Yêu cầu báo giá",
+    "faqTitle": "Câu hỏi thường gặp về liên hệ & hỗ trợ",
+    "faqSub": "Một số câu hỏi phổ biến giúp bạn liên hệ và làm việc với BizGo dễ dàng hơn.",
+    "faq": [
+      {
+        "q": "Tôi có thể yêu cầu báo giá sỉ như thế nào?",
+        "a": "Bạn gửi biểu mẫu ở trang Mua sỉ B2B hoặc biểu mẫu liên hệ này. BizGo sẽ liên hệ lại để tư vấn."
+      },
+      {
+        "q": "Thời gian phản hồi liên hệ là bao lâu?",
+        "a": "BizGo phản hồi theo thứ tự tiếp nhận trong giờ làm việc. Với việc gấp, bạn có thể gọi hotline nếu có."
+      },
+      {
+        "q": "BizGo có hỗ trợ giao hàng ngoài TP. HCM không?",
+        "a": "Khu vực giao hàng được xác nhận theo từng đơn và điều kiện bảo quản. Xem thêm ở trang Vận chuyển theo điều kiện bảo quản."
+      },
+      {
+        "q": "Tôi có thể đến kho xem và nhận hàng trực tiếp không?",
+        "a": "Vui lòng liên hệ trước để BizGo xác nhận lịch và hình thức nhận hàng."
+      }
+    ]
+  },
+  "chat": {
+    "open": "Hỏi nhanh BizGo",
+    "close": "Đóng khung hỏi nhanh",
+    "top": "Lên đầu trang",
+    "zalo": "Chat Zalo với BizGo (mở tab mới)",
+    "title": "Hỏi nhanh BizGo",
+    "subtitle": "Trả lời theo câu hỏi thường gặp",
+    "greeting": "Xin chào! Bạn muốn hỏi về điều gì? Chọn một câu hỏi bên dưới, hoặc gửi câu hỏi riêng cho BizGo.",
+    "pick": "Câu hỏi thường gặp",
+    "notAi": "Đây là phần trả lời có sẵn, không phải trợ lý AI. Cần tư vấn riêng, hãy gửi câu hỏi để nhân viên BizGo liên hệ lại.",
+    "sendOpen": "Gửi câu hỏi cho BizGo",
+    "name": "Họ và tên",
+    "phone": "Số điện thoại",
+    "question": "Câu hỏi của bạn",
+    "consent": "Tôi đồng ý để BizGo liên hệ lại về câu hỏi này.",
+    "send": "Gửi",
+    "back": "Quay lại",
+    "backToFaq": "Xem câu hỏi thường gặp",
+    "sentText": "BizGo đã nhận câu hỏi của bạn và sẽ liên hệ qua số điện thoại đã cung cấp.",
+    "required": "Vui lòng nhập thông tin này.",
+    "phoneInvalid": "Số điện thoại chưa đúng định dạng.",
+    "messageShort": "Vui lòng nhập tối thiểu 10 ký tự.",
+    "consentRequired": "Vui lòng đồng ý để BizGo liên hệ với bạn."
   }
 }

@@ -843,3 +843,81 @@ model SupportMessage {
   @@index([requestId, createdAt])
   @@map("support_messages")
 }
+
+// ───────────────────────────── Content & inquiries (M004) ─────────────────────────────
+// Guide articles are editable data (admin API), not code. Inquiries are public lead forms
+// (B2B quote, contact, newsletter); no order, price or stock is involved.
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ArticleCategory {
+  RECIPE
+  INGREDIENT
+  BUSINESS
+  STORAGE
+  WHOLESALE
+}
+
+enum InquiryKind {
+  QUOTE
+  CONTACT
+  NEWSLETTER
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  SPAM
+}
+
+model Article {
+  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String          @unique
+  title       String
+  excerpt     String
+  /// Plain text: blank line = paragraph, "## " = heading, "- " = bullet. Rendered safely (no raw HTML).
+  body        String
+  category    ArticleCategory
+  /// Site-relative path (e.g. /blog/post_x.png) or https URL; null = neutral placeholder.
+  coverImage  String?         @map("cover_image")
+  status      ArticleStatus   @default(DRAFT)
+  featured    Boolean         @default(false)
+  readMinutes Int             @default(1) @map("read_minutes")
+  publishedAt DateTime?       @map("published_at") @db.Timestamptz(6)
+  createdBy   String?         @map("created_by") @db.Uuid
+  updatedBy   String?         @map("updated_by") @db.Uuid
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status, publishedAt])
+  @@index([category, status, publishedAt])
+  @@index([featured, status, publishedAt])
+  @@map("articles")
+}
+
+model Inquiry {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kind         InquiryKind
+  status       InquiryStatus @default(NEW)
+  fullName     String?       @map("full_name")
+  phone        String?
+  email        String?
+  businessType String?       @map("business_type")
+  province     String?
+  topic        String?
+  message      String?
+  consentAt    DateTime      @default(now()) @map("consent_at") @db.Timestamptz(6)
+  ipHash       String?       @map("ip_hash")
+  handledBy    String?       @map("handled_by") @db.Uuid
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([kind, status, createdAt])
+  @@index([email])
+  @@map("inquiries")
+}

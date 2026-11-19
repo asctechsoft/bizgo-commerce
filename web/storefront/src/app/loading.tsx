@@ -1,14 +1,8 @@
-import { Skeleton } from '@bizgo/ui-web';
+import { Loader } from '@bizgo/ui-web';
+import { getTranslations } from 'next-intl/server';
 
-export default function Loading() {
-  return (
-    <div aria-busy="true" aria-live="polite" className="pt-6">
-      <Skeleton className="h-8 w-48" />
-      <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Skeleton key={i} className="h-64" />
-        ))}
-      </div>
-    </div>
-  );
+/** Route-level loading UI: branded box icon zooms in with an orbiting ring. */
+export default async function Loading() {
+  const t = await getTranslations('common');
+  return <Loader variant="page" label={t('loading')} />;
 }

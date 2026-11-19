@@ -386,6 +386,97 @@ export type AdminOrderAction =
   | 'deliver'
   | 'complete';
 
+// ───────────────────────────── Content & inquiries (M004) ─────────────────────────────
+
+export type ArticleCategory = 'RECIPE' | 'INGREDIENT' | 'BUSINESS' | 'STORAGE' | 'WHOLESALE';
+export type ArticleStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+
+export interface ArticleSummary {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: ArticleCategory;
+  coverImage: string | null;
+  featured: boolean;
+  readMinutes: number;
+  publishedAt: string | null;
+}
+export interface ArticleDetail extends ArticleSummary {
+  body: string;
+  related: ArticleSummary[];
+}
+export interface AdminArticle extends ArticleSummary {
+  status: ArticleStatus;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ArticleInput {
+  title: string;
+  slug?: string;
+  excerpt: string;
+  body: string;
+  category: ArticleCategory;
+  coverImage?: string | null;
+  featured?: boolean;
+}
+
+export interface SiteInfo {
+  contact: {
+    hotline: string | null;
+    email: string | null;
+    hours: string | null;
+    address: string | null;
+    addressNote: string | null;
+    social: {
+      facebook: string | null;
+      zalo: string | null;
+      youtube: string | null;
+      tiktok: string | null;
+    };
+  };
+  wholesaleTiers: {
+    key: string;
+    name: string;
+    audience: string;
+    discountPercent: number;
+    minMonthlyVnd: number;
+    perks: string[];
+    popular: boolean;
+  }[];
+  guideTips: string[];
+}
+
+export type InquiryKind = 'QUOTE' | 'CONTACT' | 'NEWSLETTER';
+export type InquiryStatus = 'NEW' | 'IN_PROGRESS' | 'DONE' | 'SPAM';
+export interface InquiryInput {
+  kind: InquiryKind;
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  businessType?: string;
+  province?: string;
+  topic?: string;
+  message?: string;
+  consent: boolean;
+  /** Honeypot: must stay empty. */
+  website?: string;
+}
+export interface AdminInquiry {
+  id: string;
+  kind: InquiryKind;
+  status: InquiryStatus;
+  fullName: string | null;
+  phone: string | null;
+  email: string | null;
+  businessType: string | null;
+  province: string | null;
+  topic: string | null;
+  message: string | null;
+  createdAt: string;
+}
+
 export interface ClientOptions {
   baseUrl: string;
   fetchImpl?: typeof fetch;
@@ -479,6 +570,22 @@ export function createApiClient(opts: ClientOptions) {
       product: async (slug: string) =>
         (await request<PublicProductDetail>('GET', `/v1/products/${encodeURIComponent(slug)}`))
           .data,
+    },
+    content: {
+      articles: async (
+        q: { category?: ArticleCategory; featured?: boolean; page?: number; limit?: number } = {},
+      ) =>
+        page(
+          await request<ArticleSummary[]>(
+            'GET',
+            `/v1/articles${buildQuery({ ...q, featured: q.featured ? 'true' : undefined })}`,
+          ),
+        ),
+      article: async (slug: string) =>
+        (await request<ArticleDetail>('GET', `/v1/articles/${encodeURIComponent(slug)}`)).data,
+      siteInfo: async () => (await request<SiteInfo>('GET', '/v1/site/info')).data,
+      inquire: async (b: InquiryInput) =>
+        (await request<{ accepted: true }>('POST', '/v1/inquiries', b)).data,
     },
     auth: {
       register: async (b: {
@@ -648,6 +755,43 @@ export function createApiClient(opts: ClientOptions) {
         setStatus: async (id: string, status: SupportStatus) =>
           (await request<SupportRequest>('POST', `/v1/admin/support/${id}/status`, { status }))
             .data,
+      },
+      articles: {
+        list: async (
+          q: {
+            status?: ArticleStatus;
+            category?: ArticleCategory;
+            page?: number;
+            limit?: number;
+          } = {},
+        ) => page(await request<AdminArticle[]>('GET', `/v1/admin/articles${buildQuery(q)}`)),
+        get: async (id: string) =>
+          (await request<AdminArticle>('GET', `/v1/admin/articles/${id}`)).data,
+        create: async (b: ArticleInput) =>
+          (await request<AdminArticle>('POST', '/v1/admin/articles', b)).data,
+        update: async (id: string, b: Partial<ArticleInput>) =>
+          (await request<AdminArticle>('PATCH', `/v1/admin/articles/${id}`, b)).data,
+        publish: async (id: string) =>
+          (await request<AdminArticle>('POST', `/v1/admin/articles/${id}/publish`)).data,
+        archive: async (id: string) =>
+          (await request<AdminArticle>('POST', `/v1/admin/articles/${id}/archive`)).data,
+      },
+      inquiries: {
+        list: async (
+          q: { kind?: InquiryKind; status?: InquiryStatus; page?: number; limit?: number } = {},
+        ) => page(await request<AdminInquiry[]>('GET', `/v1/admin/inquiries${buildQuery(q)}`)),
+        setStatus: async (id: string, status: InquiryStatus) =>
+          (
+            await request<{ id: string; status: InquiryStatus }>(
+              'POST',
+              `/v1/admin/inquiries/${id}/status`,
+              { status },
+            )
+          ).data,
+      },
+      siteInfo: {
+        update: async (b: Partial<SiteInfo>) =>
+          (await request<SiteInfo>('PUT', '/v1/admin/site/info', b)).data,
       },
       variants: {
         list: async (productId: string) =>

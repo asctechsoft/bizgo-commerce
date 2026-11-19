@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Skeleton } from '@bizgo/ui-web';
+import { Loader } from '@bizgo/ui-web';
 import { browserApi } from '@/lib/api';
 import { useLoad } from '@/lib/use-load';
 import { ApiErrorBox } from './ApiErrorBox';
@@ -24,7 +24,7 @@ export function AccountOverview() {
       cart: cart.items.length,
     };
   });
-  if (data.loading) return <Skeleton className="h-40 w-full" />;
+  if (data.loading) return <Loader />;
   if (data.error) return <ApiErrorBox error={data.error} next="/tai-khoan" />;
   const d = data.data!;
   const cards = [

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Button, EmptyState, Skeleton } from '@bizgo/ui-web';
+import { Button, EmptyState, Loader } from '@bizgo/ui-web';
 import type { OrderDetail, OrderGroup, OrderListItem, OrderSummaryCounts } from '@bizgo/contracts';
 import { browserApi } from '@/lib/api';
 import { formatDateTime, formatVnd, newIdempotencyKey } from '@/lib/format';
@@ -151,7 +151,7 @@ export function OrdersList() {
   });
 
   if (error && !data) return <ApiErrorBox error={error} next="/tai-khoan/don-hang" />;
-  if (!data || !counts) return <Skeleton className="mt-6 h-64 w-full" />;
+  if (!data || !counts) return <Loader />;
 
   const tiles: { g: OrderGroup | 'all'; n: number }[] = [
     { g: 'all', n: counts.all },
@@ -450,7 +450,7 @@ export function OrderDetailView({ id }: { id: string }) {
   }
 
   if (error && !o) return <ApiErrorBox error={error} next={`/tai-khoan/don-hang/${id}`} />;
-  if (!o) return <Skeleton className="mt-6 h-64 w-full" />;
+  if (!o) return <Loader />;
 
   const a = o.shipAddress;
   const steps = buildSteps(o.status, o.timeline);
@@ -788,7 +788,7 @@ export function OrderDetailView({ id }: { id: string }) {
 export function OrderSuccess({ id }: { id: string }) {
   const t = useTranslations('orders');
   const order = useLoad(() => browserApi().orders.get(id));
-  if (order.loading) return <Skeleton className="mt-6 h-32 w-full" />;
+  if (order.loading) return <Loader />;
   if (order.error) return <ApiErrorBox error={order.error} next="/tai-khoan/don-hang" />;
   const o = order.data!;
   return (

@@ -24,6 +24,9 @@
 | D18 | BLOCKED_DECISION | Definition of combo/set bundles                                                                          | TBD             | TBD   | TBD  | bundles (P1)                                          |
 | D19 | BLOCKED_DECISION | Reviews: eligibility & moderation                                                                        | TBD             | TBD   | TBD  | reviews (P1)                                          |
 | D20 | BLOCKED_DECISION | Privileged-account MFA method & recovery process                                                         | TBD             | TBD   | TBD  | auth, owner bootstrap                                 |
+| D21 | BLOCKED_DECISION | Public contact details (hotline, email, hours, warehouse address, social links) and service-area wording | TBD             | TBD   | TBD  | `site.contact` setting, `/lien-he`                    |
+| D22 | BLOCKED_DECISION | Wholesale tier policy (names, discount %, monthly thresholds, perks); B2B price/discount display rules  | TBD             | TBD   | TBD  | `site.wholesale_tiers` setting, `/mua-si`             |
+| D23 | BLOCKED_DECISION | Lead handling: who answers quote/contact forms, response SLA wording, newsletter provider and consent text | TBD          | TBD   | TBD  | `inquiries`, newsletter signup                        |
 
 ## ADR-0014 — Public catalogue shows DRAFT source items as browse-only (2026-11-19)
 - Decision: the public catalogue API lists ACTIVE **and** DRAFT products (PAUSED/ARCHIVED stay hidden). Each item carries `sellable` (= ACTIVE). DRAFT items show "Chưa mở bán", expose no variants/prices, and cannot enter a cart (unchanged server gate: SKU readiness + ACTIVE variant).
@@ -37,3 +40,10 @@
 - Support requests (customer ↔ staff thread, no refund automation, **no evidence upload yet** — needs object storage ADR).
 - Realtime: Server-Sent Events carrying only "something changed" (no order data); browsers refetch authoritative state; polling fallback every 15s. The fan-out is in-process: valid for ONE API instance. Multi-instance needs Redis pub/sub (Redis unavailable in this environment).
 - Not built (no backend/data): reviews/ratings, invoices, wishlist, vouchers, carrier tracking map/shipper phone, factory-side progress, online refund.
+
+## ADR-0016 — Guide articles, site info and public inquiries are data, not code (2026-11-19)
+- Context: the owner wants the "Cẩm nang" (guides) page updatable later, plus the "Mua sỉ B2B" and "Liên hệ" pages from the design.
+- Decision: new tables `articles` (DRAFT → PUBLISHED → ARCHIVED, plain-text body rendered without HTML, slug locked once published, `publishedAt` in the future = scheduled) and `inquiries` (QUOTE / CONTACT / NEWSLETTER lead forms) in migration M004. Admin API `content:write` for articles, `support:handle` for inquiries (contain PII), `settings:write` for site info. Public read API only returns published articles.
+- Contact details, wholesale tiers and quick tips are **owner settings** (`site.contact`, `site.wholesale_tiers`, `site.guide_tips`) read defensively by `GET /v1/site/info`. When unset the pages show a neutral message: no hotline, address, discount or delivery time is ever invented (CLAUDE.md). Dev fixtures (`dev:fixtures`) seed clearly-labelled placeholder values copied from the design mock-up; they are refused in production and never overwrite configured settings.
+- Public form protection: honeypot, per-IP budget, duplicate suppression, consent required, no session/CSRF (anonymous), responses never reveal duplicates. No email is sent yet (D23/D15).
+- Copy deliberately avoids unverified promises from the mock-up (e.g. "quote in 24h", delivery times, "toàn quốc").

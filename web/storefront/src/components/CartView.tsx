@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Button, EmptyState, Skeleton } from '@bizgo/ui-web';
+import { Button, EmptyState, Loader } from '@bizgo/ui-web';
 import type { Cart } from '@bizgo/contracts';
 import { browserApi } from '@/lib/api';
 import { formatVnd } from '@/lib/format';
@@ -35,7 +35,7 @@ export function CartView() {
     }
   }
 
-  if (cart.loading) return <Skeleton className="mt-6 h-48 w-full" />;
+  if (cart.loading) return <Loader />;
   if (cart.error) return <ApiErrorBox error={cart.error} next="/gio-hang" />;
   const items = cart.data?.items ?? [];
   if (items.length === 0) {

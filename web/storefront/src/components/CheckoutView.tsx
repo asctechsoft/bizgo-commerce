@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ApiError, NetworkError, type Address, type CheckoutQuote } from '@bizgo/contracts';
-import { Button, EmptyState, Skeleton } from '@bizgo/ui-web';
+import { Button, EmptyState, Loader } from '@bizgo/ui-web';
 import { browserApi } from '@/lib/api';
 import { formatVnd, newIdempotencyKey } from '@/lib/format';
 import { useLoad } from '@/lib/use-load';
@@ -82,7 +82,7 @@ export function CheckoutView() {
     }
   }
 
-  if (addresses.loading) return <Skeleton className="mt-6 h-48 w-full" />;
+  if (addresses.loading) return <Loader />;
   if (addresses.error) return <ApiErrorBox error={addresses.error} next="/thanh-toan" />;
   const list: Address[] = addresses.data ?? [];
 

@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { useTranslations } from 'next-intl';
 import { ApiError, type ApiClient, type Realm, type SessionSummary } from '@bizgo/contracts';
-import { Button, ErrorState, Field, Skeleton, TextInput } from '@bizgo/ui-web';
+import { Button, ErrorState, Field, Loader, TextInput } from '@bizgo/ui-web';
 import { backofficeApi, errorKey } from '@/lib/api';
 
 type BackRealm = Exclude<Realm, 'CUSTOMER'>;
@@ -73,12 +73,7 @@ export function AuthGate({ realm, children }: { realm: BackRealm; children: Reac
 
   const t = useTranslations();
   if (loading) {
-    return (
-      <div aria-busy="true" className="mx-auto max-w-3xl p-8">
-        <Skeleton className="h-8 w-56" />
-        <Skeleton className="mt-6 h-40" />
-      </div>
-    );
+    return <Loader variant="page" label={t('common.loading')} />;
   }
   if (failure) {
     return (

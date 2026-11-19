@@ -2075,6 +2075,460 @@
         ]
       }
     },
+    "/v1/articles": {
+      "get": {
+        "operationId": "PublicContentController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RECIPE",
+                "INGREDIENT",
+                "BUSINESS",
+                "STORAGE",
+                "WHOLESALE"
+              ]
+            }
+          },
+          {
+            "name": "featured",
+            "required": false,
+            "in": "query",
+            "description": "Only featured articles",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Published guide articles (query: category, featured, page, limit)",
+        "tags": [
+          "Content"
+        ]
+      }
+    },
+    "/v1/articles/{slug}": {
+      "get": {
+        "operationId": "PublicContentController_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Published article by slug (404 for draft/archived/unknown)",
+        "tags": [
+          "Content"
+        ]
+      }
+    },
+    "/v1/site/info": {
+      "get": {
+        "operationId": "PublicContentController_siteInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Owner-managed contact info, wholesale tiers and guide tips (null/empty when not configured)",
+        "tags": [
+          "Content"
+        ]
+      }
+    },
+    "/v1/inquiries": {
+      "post": {
+        "operationId": "PublicContentController_inquire",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InquiryCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "summary": "Public lead form: B2B quote, contact or newsletter signup (rate limited)",
+        "tags": [
+          "Content"
+        ]
+      }
+    },
+    "/v1/admin/articles": {
+      "get": {
+        "operationId": "AdminContentController_articles",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PUBLISHED",
+                "ARCHIVED"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RECIPE",
+                "INGREDIENT",
+                "BUSINESS",
+                "STORAGE",
+                "WHOLESALE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      },
+      "post": {
+        "operationId": "AdminContentController_createArticle",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
+    "/v1/admin/articles/{id}": {
+      "get": {
+        "operationId": "AdminContentController_article",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      },
+      "patch": {
+        "operationId": "AdminContentController_updateArticle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
+    "/v1/admin/articles/{id}/publish": {
+      "post": {
+        "operationId": "AdminContentController_publish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
+    "/v1/admin/articles/{id}/archive": {
+      "post": {
+        "operationId": "AdminContentController_archive",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
+    "/v1/admin/inquiries": {
+      "get": {
+        "operationId": "AdminContentController_inquiries",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "QUOTE",
+                "CONTACT",
+                "NEWSLETTER"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "DONE",
+                "SPAM"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
+    "/v1/admin/inquiries/{id}/status": {
+      "post": {
+        "operationId": "AdminContentController_inquiryStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InquiryStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
+    "/v1/admin/site/info": {
+      "put": {
+        "operationId": "AdminContentController_setSiteInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Admin Content"
+        ]
+      }
+    },
     "/v1/auth/register": {
       "post": {
         "operationId": "AuthController_register",
@@ -2814,6 +3268,162 @@
               "IN_PROGRESS",
               "RESOLVED",
               "CLOSED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "InquiryCreateDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "QUOTE",
+              "CONTACT",
+              "NEWSLETTER"
+            ]
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Vietnamese mobile number"
+          },
+          "email": {
+            "type": "string"
+          },
+          "businessType": {
+            "type": "string",
+            "enum": [
+              "MILK_TEA_SHOP",
+              "DESSERT_SHOP",
+              "SNACK_SHOP",
+              "DISTRIBUTOR",
+              "AGENT",
+              "OTHER"
+            ]
+          },
+          "province": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "QUOTE",
+              "WHOLESALE_AGENT",
+              "PRODUCT_ADVICE",
+              "ORDER_SUPPORT",
+              "PARTNERSHIP",
+              "OTHER"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "consent": {
+            "type": "boolean",
+            "description": "Consent to be contacted / to receive email (must be true)"
+          },
+          "website": {
+            "type": "string",
+            "description": "Honeypot — leave empty"
+          }
+        },
+        "required": [
+          "kind",
+          "consent"
+        ]
+      },
+      "ArticleCreateDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Lowercase-hyphen; generated from the title when omitted"
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string",
+            "description": "Plain text: blank line = paragraph, \"## \" heading, \"- \" bullet"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "RECIPE",
+              "INGREDIENT",
+              "BUSINESS",
+              "STORAGE",
+              "WHOLESALE"
+            ]
+          },
+          "coverImage": {
+            "type": "object",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "title",
+          "excerpt",
+          "body",
+          "category"
+        ]
+      },
+      "ArticleUpdateDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "RECIPE",
+              "INGREDIENT",
+              "BUSINESS",
+              "STORAGE",
+              "WHOLESALE"
+            ]
+          },
+          "coverImage": {
+            "type": "object",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InquiryStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "IN_PROGRESS",
+              "DONE",
+              "SPAM"
             ]
           }
         },

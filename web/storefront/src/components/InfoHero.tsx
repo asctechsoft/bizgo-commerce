@@ -13,6 +13,7 @@ export function InfoHero({
   imageAlt = '',
   badges,
   actions,
+  as: Heading = 'h1',
 }: {
   eyebrow?: string;
   title: string;
@@ -21,6 +22,8 @@ export function InfoHero({
   imageAlt?: string;
   badges?: string[];
   actions?: ReactNode;
+  /** Use 'h2' when the page already renders its own h1 (PageHead title). */
+  as?: 'h1' | 'h2';
 }) {
   return (
     <section className="relative mt-2 overflow-hidden rounded-[22px] bg-gradient-to-br from-[#e6f6e4] via-[#eef9ea] to-[#f6fbf3]">
@@ -31,9 +34,9 @@ export function InfoHero({
               {eyebrow}
             </p>
           ) : null}
-          <h1 className="my-3 text-[27px] font-extrabold leading-[1.2] text-[#133e24] md:text-[40px]">
+          <Heading className="my-3 text-[27px] font-extrabold leading-[1.2] text-[#133e24] md:text-[40px]">
             {title}
-          </h1>
+          </Heading>
           <p className="m-0 max-w-[480px] text-[14px] leading-[1.75] text-[#3d5d44]">{sub}</p>
           {badges && badges.length > 0 ? (
             <ul className="m-0 mt-5 flex list-none flex-wrap gap-x-5 gap-y-2 p-0 text-[13px] font-semibold text-[#1d4a2e]">

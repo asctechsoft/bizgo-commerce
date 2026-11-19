@@ -46,7 +46,9 @@
     "comingSoon": "Sắp có",
     "orders": "Đơn hàng",
     "inventory": "Kho",
-    "support": "Hỗ trợ"
+    "support": "Hỗ trợ",
+    "content": "Cẩm nang",
+    "inquiries": "Liên hệ & báo giá"
   },
   "dashboard": {
     "title": "Tổng quan",
@@ -279,5 +281,77 @@
     "staff": "BizGo",
     "customer": "Khách",
     "filterAll": "Tất cả"
+  },
+  "content": {
+    "title": "Cẩm nang",
+    "hint": "Bài viết hiển thị ở trang Cẩm nang của cửa hàng. Chỉ bài đã xuất bản mới hiển thị công khai.",
+    "new": "Viết bài mới",
+    "all": "Tất cả",
+    "status": "Trạng thái",
+    "empty": "Chưa có bài viết.",
+    "pick": "Chọn một bài hoặc tạo bài mới",
+    "statuses": {
+      "DRAFT": "Nháp",
+      "PUBLISHED": "Đã xuất bản",
+      "ARCHIVED": "Đã lưu trữ"
+    },
+    "categories": {
+      "RECIPE": "Công thức nấu chè",
+      "INGREDIENT": "Nguyên liệu",
+      "BUSINESS": "Kinh doanh quán chè",
+      "STORAGE": "Bảo quản",
+      "WHOLESALE": "Mua sỉ"
+    },
+    "featured": "Nổi bật",
+    "fTitle": "Tiêu đề",
+    "fSlug": "Đường dẫn (slug)",
+    "slugHint": "Để trống để tự tạo từ tiêu đề.",
+    "slugLocked": "Bài đã xuất bản: giữ nguyên đường dẫn để link không hỏng.",
+    "fCategory": "Chủ đề",
+    "fExcerpt": "Mô tả ngắn",
+    "fCover": "Ảnh bìa",
+    "coverHint": "Đường dẫn ảnh của cửa hàng (vd /blog/post_thai_dessert.png) hoặc link https. Để trống để dùng ảnh mặc định.",
+    "fBody": "Nội dung",
+    "bodyHint": "Dòng trống = đoạn mới; “## ” đầu dòng = tiêu đề mục; “- ” đầu dòng = gạch đầu dòng. Không hỗ trợ HTML.",
+    "fFeatured": "Hiển thị ở mục Bài viết nổi bật",
+    "save": "Lưu",
+    "publish": "Xuất bản",
+    "archive": "Gỡ khỏi trang (lưu trữ)",
+    "saved": "Đã lưu."
+  },
+  "inquiries": {
+    "title": "Liên hệ & báo giá",
+    "hint": "Yêu cầu khách gửi từ trang Mua sỉ B2B, Liên hệ và đăng ký nhận tin. Có chứa thông tin cá nhân, chỉ nhân sự được phân quyền mới xem.",
+    "all": "Tất cả",
+    "kind": "Loại",
+    "status": "Trạng thái",
+    "empty": "Chưa có yêu cầu nào.",
+    "kinds": {
+      "QUOTE": "Báo giá",
+      "CONTACT": "Liên hệ",
+      "NEWSLETTER": "Nhận tin"
+    },
+    "statuses": {
+      "NEW": "Mới",
+      "IN_PROGRESS": "Đang xử lý",
+      "DONE": "Đã xử lý",
+      "SPAM": "Spam"
+    },
+    "business": {
+      "MILK_TEA_SHOP": "Quán trà sữa",
+      "DESSERT_SHOP": "Quán chè",
+      "SNACK_SHOP": "Quán ăn vặt",
+      "DISTRIBUTOR": "Nhà phân phối",
+      "AGENT": "Đại lý",
+      "OTHER": "Khác"
+    },
+    "topics": {
+      "QUOTE": "Yêu cầu báo giá",
+      "WHOLESALE_AGENT": "Đăng ký đại lý",
+      "PRODUCT_ADVICE": "Tư vấn sản phẩm",
+      "ORDER_SUPPORT": "Hỗ trợ đơn hàng",
+      "PARTNERSHIP": "Hợp tác",
+      "OTHER": "Khác"
+    }
   }
 }

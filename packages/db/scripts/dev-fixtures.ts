@@ -13,6 +13,7 @@ import {
   unlockCheckoutForTests,
   assertFixturesAllowed,
 } from '../src/fixtures/test-fixtures';
+import { loadContentFixtures } from '../src/fixtures/content-fixtures';
 
 const PRICES = JSON.parse(
   readFileSync(join(__dirname, '../src/fixtures/demo-prices.json'), 'utf8'),
@@ -101,6 +102,10 @@ async function main() {
       provinces: ['Hà Nội', 'Hồ Chí Minh'],
       shipping: 'MANUAL_QUOTE',
     });
+    const content = await loadContentFixtures(prisma);
+    console.log(
+      `TEST content: ${content.articles} sample articles, site info ${content.siteInfo ? 'seeded (placeholders)' : 'left as configured'}.`,
+    );
     console.log(
       `TEST fixtures: ${created} new TEST SKUs, ${repriced} repriced (demo prices from demo-prices.json); checkout unlocked for Hà Nội / Hồ Chí Minh (COD, phí ship báo sau).`,
     );

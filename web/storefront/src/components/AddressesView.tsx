@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Button, EmptyState, Skeleton } from '@bizgo/ui-web';
+import { Button, EmptyState, Loader } from '@bizgo/ui-web';
 import { browserApi } from '@/lib/api';
 import { useLoad } from '@/lib/use-load';
 import { AddressForm } from './AddressForm';
@@ -23,7 +23,7 @@ export function AddressesView() {
     }
   }
 
-  if (list.loading && !list.data) return <Skeleton className="mt-6 h-40 w-full" />;
+  if (list.loading && !list.data) return <Loader />;
   if (list.error) return <ApiErrorBox error={list.error} next="/tai-khoan/dia-chi" />;
   const items = list.data ?? [];
   return (

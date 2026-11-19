@@ -23,6 +23,25 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-be-vietnam)', 'Be Vietnam Pro', 'Segoe UI', 'system-ui', 'sans-serif'],
       },
+      keyframes: {
+        // Loader icon: grows from tiny to full size with a small overshoot, then settles.
+        'bg-pop': {
+          '0%': { transform: 'scale(0.1)', opacity: '0' },
+          '60%': { transform: 'scale(1.12)', opacity: '1' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        // After the pop-in, the icon breathes gently while loading continues.
+        'bg-breathe': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.06)' },
+        },
+        'bg-orbit': { to: { transform: 'rotate(360deg)' } },
+      },
+      animation: {
+        'bg-pop': 'bg-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'bg-breathe': 'bg-breathe 2s ease-in-out 0.7s infinite',
+        'bg-orbit': 'bg-orbit 1.1s linear infinite',
+      },
       minHeight: { tap: '44px' },
       minWidth: { tap: '44px' },
     },

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Button, Skeleton } from '@bizgo/ui-web';
+import { Button, Loader } from '@bizgo/ui-web';
 import type { OrderDetail, SupportRequest, SupportType } from '@bizgo/contracts';
 import { browserApi } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
@@ -76,7 +76,7 @@ export function SupportView({ id }: { id: string }) {
 
   if (error && !order)
     return <ApiErrorBox error={error} next={`/tai-khoan/don-hang/${id}/ho-tro`} />;
-  if (!order) return <Skeleton className="mt-6 h-64 w-full" />;
+  if (!order) return <Loader />;
   const card = 'rounded-[14px] border border-line bg-white p-4';
 
   return (
