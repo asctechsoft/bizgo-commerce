@@ -544,5 +544,223 @@
     "replySend": "Gửi",
     "closedNote": "Yêu cầu này đã đóng. Hãy tạo yêu cầu mới nếu cần hỗ trợ thêm.",
     "required": "Vui lòng chọn vấn đề và mô tả tối thiểu 5 ký tự."
+  },
+  "info": {
+    "heroPrimary": "Liên hệ mua sỉ →",
+    "heroSecondary": "Xem danh mục",
+    "viewCatalog": "Xem danh mục",
+    "contactWholesale": "Liên hệ mua sỉ",
+    "contactAdvice": "Liên hệ tư vấn",
+    "sourcing": {
+      "title": "Nguồn hàng từ xưởng",
+      "crumb": "Nguồn hàng từ xưởng",
+      "eyebrow": "BIZGO – NGUỒN HÀNG ỔN ĐỊNH, PHÙ HỢP CHO QUÁN CHÈ",
+      "sub": "Quy trình rõ ràng, minh bạch từ xác nhận quy cách, kiểm tra chất lượng đến đóng gói và giao hàng.",
+      "processTitle": "Quy trình nhập hàng từ xưởng tại BizGo",
+      "processSub": "Làm việc trực tiếp với xưởng và đảm bảo chất lượng theo tiêu chuẩn đã thống nhất.",
+      "steps": [
+        {
+          "icon": "📋",
+          "title": "BizGo nhận nhu cầu",
+          "text": "Tiếp nhận thông tin về sản phẩm, số lượng, quy cách, thời gian cần hàng."
+        },
+        {
+          "icon": "🏭",
+          "title": "Xưởng xác nhận quy cách",
+          "text": "Làm việc trực tiếp với xưởng để thống nhất quy cách, giá và kế hoạch sản xuất."
+        },
+        {
+          "icon": "🛡️",
+          "title": "Kiểm tra chất lượng",
+          "text": "Kiểm tra chất lượng theo tiêu chí đã cam kết trước khi xuất kho."
+        },
+        {
+          "icon": "🚚",
+          "title": "Đóng gói & giao hàng",
+          "text": "Đóng gói đúng quy cách, vận chuyển an toàn và giao đến nơi cho bạn."
+        }
+      ],
+      "whyTitle": "Vì sao nên chọn nguồn hàng từ xưởng tại BizGo?",
+      "why": [
+        {
+          "icon": "💰",
+          "title": "Giá minh bạch",
+          "text": "Giá hiển thị rõ trên từng quy cách đang mở bán."
+        },
+        {
+          "icon": "🌿",
+          "title": "Nguồn gốc rõ ràng",
+          "text": "Thông tin nhà xưởng, quy cách và xuất xứ được xác minh trước khi mở bán."
+        },
+        {
+          "icon": "🔍",
+          "title": "Hàng được kiểm tra",
+          "text": "Đảm bảo đúng quy cách trước khi giao."
+        },
+        {
+          "icon": "🏪",
+          "title": "Hỗ trợ cho quán chè",
+          "text": "Tư vấn chọn nguyên liệu phù hợp với menu của quán."
+        }
+      ],
+      "ctaTitle": "Liên hệ mua sỉ nguồn hàng từ xưởng",
+      "ctaText": "Nhận tư vấn quy cách và hỗ trợ lên đơn theo nhu cầu của quán bạn."
+    },
+    "shipping": {
+      "title": "Vận chuyển theo điều kiện bảo quản",
+      "crumb": "Vận chuyển theo điều kiện bảo quản",
+      "sub": "Giao đúng điều kiện theo vùng và loại hàng, giúp nguyên liệu luôn giữ được chất lượng tốt nhất khi đến tay bạn.",
+      "badges": ["Đảm bảo chất lượng", "Giao đúng điều kiện", "Giữ trọn độ tươi ngon"],
+      "typesTitle": "Các điều kiện vận chuyển tại BizGo",
+      "typesSub": "Chúng tôi phân loại hàng hóa và áp dụng phương thức vận chuyển phù hợp để đảm bảo chất lượng nguyên liệu.",
+      "types": [
+        {
+          "title": "Hàng khô",
+          "text": "Bột, đậu, hạt, trà, nguyên liệu đã sấy khô...",
+          "note": "Giao thường, không yêu cầu làm mát"
+        },
+        {
+          "title": "Hàng cần bảo quản mát",
+          "text": "Thạch, trân châu tươi, topping tươi, sản phẩm đông mát...",
+          "note": "Chỉ giao khi BizGo xác nhận có tuyến vận chuyển phù hợp"
+        },
+        {
+          "title": "Hàng giao nhanh trong ngày",
+          "text": "Nguyên liệu tươi, dễ đổi chất, cần sử dụng sớm...",
+          "note": "Chỉ áp dụng khi BizGo xác nhận được khả năng giao"
+        }
+      ],
+      "areaTitle": "Khu vực phục vụ",
+      "areaText": "Điều kiện và thời gian giao phụ thuộc vào vùng nhận hàng và loại hàng. Vùng giao được xác nhận khi bạn nhập địa chỉ ở bước thanh toán; nếu chưa hỗ trợ, hệ thống sẽ báo rõ trước khi đặt hàng.",
+      "rulesTitle": "Quy định giao hàng và bảo quản",
+      "rulesHead": [
+        "Loại hàng",
+        "Điều kiện giao hàng",
+        "Thời gian giao",
+        "Lưu ý bảo quản sau khi nhận"
+      ],
+      "rules": [
+        {
+          "type": "Hàng khô",
+          "condition": "Giao thường (nhiệt độ môi trường)",
+          "time": "BizGo thông báo khi xác nhận đơn",
+          "care": "Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp."
+        },
+        {
+          "type": "Hàng cần bảo quản mát",
+          "condition": "Vận chuyển có kiểm soát nhiệt độ, chỉ giao ở vùng đã xác nhận",
+          "time": "BizGo thông báo khi xác nhận đơn",
+          "care": "Bảo quản ngăn mát, sử dụng theo hướng dẫn trên bao bì."
+        },
+        {
+          "type": "Hàng giao nhanh trong ngày",
+          "condition": "Ưu tiên giao nhanh khi có thể xác nhận",
+          "time": "BizGo thông báo khi xác nhận đơn",
+          "care": "Sử dụng sớm, bảo quản theo hướng dẫn riêng của từng sản phẩm."
+        }
+      ],
+      "checkTitle": "Kiểm tra khu vực giao hàng",
+      "checkText": "Nhập địa chỉ ở bước thanh toán để xem hệ thống có giao được đến nơi bạn không.",
+      "checkCta": "Đến giỏ hàng →",
+      "adviceText": "Cần hỗ trợ về điều kiện vận chuyển, bảo quản hoặc đơn hàng sỉ?",
+      "adviceCta": "Liên hệ ngay →"
+    },
+    "diverse": {
+      "title": "Nguyên liệu đa dạng",
+      "crumb": "Nguyên liệu đa dạng",
+      "eyebrow": "DANH MỤC SẢN PHẨM • BIZGO",
+      "sub": "Đầy đủ 8 nhóm hàng phục vụ cho quán chè, tiệm đồ uống và gia đình.",
+      "cta": "Khám phá 8 nhóm hàng →",
+      "productsTitle": "Sản phẩm mới trong danh mục",
+      "productsSub": "Mỗi mặt hàng chỉ mở bán khi đã xác minh quy cách, giá và tồn kho.",
+      "more": "Xem tất cả →"
+    },
+    "verified": {
+      "title": "Chỉ bán hàng đã xác minh",
+      "crumb": "Chỉ bán hàng đã xác minh",
+      "eyebrow": "BIZGO • ĐẢM BẢO MINH BẠCH & TIN CẬY",
+      "sub": "Quy cách, giá, tồn kho được kiểm duyệt trước khi mở bán trên BizGo.",
+      "badges": ["Thông tin minh bạch", "Giá hợp lý", "Sẵn sàng giao hàng"],
+      "criteriaTitle": "Hàng hóa được xác minh những gì?",
+      "criteriaSub": "Mỗi sản phẩm trên BizGo đều trải qua quy trình kiểm duyệt với 4 tiêu chí chính:",
+      "criteria": [
+        {
+          "icon": "📦",
+          "title": "Xác minh quy cách",
+          "text": "Đối chiếu đúng chủng loại, kích cỡ, đóng gói, khối lượng."
+        },
+        {
+          "icon": "🏷️",
+          "title": "Duyệt giá bán",
+          "text": "Kiểm tra và phê duyệt mức giá bán trước khi mở bán."
+        },
+        {
+          "icon": "🗂️",
+          "title": "Kiểm tra tồn khả dụng",
+          "text": "Xác nhận số lượng thực tế, sẵn sàng giao hàng."
+        },
+        {
+          "icon": "📝",
+          "title": "Đối chiếu thông tin sản phẩm",
+          "text": "Kiểm tra mô tả, hình ảnh, nguồn gốc và các thông tin liên quan."
+        }
+      ],
+      "productsTitle": "Sản phẩm đang mở bán trên BizGo",
+      "productsSub": "Chỉ hiển thị các sản phẩm đã hoàn tất kiểm duyệt và đang mở bán.",
+      "productsMore": "Xem thêm sản phẩm →",
+      "productsEmptyTitle": "Chưa có sản phẩm nào đang mở bán",
+      "productsEmptyText": "BizGo đang xác minh quy cách, giá và tồn kho cùng xưởng. Sản phẩm sẽ xuất hiện ở đây khi đã sẵn sàng.",
+      "flowTitle": "Quy trình mở bán sau khi xác minh",
+      "flowText": "BizGo chỉ mở bán sản phẩm khi đã hoàn tất các bước kiểm duyệt dưới đây.",
+      "flow": [
+        {
+          "icon": "📤",
+          "title": "1. Xưởng cung cấp thông tin sản phẩm",
+          "text": "(quy cách, giá, tồn kho, mô tả)"
+        },
+        {
+          "icon": "🔎",
+          "title": "2. BizGo kiểm tra và đối chiếu",
+          "text": "(quy cách, giá, tồn khả dụng, thông tin sản phẩm)"
+        },
+        {
+          "icon": "✅",
+          "title": "3. Phê duyệt mở bán",
+          "text": "(chỉ khi đạt đầy đủ tiêu chí)"
+        },
+        {
+          "icon": "🛍️",
+          "title": "4. Hiển thị trên BizGo",
+          "text": "(sản phẩm sẵn sàng đặt hàng)"
+        }
+      ],
+      "assureTitle": "Bạn có thể yên tâm khi mua sắm trên BizGo",
+      "assure": [
+        "Chỉ bán sản phẩm đã được kiểm duyệt",
+        "Thông tin rõ ràng, minh bạch",
+        "Giá và tồn kho được cập nhật, kiểm soát thường xuyên",
+        "Hỗ trợ nhanh chóng nếu có vấn đề phát sinh"
+      ],
+      "faqTitle": "Câu hỏi thường gặp",
+      "faqSub": "Những thắc mắc phổ biến về việc xác minh sản phẩm trên BizGo.",
+      "faq": [
+        {
+          "q": "BizGo xác minh sản phẩm như thế nào?",
+          "a": "Mỗi quy cách chỉ được mở bán khi đã có đủ thông tin quy cách, giá bán, tồn kho và nguồn gốc được đối chiếu."
+        },
+        {
+          "q": "Sản phẩm “chưa mở bán” có nghĩa là gì?",
+          "a": "Sản phẩm đã có trong danh mục nhưng chưa hoàn tất xác minh nên chưa thể đặt hàng."
+        },
+        {
+          "q": "Giá và tồn kho có được cập nhật thường xuyên không?",
+          "a": "Giá và tồn kho hiển thị là dữ liệu hiện tại của hệ thống; nếu giá đổi trước khi đặt, bạn sẽ được báo để xác nhận lại."
+        },
+        {
+          "q": "Nếu phát hiện thông tin chưa chính xác, tôi nên làm gì?",
+          "a": "Vui lòng liên hệ BizGo để được kiểm tra và hỗ trợ."
+        }
+      ]
+    }
   }
 }

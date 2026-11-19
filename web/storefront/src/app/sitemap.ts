@@ -9,6 +9,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [
     { url: `${site}/`, changeFrequency: 'daily' },
     { url: `${site}/danh-muc`, changeFrequency: 'daily' },
+    { url: `${site}/nguon-hang-tu-xuong`, changeFrequency: 'monthly' },
+    { url: `${site}/van-chuyen-theo-dieu-kien-bao-quan`, changeFrequency: 'monthly' },
+    { url: `${site}/nguyen-lieu-da-dang`, changeFrequency: 'weekly' },
+    { url: `${site}/chi-ban-hang-da-xac-minh`, changeFrequency: 'weekly' },
   ];
   try {
     const api = serverApi();
